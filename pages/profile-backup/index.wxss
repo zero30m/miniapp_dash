@@ -1,0 +1,52 @@
+.container {
+  padding: 40rpx;
+  min-height: 100vh;
+  background-color: #050505;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 30rpx;
+  padding-bottom: 200rpx;
+  width: 100%;
+}
+
+.store-card-wrapper {
+  width: 100%;
+  border-radius: 40rpx; /* Softer radius */
+  overflow: hidden;
+  position: relative;
+  /* Unified Glass Gradient: Soft Blue-White */
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(220, 240, 255, 0.85));
+  backdrop-filter: blur(30px);
+  border: 1rpx solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20rpx 60rpx rgba(173, 216, 230, 0.2), inset 0 0 0 1rpx rgba(255,255,255,0.5);
+  transition: transform 0.2s;
+}
+
+.store-card-wrapper:active {
+  transform: scale(0.98);
+}
+
+/* Button Breathing Animation */
+@keyframes buttonBreath {
+  0%, 100% { 
+    box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05); 
+    transform: scale(1);
+    background: rgba(255, 255, 255, 0.4);
+  }
+  50% { 
+    box-shadow: 0 12rpx 32rpx rgba(173, 216, 230, 0.4); /* Soft blue glow */
+    transform: scale(1.02);
+    background: rgba(255, 255, 255, 0.55);
+  }
+}
+
+store-product {
+  /* Allow internal styles to dictate color */
+}
+
+.store-card-wrapper:active {
+  transform: scale(0.98);
+}

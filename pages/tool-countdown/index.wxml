@@ -1,0 +1,130 @@
+<view class="countdown-page" 
+      bindtouchstart="onTouchStart" 
+      bindtouchmove="onTouchMove" 
+      bindtouchend="onTouchEnd" 
+      bindtouchcancel="onTouchCancel">
+  
+  <!-- 背景光效 -->
+  <view class="bg-glow top-left"></view>
+  <view class="bg-glow bottom-right"></view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <!-- SETUP: 秒数选择界面 -->
+  <view class="setup-container {{gameState === 'SETUP' ? 'show' : ''}}">
+    <view class="setup-title">{{uiCopy.setupTitle}}</view>
+    <view class="setup-desc">{{uiCopy.setupDesc}}</view>
+    
+    <view class="timer-selector">
+      <view class="timer-btn {{countdownSeconds <= 3 ? 'disabled' : ''}}" catchtap="onDecrease">
+        <text class="btn-icon">−</text>
+      </view>
+      <view class="timer-display">
+        <text class="timer-number">{{countdownSeconds}}</text>
+        <text class="timer-unit">{{uiCopy.secondsUnit}}</text>
+      </view>
+      <view class="timer-btn {{countdownSeconds >= 30 ? 'disabled' : ''}}" catchtap="onIncrease">
+        <text class="btn-icon">+</text>
+      </view>
+    </view>
+    
+    <!-- 开始按钮 -->
+    <view class="start-btn" catchtap="onStartGame">
+      <text class="start-btn-text">{{uiCopy.startButton}}</text>
+    </view>
+  </view>
+
+  <!-- COUNTDOWN: 大号倒计时数字 -->
+  <view class="countdown-display {{gameState === 'COUNTDOWN' ? 'show' : ''}}">
+    <text class="countdown-number">{{currentCount}}</text>
+  </view>
+
+  <!-- WAITING: 动态游戏指令 -->
+  <view class="start-display {{gameState === 'WAITING' ? 'show' : ''}}">
+    <text class="start-text">{{gameModeTitle}}</text>
+    <text class="start-hint">{{gameModeHint}}</text>
+    <text class="start-subtitle" wx:if="{{gameModeSubtitle}}">{{gameModeSubtitle}}</text>
+  </view>
+
+  <!-- TOUCH_PHASE: 倒计时 / 状态文案 -->
+  <view class="touch-countdown {{gameState === 'TOUCH_PHASE' ? 'show' : ''}}">
+    <!-- 常规倒计时数字 -->
+    <text class="touch-countdown-number" wx:if="{{touchCountdown > 0}}">{{touchCountdown}}</text>
+    
+    <!-- release/liftFinger 阶段文案 -->
+    <text class="release-phase-text" wx:if="{{releasePhaseText}}">{{releasePhaseText}}</text>
+    
+    <!-- liftFinger "松!" 大字提示 -->
+    <view class="lift-now-display" wx:if="{{showLiftNow}}">
+      <text class="lift-now-text">{{uiCopy.liftNow}}</text>
+    </view>
+  </view>
+
+  <!-- 手指光晕 -->
+  <block wx:for="{{fingers}}" wx:key="id">
+    <view class="finger-ring {{item.isWinner ? 'winner' : ''}} {{item.isEliminated ? 'eliminated' : ''}}" 
+          style="left: {{item.x}}px; top: {{item.y}}px; --color: {{item.color}};">
+      <view class="ring-core"></view>
+      <view class="ring-glow"></view>
+      <view class="ring-ripple"></view>
+      
+      <!-- 长按进度轨道 + 进度环 -->
+      <view class="ring-track" wx:if="{{gameMode === 'longPress' && !item.isEliminated && !item.completed}}"></view>
+      <view class="ring-progress" wx:if="{{item.progress > 0}}" 
+            style="--progress: {{item.progress}}deg;"></view>
+      
+      <!-- 点击计数 / 状态标签 -->
+      <text class="tap-count" wx:if="{{item.tapLabel}}">{{item.tapLabel}}</text>
+    </view>
+  </block>
+
+  <!-- RESULT: 结果弹窗 -->
+  <view class="result-overlay {{gameState === 'RESULT' ? 'visible' : ''}}" 
+        style="--winner-color: {{winnerColor}};">
+    <view class="result-container {{gameState === 'RESULT' ? 'animating' : ''}}">
+      <view class="winner-indicator">
+        <view class="winner-ring"></view>
+        <view class="winner-glow"></view>
+      </view>
+      
+      <view class="result-text-wrap">
+        <text class="result-emoji">🫵</text>
+        <text class="result-title">{{uiCopy.resultTitle}}</text>
+      </view>
+      
+      <view class="result-hint">{{uiCopy.resultHint}}</view>
+      <view class="result-hint2">{{uiCopy.resultHint2}}</view>
+    </view>
+    
+    <!-- 装饰粒子 -->
+    <view class="particle p1"></view>
+    <view class="particle p2"></view>
+    <view class="particle p3"></view>
+    <view class="particle p4"></view>
+    <view class="particle p5"></view>
+    <view class="particle p6"></view>
+  </view>
+  <!-- FOUL: 抢跑犯规卡片 -->
+  <view class="result-overlay {{showFoulCard ? 'visible' : ''}}"
+        style="--winner-color: {{winnerColor}};"
+        catchtap="onDismissFoul">
+    <view class="result-container {{showFoulCard ? 'animating' : ''}}">
+      <view class="winner-indicator">
+        <view class="winner-ring"></view>
+        <view class="winner-glow"></view>
+      </view>
+      
+      <view class="result-text-wrap">
+        <text class="result-title">{{uiCopy.foulTitle}}</text>
+      </view>
+      
+      <view class="result-hint">{{uiCopy.foulHint}}</view>
+      <view class="result-hint2">{{uiCopy.foulHint2}}</view>
+    </view>
+  </view>
+
+</view>

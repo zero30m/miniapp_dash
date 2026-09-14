@@ -1,0 +1,113 @@
+<view class="lottery-page">
+  <view class="panel" wx:if="{{!isAdmin || activeTab === 'created'}}">
+    <view class="panel-header">
+      <text class="section-title">{{isAdmin ? '发起的抽奖' : uiCopy.listTitle}}</text>
+      <view class="header-actions">
+        <view class="refresh-btn test-subscribe-btn" wx:if="{{isAdmin}}" bindtap="testSubscribeMessage">{{subscribeTesting ? '测试中' : '通知测试'}}</view>
+        <view class="refresh-btn" bindtap="refreshDashboard">{{isAdmin ? '刷新' : uiCopy.refresh}}</view>
+      </view>
+    </view>
+
+    <view class="lottery-list">
+      <view class="lottery-card status-{{item.status}}" wx:for="{{records}}" wx:key="lotteryId">
+        <view class="card-main" bindtap="openDetail" data-id="{{item.lotteryId}}">
+          <view class="amount-line">
+            <text class="amount-symbol">¥</text>
+            <text class="amount">{{item.totalAmountText}}</text>
+            <text class="status-pill">{{item.statusLabel || item.statusText}}</text>
+          </view>
+          <view class="meta-grid">
+            <view class="meta-item">
+              <text class="meta-value">{{item.participantCount}}</text>
+              <text class="meta-label">{{isAdmin ? '参与人数' : uiCopy.labels.participants}}</text>
+            </view>
+            <view class="meta-item">
+              <text class="meta-value">{{item.prizeCount}}</text>
+              <text class="meta-label">{{isAdmin ? '红包个数' : uiCopy.labels.packetCount}}</text>
+            </view>
+            <view class="meta-item" wx:if="{{item.status === 'drawn'}}">
+              <text class="meta-value">{{item.winnerCount}}</text>
+              <text class="meta-label">{{isAdmin ? '中奖人数' : uiCopy.labels.winnerCount}}</text>
+            </view>
+            <view class="meta-item" wx:else>
+              <text class="meta-value">{{isAdmin ? '待开' : uiCopy.labels.pendingWinner}}</text>
+              <text class="meta-label">{{isAdmin ? '中奖人数' : uiCopy.labels.winnerCount}}</text>
+            </view>
+          </view>
+          <view class="time-row">
+            <block wx:if="{{isAdmin}}">开奖时间：{{item.openAtText}}</block>
+            <block wx:else>{{item.openAtLine}}</block>
+          </view>
+          <view class="win-row" wx:if="{{!isAdmin && item.status === 'drawn'}}">
+            {{item.userResultText}}
+          </view>
+          <view class="win-row joined" wx:if="{{!isAdmin && item.status !== 'drawn' && item.isParticipant}}">
+            {{item.userJoinedText}}
+          </view>
+        </view>
+
+        <view class="card-actions" wx:if="{{isAdmin}}">
+          <view class="action-btn light" data-text="{{item.path}}" bindtap="copyText">复制路径</view>
+          <view class="action-btn dark" data-text="{{item.officialAccountSnippet}}" bindtap="copyText">复制公众号片段</view>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{records.length === 0 && !loading}}">
+        <view class="empty-icon">¥</view>
+        <text class="empty-title">{{isAdmin ? '还没有发起抽奖' : uiCopy.emptyTitle}}</text>
+        <text class="empty-sub">{{isAdmin ? '去创建一个新的红包抽奖吧' : uiCopy.emptySub}}</text>
+      </view>
+
+      <view class="loading-state" wx:if="{{loading}}">{{isAdmin ? '加载中...' : uiCopy.loading}}</view>
+    </view>
+
+    <view class="floating-create-btn" wx:if="{{isAdmin}}" bindtap="showCreatePanel">+</view>
+  </view>
+
+  <view class="panel create-panel" wx:if="{{isAdmin && activeTab === 'create'}}">
+    <view class="create-header">
+      <view class="section-title">创建抽奖</view>
+      <view class="refresh-btn" bindtap="hideCreatePanel">返回列表</view>
+    </view>
+
+    <view class="form-card">
+      <view class="field">
+        <text class="field-label">红包总金额（元）</text>
+        <input class="field-input" type="digit" value="{{amountInput}}" placeholder="例如 88.88" bindinput="onAmountInput" />
+      </view>
+
+      <view class="field">
+        <text class="field-label">红包个数</text>
+        <input class="field-input" type="number" value="{{prizeCountInput}}" placeholder="例如 10" bindinput="onPrizeCountInput" />
+      </view>
+
+      <view class="field two-col">
+        <view class="picker-field">
+          <text class="field-label">开奖日期</text>
+          <picker mode="date" value="{{openDate}}" bindchange="onDateChange">
+            <view class="picker-value">{{openDate}}</view>
+          </picker>
+        </view>
+        <view class="picker-field">
+          <text class="field-label">开奖时间</text>
+          <picker mode="time" value="{{openTime}}" bindchange="onTimeChange">
+            <view class="picker-value">{{openTime}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <button class="create-btn" bindtap="createLottery" loading="{{creating}}" disabled="{{creating}}">创建抽奖</button>
+    </view>
+
+    <view class="created-result" wx:if="{{createdResult}}">
+      <view class="result-title">创建成功</view>
+      <view class="result-line">页面路径</view>
+      <view class="copy-box" data-text="{{createdResult.path}}" bindtap="copyText">{{createdResult.path}}</view>
+      <view class="result-line">公众号嵌入片段</view>
+      <view class="copy-box snippet" data-text="{{createdResult.officialAccountSnippet}}" bindtap="copyText">{{createdResult.officialAccountSnippet}}</view>
+      <view class="scheduler-warning" wx:if="{{createdResult.scheduler && !createdResult.scheduler.synced}}">
+        触发器同步未完成：{{createdResult.scheduler.reason}}
+      </view>
+    </view>
+  </view>
+</view>

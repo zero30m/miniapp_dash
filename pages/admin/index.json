@@ -1,0 +1,7 @@
+{
+    "usingComponents": {},
+    "navigationBarTitleText": "后台管理",
+    "enablePullDownRefresh": true,
+    "backgroundColor": "#050505",
+    "backgroundTextStyle": "light"
+}

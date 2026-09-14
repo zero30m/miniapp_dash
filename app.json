@@ -1,0 +1,95 @@
+{
+    "pages": [
+        "pages/home/index",
+        "pages/tool-dice/index",
+        "pages/tool-oldman/index",
+        "pages/tool-fingerpress/index",
+        "pages/tool-countdown/index",
+        "pages/tool-drunk/index",
+        "pages/tool-danmu/index",
+        "pages/tool-flappy/index",
+        "pages/tool-bottle/index",
+        "pages/tool-danmu-play/index",
+        "pages/finger/index",
+        "pages/games/index",
+        "pages/profile/index",
+        "pages/drinking-game/index",
+        "pages/webview/index",
+        "pages/admin/index",
+        "pages/lottery/index",
+        "pages/lottery/detail",
+        "pages/fan-test/index",
+        "pages/viral/index",
+        "pages/viral/landing"
+    ],
+    "window": {
+        "backgroundTextStyle": "dark",
+        "navigationBarBackgroundColor": "#FFFDE7",
+        "navigationBarTitleText": "得吃大逃杀",
+        "navigationBarTextStyle": "black",
+        "backgroundColor": "#FFFDE7"
+    },
+    "tabBar": {
+        "custom": true,
+        "color": "#888888",
+        "selectedColor": "#39FF14",
+        "backgroundColor": "#000000",
+        "borderStyle": "black",
+        "list": [
+            {
+                "pagePath": "pages/home/index",
+                "text": "首页",
+                "iconPath": "icon/home.png",
+                "selectedIconPath": "icon/home.png"
+            },
+            {
+                "pagePath": "pages/finger/index",
+                "text": "抓手指",
+                "iconPath": "icon/icon2.png",
+                "selectedIconPath": "icon/icon2.png"
+            },
+            {
+                "pagePath": "pages/games/index",
+                "text": "真心话大冒险",
+                "iconPath": "icon/game.png",
+                "selectedIconPath": "icon/game.png"
+            },
+            {
+                "pagePath": "pages/profile/index",
+                "text": "扑克牌",
+                "iconPath": "icon/prod.png",
+                "selectedIconPath": "icon/prod.png"
+            },
+            {
+                "pagePath": "pages/admin/index",
+                "text": "后台",
+                "iconPath": "icon/home.png",
+                "selectedIconPath": "icon/home.png"
+            }
+        ]
+    },
+    "style": "v2",
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents",
+    "subPackages": [
+        {
+            "root": "image-pack-tools",
+            "name": "image-pack-tools",
+            "pages": []
+        },
+        {
+            "root": "image-pack-fan",
+            "name": "image-pack-fan",
+            "pages": []
+        }
+    ],
+    "preloadRule": {
+        "pages/home/index": {
+            "network": "all",
+            "packages": [
+                "image-pack-tools",
+                "image-pack-fan"
+            ]
+        }
+    }
+}

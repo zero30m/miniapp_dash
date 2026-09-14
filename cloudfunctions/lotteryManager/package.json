@@ -1,0 +1,12 @@
+{
+    "name": "lottery-manager",
+    "version": "1.0.0",
+    "description": "抽奖聚合云函数：创建、参与、开奖和动态触发器同步",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "latest",
+        "@cloudbase/manager-node": "latest"
+    },
+    "author": "",
+    "license": "ISC"
+}

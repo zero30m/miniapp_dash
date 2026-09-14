@@ -1,0 +1,16 @@
+<view class="play-page" catchtap="onStopPlay">
+  <!-- 无缝滚动弹幕 -->
+  <view class="danmu-wrapper">
+    <view class="danmu-track" style="--duration: {{animationDuration}}s;">
+      <view class="danmu-item">
+        <text class="danmu-text" style="{{textStyle}}">{{danmuText}}</text>
+      </view>
+      <view class="danmu-item">
+        <text class="danmu-text" style="{{textStyle}}">{{danmuText}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 点击退出提示 -->
+  <view class="tap-hint">{{uiCopy.playTapHint}}</view>
+</view>

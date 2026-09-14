@@ -1,0 +1,12 @@
+{
+    "name": "get-app-launch-data",
+    "version": "1.0.0",
+    "description": "聚合启动云函数：合并 login、getSystemConfig、getAppVersion",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3",
+        "@cloudbase/node-sdk": "latest"
+    },
+    "author": "",
+    "license": "ISC"
+}

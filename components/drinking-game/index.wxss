@@ -1,0 +1,743 @@
+/** index.wxss **/
+.drinking-game-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-bg,
+.vignette,
+.header {
+  display: none;
+}
+
+.game-area {
+  z-index: 10;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  padding: 0 94rpx calc(44rpx + env(safe-area-inset-bottom));
+}
+
+.stage-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.stack-stage {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform-origin: top center;
+  will-change: transform;
+  overflow: visible;
+}
+
+.card-frame {
+  position: relative;
+  width: 580rpx;
+  height: 920rpx;
+  margin: 0 auto;
+}
+
+.card-stack {
+  position: relative;
+  width: 580rpx;
+  height: 920rpx;
+  perspective: 1200px;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.card-stack.switching-out {
+  animation: slideFadeOut 0.15s ease-out forwards;
+  pointer-events: none;
+}
+
+.card-stack.switching-in {
+  animation: slideFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes slideFadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-80rpx); }
+}
+
+@keyframes slideFadeIn {
+  from { opacity: 0; transform: translateX(80rpx); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.deck-badge {
+  position: absolute;
+  right: -20rpx;
+  bottom: 96rpx;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 72rpx;
+  height: 72rpx;
+  padding: 0 20rpx;
+  background: #fff;
+  border: 4rpx solid #000;
+  border-radius: 16rpx;
+  box-shadow: none !important;
+}
+
+.deck-badge .deck-count {
+  font-size: 28rpx;
+  font-weight: 800;
+  font-family: 'SF Mono', 'Monaco', monospace;
+  color: #000;
+  letter-spacing: 2rpx;
+}
+
+.card-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.35s ease;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.card-container.active {
+  transform: scale(1) translateZ(0);
+  opacity: 1;
+  z-index: 10;
+}
+
+.card-container.next1 {
+  transform: scale(0.965) translateY(34rpx) translateZ(-50px) rotate(2.4deg);
+  opacity: 0.94;
+  z-index: 9;
+}
+
+.card-container.next2 {
+  transform: scale(0.93) translateY(68rpx) translateZ(-100px) rotate(4.6deg);
+  opacity: 0.88;
+  z-index: 8;
+}
+
+.card-container.exit-left {
+  transform: translateX(-150%) rotate(-30deg) !important;
+  opacity: 0;
+  z-index: 20;
+  transition: all 0.4s ease-out;
+}
+
+.card-container.exit-right {
+  transform: translateX(150%) rotate(30deg) !important;
+  opacity: 0;
+  z-index: 20;
+  transition: all 0.4s ease-out;
+}
+
+.card-container.enter-left {
+  transform: translateX(-120%) rotate(-15deg);
+  opacity: 0;
+  z-index: 15;
+  animation: slideInFromLeft 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes slideInFromLeft {
+  from { transform: translateX(-120%) rotate(-15deg); opacity: 0; }
+  to { transform: scale(1) translateZ(0) rotate(0deg); opacity: 1; }
+}
+
+.card-container.hidden {
+  transform: scale(0.87) translateY(100rpx) translateZ(-150px) rotate(6deg);
+  opacity: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.side-hint {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.side-hint.left {
+  top: 50%;
+  left: -18rpx;
+  transform: translate(-100%, -50%);
+  animation: nudgeLeft 1.5s ease-in-out infinite;
+}
+
+.side-hint.right {
+  top: 50%;
+  left: 598rpx;
+  transform: translate(0, -50%);
+  animation: nudgeRight 1.5s ease-in-out infinite;
+}
+
+.hint-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.hint-text {
+  font-size: 24rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.theme-drinking .arrow-shape, .theme-drinking .hint-text { color: #FF1744; }
+.theme-kiss .arrow-shape, .theme-kiss .hint-text { color: #FF4081; }
+.theme-chess .arrow-shape, .theme-chess .hint-text { color: #FFD740; }
+.theme-dare .arrow-shape, .theme-dare .hint-text { color: #18FFFF; }
+.theme-truth .arrow-shape, .theme-truth .hint-text { color: #FF6E40; }
+.theme-we .arrow-shape, .theme-we .hint-text { color: #43A047; }
+.theme-zhexuejia .arrow-shape, .theme-zhexuejia .hint-text { color: #B388FF; }
+.theme-taiqiu .arrow-shape, .theme-taiqiu .hint-text { color: #1DE9B6; }
+.theme-couple_dare .arrow-shape, .theme-couple_dare .hint-text { color: #E91E63; }
+.theme-couple_talk .arrow-shape, .theme-couple_talk .hint-text { color: #FFAB91; }
+.theme-coffee .arrow-shape, .theme-coffee .hint-text { color: #8D6E63; }
+.theme-diy .arrow-shape, .theme-diy .hint-text { color: #39FF14; }
+
+@keyframes nudgeLeft {
+  0%, 100% { transform: translate(-100%, -50%) translateX(0); }
+  50% { transform: translate(-100%, -50%) translateX(-12rpx); }
+}
+
+@keyframes nudgeRight {
+  0%, 100% { transform: translate(0, -50%) translateX(0); }
+  50% { transform: translate(0, -50%) translateX(12rpx); }
+}
+
+.side-hint.bottom {
+  top: 968rpx;
+  left: 50%;
+  transform: translate(-50%, 0);
+  animation: nudgeDown 1.5s ease-in-out infinite;
+  z-index: 30;
+}
+
+/* CSS Geometric Arrow - Neo Brutalism Style */
+.arrow-shape {
+  width: 16rpx; /* Reduced to match text width */
+  height: 16rpx; /* Reduced to match text width */
+  border-top: 5rpx solid currentColor;
+  border-right: 5rpx solid currentColor;
+  transform-origin: center;
+  /* Sharp corners */
+  border-radius: 2rpx; 
+}
+
+.arrow-shape.left {
+  transform: rotate(-135deg);
+}
+
+.arrow-shape.right {
+  transform: rotate(45deg);
+}
+
+.arrow-shape.down {
+  transform: rotate(135deg);
+  margin-bottom: -10rpx; /* Compensation for rotation visual center */
+}
+
+.side-hint.bottom .hint-icon {
+  margin-bottom: 4rpx;
+}
+
+.side-hint.bottom .hint-text {
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  font-size: 22rpx;
+  margin-top: 0;
+  font-weight: 700;
+}
+
+@keyframes nudgeDown {
+  0%, 100% { transform: translate(-50%, 0) translateY(0); }
+  50% { transform: translate(-50%, 0) translateY(12rpx); }
+}
+
+/* Card Body */
+.card-body {
+  width: 100%;
+  height: 100%;
+  border-radius: 24rpx;
+  border: 4rpx solid #000;
+  background: #FFF;
+  box-shadow: 0 0 0 2rpx rgba(0, 0, 0, 0.2), 0 14rpx 28rpx rgba(0, 0, 0, 0.08);
+  padding: 50rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-corner { display: none; }
+
+.card-title {
+  font-size: 56rpx;
+  font-weight: 900;
+  margin-top: 40rpx;
+  text-align: center;
+  color: #000;
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 2rpx;
+}
+
+.card-line {
+  width: 60%;
+  height: 4rpx;
+  background: #000;
+  margin: 40rpx 0;
+  z-index: 2;
+  border-radius: 2rpx;
+}
+
+.card-desc {
+  font-size: 34rpx;
+  text-align: center;
+  line-height: 1.6;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  font-weight: 500;
+  padding: 0 20rpx;
+  color: #000;
+}
+
+.card-type {
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 6rpx;
+  margin-top: auto;
+  z-index: 2;
+  text-transform: uppercase;
+  background: #000;
+  color: #FFF;
+  padding: 8rpx 20rpx;
+  border-radius: 30rpx;
+}
+
+.card-subtitle {
+  font-size: 28rpx;
+  font-weight: 800;
+  margin-top: 30rpx;
+  margin-bottom: 20rpx;
+  letter-spacing: 2rpx;
+  text-align: center;
+  z-index: 2;
+  padding: 12rpx 28rpx;
+  border-radius: 16rpx;
+  background: #FFF;
+  border: 3rpx solid #000;
+  box-shadow: 4px 4px 0 0 #000;
+  color: #000;
+}
+
+.card-english {
+  margin-top: 20rpx;
+  padding: 16rpx 24rpx;
+  border: 3rpx solid #000;
+  border-radius: 12rpx;
+  background: #eee;
+  z-index: 2;
+}
+
+.card-english-text {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.card-container.next1 .card-body,
+.card-container.next2 .card-body {
+  box-shadow: 0 0 0 2rpx rgba(0, 0, 0, 0.2), 0 10rpx 22rpx rgba(0, 0, 0, 0.05);
+}
+
+/* Theme Styles */
+.card-container.grey .card-body { background: #FFF; border-color: #000; }
+.card-container.grey .card-type { background: #999; }
+
+.card-container.green .card-body { background: #FFF; border-color: #000; }
+.card-container.green .card-type { background: #00C853; color: #000; }
+
+.card-container.white .card-body { background: #FFFFFF; }
+.card-container.white .card-type { background: #FFF; color: #000; border: 2rpx solid #000; }
+
+.card-container.red .card-body { background: #FFF; border-color: #000; }
+.card-container.red .card-type { background: #FF1744; color: #FFF; }
+
+.card-container.black .card-body { background: #FFF; border-color: #000; }
+.card-container.black .card-title, .card-container.black .card-desc { color: #000; }
+.card-container.black .card-subtitle { background: #FFF; border-color: #000; box-shadow: 4px 4px 0 0 #000; color: #000; }
+.card-container.black .card-type { background: #000; color: #FFF; }
+.card-container.black .card-line { background: #000; }
+
+/* Shuffle Overlay */
+.shuffle-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  background: rgba(5, 5, 5, 0.9);
+  transition: opacity 0.2s ease;
+}
+
+.shuffle-overlay.active { opacity: 1; pointer-events: auto; }
+
+.shuffle-text {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #39FF14;
+  font-size: 36rpx;
+  font-weight: 700;
+  letter-spacing: 8rpx;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.shuffle-text.show { opacity: 1; }
+
+.shuffle-card {
+  position: absolute;
+  width: 180rpx;
+  height: 280rpx;
+  background: #FFF;
+  border: 4rpx solid #000;
+  border-radius: 20rpx;
+  box-shadow: 4px 4px 0 0 #000;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.shuffle-card::before {
+  content: '';
+  position: absolute;
+  top: 10%; left: 10%; width: 80%; height: 80%;
+  border: 1rpx solid #000;
+  border-radius: 12rpx;
+  opacity: 0.6;
+}
+
+/* Shuffle Colors */
+.shuffle-card.theme-drinking { background: #FF1744; }
+.shuffle-card.theme-kiss { background: #FF4081; }
+.shuffle-card.theme-chess { background: #FFD740; }
+.shuffle-card.theme-dare { background: #18FFFF; }
+.shuffle-card.theme-truth { background: #FF6E40; }
+.shuffle-card.theme-we { background: #43A047; }
+.shuffle-card.theme-zhexuejia { background: #B388FF; }
+.shuffle-card.theme-taiqiu { background: #1DE9B6; }
+.shuffle-card.theme-couple_dare { background: #E91E63; }
+.shuffle-card.theme-couple_talk { background: #FFAB91; }
+.shuffle-card.theme-coffee { background: #8D6E63; }
+.shuffle-card.theme-diy { background: #39FF14; }
+
+/* EXACT RESTORATION OF ANIMATION */
+.shuffle-card.phase-1 { opacity: 1; animation: scatterOut 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.shuffle-card.phase-2 { opacity: 1; animation: flyAround 0.6s ease-in-out infinite alternate; }
+.shuffle-card.phase-3 { opacity: 1; animation: gatherIn 0.45s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+
+.shuffle-card.sc1 { --scatter-x: -180rpx; --scatter-y: -200rpx; --scatter-r: -25deg; --fly-delay: 0s; }
+.shuffle-card.sc2 { --scatter-x: 180rpx; --scatter-y: -180rpx; --scatter-r: 30deg; --fly-delay: 0.1s; }
+.shuffle-card.sc3 { --scatter-x: -200rpx; --scatter-y: 50rpx; --scatter-r: -15deg; --fly-delay: 0.2s; }
+.shuffle-card.sc4 { --scatter-x: 200rpx; --scatter-y: 80rpx; --scatter-r: 20deg; --fly-delay: 0.15s; }
+.shuffle-card.sc5 { --scatter-x: -100rpx; --scatter-y: 220rpx; --scatter-r: -35deg; --fly-delay: 0.05s; }
+.shuffle-card.sc6 { --scatter-x: 120rpx; --scatter-y: 200rpx; --scatter-r: 25deg; --fly-delay: 0.25s; }
+
+@keyframes scatterOut {
+  0% { transform: translate(0, 0) rotate(0deg) scale(0.8); opacity: 0; }
+  100% { transform: translate(var(--scatter-x), var(--scatter-y)) rotate(var(--scatter-r)) scale(1); opacity: 1; }
+}
+
+@keyframes flyAround { 
+  0% { transform: translate(var(--scatter-x), var(--scatter-y)) rotate(var(--scatter-r)) scale(1); }
+  25% { transform: translate(calc(var(--scatter-x) * -0.5), calc(var(--scatter-y) * -0.3)) rotate(calc(var(--scatter-r) * -1)) scale(1.05); }
+  50% { transform: translate(calc(var(--scatter-x) * 0.3), calc(var(--scatter-y) * 0.5)) rotate(calc(var(--scatter-r) * 0.5)) scale(0.95); }
+  75% { transform: translate(calc(var(--scatter-x) * -0.2), calc(var(--scatter-y) * -0.8)) rotate(calc(var(--scatter-r) * 1.2)) scale(1.02); }
+  100% { transform: translate(var(--scatter-x), var(--scatter-y)) rotate(var(--scatter-r)) scale(1); }
+}
+
+@keyframes gatherIn {
+  0% { transform: translate(var(--scatter-x), var(--scatter-y)) rotate(var(--scatter-r)) scale(1); opacity: 1; }
+  100% { transform: translate(0, 0) rotate(0deg) scale(0.9); opacity: 0.8; }
+}
+
+.shuffle-card.sc1.phase-2 { animation-delay: var(--fly-delay); }
+.shuffle-card.sc2.phase-2 { animation-delay: var(--fly-delay); }
+.shuffle-card.sc3.phase-2 { animation-delay: var(--fly-delay); }
+.shuffle-card.sc4.phase-2 { animation-delay: var(--fly-delay); }
+.shuffle-card.sc5.phase-2 { animation-delay: var(--fly-delay); }
+.shuffle-card.sc6.phase-2 { animation-delay: var(--fly-delay); }
+
+/* =================================================================
+   哲学家酒牌 - 翻转卡牌样式
+   ================================================================= */
+
+/* 翻转容器 */
+.card-flipper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-flipper.flipped {
+  transform: rotateY(180deg);
+}
+
+/* 卡牌正反面共用样式 */
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 正面 */
+.card-front {
+  z-index: 2;
+}
+
+/* 背面 */
+.card-back {
+  transform: rotateY(180deg);
+  z-index: 1;
+  background: #FFF;
+}
+
+/* 哲学家酒牌主题样式 */
+.theme-zhexuejia .card-body {
+  background: #FFF;
+  border-color: #000;
+}
+
+.theme-zhexuejia .card-title {
+  color: #000;
+  /* 默认字号，长标题会通过额外的class缩小 */
+  font-size: 56rpx;
+}
+
+/* 长标题自适应缩小 - 仅哲学家酒牌 */
+.theme-zhexuejia .card-title.long-title {
+  font-size: 36rpx;
+  line-height: 1.3;
+}
+
+.theme-zhexuejia .card-title.medium-title {
+  font-size: 44rpx;
+  line-height: 1.3;
+}
+
+.theme-zhexuejia .card-line {
+  background: #000;
+}
+
+.theme-zhexuejia .card-desc {
+  color: #000;
+}
+
+.theme-zhexuejia .card-type {
+  background: #B388FF;
+  color: #FFF;
+}
+
+.theme-zhexuejia .card-subtitle {
+  background: #F3E5F5;
+  border-color: #000;
+  box-shadow: 4px 4px 0 0 #000;
+}
+
+/* 灵魂拷问样式 */
+.card-intro {
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: rgba(179, 136, 255, 0.15);
+  border: 2rpx solid #B388FF;
+  border-radius: 16rpx;
+  z-index: 2;
+}
+
+.card-intro-text {
+  font-size: 26rpx;
+  color: #000;
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* 翻转提示 */
+.flip-hint {
+  position: absolute;
+  bottom: 20rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.flip-hint-text {
+  font-size: 22rpx;
+  color: #7B1FA2;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  opacity: 0.8;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 哲学家信息样式（背面） */
+.philosopher-name {
+  font-size: 52rpx;
+  font-weight: 900;
+  color: #4A148C;
+  text-align: center;
+  margin-top: 60rpx;
+  margin-bottom: 20rpx;
+  z-index: 2;
+}
+
+.philosopher-intro {
+  font-size: 28rpx;
+  color: #4A148C;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 30rpx;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* 背面卡牌的品牌标签样式 */
+.card-back .card-type {
+    background: #7B1FA2;
+    color: #FFF;
+    margin-top: auto;
+    margin-bottom: 60rpx;
+}
+
+/* ==================== 情侣心动挑战 主题样式 ==================== */
+
+.theme-couple_dare .card-body {
+  background: #FFF;
+  border-color: #000;
+}
+
+.theme-couple_dare .card-type {
+  background: #E91E63;
+  color: #FFF;
+}
+
+/* ==================== 情侣暖甜交流 主题样式 ==================== */
+
+.theme-couple_talk .card-body {
+  background: #FFF;
+  border-color: #000;
+}
+
+.theme-couple_talk .card-type {
+  background: #FFAB91;
+  color: #000;
+}
+
+/* ==================== COFFEE CHAT 主题样式 ==================== */
+
+.theme-coffee .card-body {
+  background: #FFF;
+  border-color: #000;
+}
+
+.theme-coffee .card-type {
+  background: #8D6E63;
+  color: #FFF;
+}
+
+/* ==================== DIY 来源标签 ==================== */
+.card-type.diy-source {
+    /* 颜色由内联样式控制 - FIX-8 */
+    font-size: 18rpx;
+    letter-spacing: 4rpx;
+}
+
+/* ==================== DIY 卡牌飞入动画（从右上角依次飞入） ==================== */
+@keyframes diyFlyIn {
+    0% {
+        transform: translate(400rpx, -600rpx) rotate(25deg) scale(0.3);
+        opacity: 0;
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        /* 不指定终态，自动回到元素自身的 transform */
+    }
+}
+
+/* 飞入时 active 卡牌 — 第一张飞入 */
+.card-stack.diy-fly-in .card-container.active {
+    animation: diyFlyIn 0.5s cubic-bezier(0.22, 0.8, 0.36, 1) backwards;
+}
+
+/* 飞入时 next1 — 第二张飞入，延迟 0.12s */
+.card-stack.diy-fly-in .card-container.next1 {
+    animation: diyFlyIn 0.5s cubic-bezier(0.22, 0.8, 0.36, 1) 0.12s backwards;
+}
+
+/* 飞入时 next2 — 第三张飞入，延迟 0.24s */
+.card-stack.diy-fly-in .card-container.next2 {
+    animation: diyFlyIn 0.5s cubic-bezier(0.22, 0.8, 0.36, 1) 0.24s backwards;
+}

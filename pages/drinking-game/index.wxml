@@ -1,0 +1,3 @@
+<view class="legacy-drinking-page">
+  <drinking-game class="game-stage-host" id="legacyDrinkingGame" game-type="drinking" active="{{true}}"></drinking-game>
+</view>

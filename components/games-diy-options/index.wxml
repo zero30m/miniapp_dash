@@ -1,0 +1,79 @@
+<!-- 真心话大冒险页面内的 DIY 设置入口 -->
+<view class="diy-fab {{expanded ? 'hidden' : ''}}" style="top: {{fabTop}}px;" bindtap="onToggle">
+    <image class="fab-icon" src="/icon/个性化.svg" mode="aspectFit"></image>
+</view>
+
+<view class="diy-overlay {{expanded ? 'show' : ''}}"
+      catchtap="onOverlayTap">
+    <view class="diy-panel" catchtap="onPanelTap">
+        <view class="panel-header">
+            <text class="panel-title">{{copy.settings}}</text>
+        </view>
+
+        <scroll-view scroll-y class="panel-body">
+            <diy-slider
+                label="{{copy.players}}"
+                min="{{0}}"
+                max="{{10}}"
+                step="{{1}}"
+                value="{{players}}"
+                icon-left="/icon/个人.svg"
+                icon-right="/icon/多人.svg"
+                display-value="{{players === 0 ? copy.unlimited : players + copy.peopleSuffix}}"
+                bindchange="onPlayersChange"
+            ></diy-slider>
+
+            <diy-slider
+                label="{{copy.alcohol}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{alcohol}}"
+                icon-left="/icon/鸡尾酒.svg"
+                icon-right="/icon/伏特加.svg"
+                display-value="{{alcohol + '%'}}"
+                bindchange="onAlcoholChange"
+            ></diy-slider>
+
+            <diy-slider
+                label="{{copy.stimulation}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{stimulation}}"
+                icon-left="/icon/平静.svg"
+                icon-right="/icon/害羞.svg"
+                display-value="{{stimulation + '%'}}"
+                bindchange="onStimulationChange"
+            ></diy-slider>
+
+            <diy-slider
+                label="{{copy.depth}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{depth}}"
+                icon-left="/icon/锁.svg"
+                icon-right="/icon/开锁.svg"
+                display-value="{{depth + '%'}}"
+                bindchange="onDepthChange"
+            ></diy-slider>
+
+            <diy-slider
+                label="{{copy.ambiguity}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{ambiguity}}"
+                icon-left="/icon/对话.svg"
+                icon-right="/icon/爱心.svg"
+                display-value="{{ambiguity + '%'}}"
+                bindchange="onAmbiguityChange"
+            ></diy-slider>
+        </scroll-view>
+
+        <view class="panel-footer-hint">
+            <text class="panel-hint-text">{{copy.closeHint}}</text>
+        </view>
+    </view>
+</view>

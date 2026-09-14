@@ -1,0 +1,100 @@
+<view class="detail-page">
+  <view class="loading" wx:if="{{loading}}">{{isAdmin ? '加载中...' : uiCopy.loading}}</view>
+
+  <block wx:elif="{{detail}}">
+    <view class="hero-card">
+      <view class="red-envelope-stage">
+        <image class="red-envelope-image" src="/icon/redpacket.svg" mode="aspectFit"></image>
+      </view>
+      <view class="amount-content">
+        <text class="amount-label">{{isAdmin ? '总金额' : uiCopy.detail.totalAmount}}</text>
+        <view class="amount-status-row">
+          <view class="amount-row">
+            <text class="amount-symbol">¥</text>
+            <text class="amount">{{detail.totalAmountText}}</text>
+          </view>
+          <view class="status-pill">{{detail.statusLabel || detail.statusText}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-grid">
+      <view class="info-item">
+        <text class="info-value">{{detail.prizeCount}}</text>
+        <text class="info-label">{{isAdmin ? '红包个数' : uiCopy.detail.packetCount}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-value">{{detail.participantCount}}</text>
+        <text class="info-label">{{isAdmin ? '已参与' : uiCopy.detail.joinedCount}}</text>
+      </view>
+    </view>
+
+    <view class="time-card">
+      <text class="time-label">{{isAdmin ? '开奖时间' : uiCopy.detail.drawTime}}</text>
+      <text class="time-value">{{detail.openAtText}}</text>
+    </view>
+
+    <view class="join-section" wx:if="{{detail.status === 'scheduled'}}">
+      <view class="join-button-wrap" wx:if="{{!detail.isParticipant}}">
+        <view class="join-ripple ring-one"></view>
+        <view class="join-ripple ring-two"></view>
+        <button class="join-button" bindtap="joinLottery" loading="{{joining}}" disabled="{{joining}}">{{isAdmin ? (joining ? '参与中' : '点击参与') : (joining ? uiCopy.detail.joiningButton : uiCopy.detail.joinButton)}}</button>
+      </view>
+      <view class="joined-card" wx:else>
+        <text class="joined-title">{{isAdmin ? '已参与' : uiCopy.detail.joinedTitle}}</text>
+        <view class="lucky-line" wx:if="{{detail.luckyCode}}">
+          <text class="lucky-label">{{isAdmin ? '你的幸运数字：' : uiCopy.detail.luckyLabel}}</text>
+          <text class="lucky-code">{{detail.luckyCode}}</text>
+        </view>
+        <text class="joined-sub">{{isAdmin ? '开奖后回到这里查看结果' : uiCopy.detail.joinedSub}}</text>
+      </view>
+    </view>
+
+    <view class="result-card" wx:elif="{{detail.status === 'drawn'}}">
+      <block wx:if="{{detail.isParticipant}}">
+        <block wx:if="{{detail.isWinner}}">
+          <view class="result-badge winner">{{isAdmin ? '中奖啦' : uiCopy.detail.winnerBadge}}</view>
+          <text class="result-title">{{isAdmin ? '你抽中了 ¥' : ''}}{{isAdmin ? detail.prizeAmountText : detail.winnerTitleText}}</text>
+          <view class="lucky-line result-lucky-line" wx:if="{{detail.luckyCode}}">
+            <text class="lucky-label">{{isAdmin ? '你的幸运数字：' : uiCopy.detail.luckyLabel}}</text>
+            <text class="lucky-code">{{detail.luckyCode}}</text>
+          </view>
+          <text class="result-desc">{{isAdmin ? '请添加下面的微信进行兑奖' : uiCopy.detail.redeemDesc}}</text>
+          <view class="wechat-copy" bindlongpress="copyRedeemWechat" bindtap="copyRedeemWechat">tututu970414</view>
+          <text class="copy-hint">{{isAdmin ? '长按微信号可复制' : uiCopy.detail.copyHint}}</text>
+        </block>
+        <block wx:else>
+          <view class="result-badge missed">{{isAdmin ? '未中奖' : uiCopy.detail.missedBadge}}</view>
+          <text class="result-title">{{isAdmin ? '这次没有抽中' : uiCopy.detail.missedTitle}}</text>
+          <text class="result-desc">{{isAdmin ? '下次红包局继续冲' : uiCopy.detail.missedDesc}}</text>
+        </block>
+      </block>
+      <block wx:else>
+        <view class="result-badge missed">{{isAdmin ? '已开奖' : uiCopy.detail.drawnBadge}}</view>
+        <text class="result-title">{{isAdmin ? '本次抽奖已经开奖' : uiCopy.detail.drawnTitle}}</text>
+        <text class="result-desc">{{isAdmin ? '你没有参与本次抽奖' : uiCopy.detail.drawnDesc}}</text>
+      </block>
+    </view>
+
+    <view class="result-card drawing-card" wx:else>
+      <view class="result-badge drawing">{{isAdmin ? '开奖中' : uiCopy.detail.drawingBadge}}</view>
+      <text class="result-title">{{isAdmin ? '正在开奖' : uiCopy.detail.drawingTitle}}</text>
+      <text class="result-desc">{{isAdmin ? '稍等片刻后刷新页面' : uiCopy.detail.drawingDesc}}</text>
+      <view class="refresh-button" bindtap="loadDetail">{{isAdmin ? '刷新结果' : uiCopy.detail.refreshResult}}</view>
+    </view>
+
+    <view class="admin-winners-card" wx:if="{{detail.status === 'drawn' && detail.adminWinners && detail.adminWinners.length}}">
+      <view class="admin-winners-title">中奖幸运数字</view>
+      <view class="admin-winner-row" wx:for="{{detail.adminWinners}}" wx:key="id">
+        <text class="winner-rank">#{{item.rank}}</text>
+        <text class="winner-lucky-code">{{item.luckyCodeText}}</text>
+        <text class="winner-prize">¥{{item.prizeAmountText}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="error-card" wx:else>
+    <text class="error-title">{{isAdmin ? '抽奖不存在' : uiCopy.detail.errorTitle}}</text>
+    <text class="error-sub">{{isAdmin ? '请确认链接是否正确' : uiCopy.detail.errorSub}}</text>
+  </view>
+</view>

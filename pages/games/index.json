@@ -1,0 +1,10 @@
+{
+    "usingComponents": {
+        "drinking-game": "/components/drinking-game/index",
+        "games-diy-options": "/components/games-diy-options/index",
+        "auth-modal": "/components/auth-modal/index"
+    },
+    "navigationBarTitleText": "游戏大厅",
+    "navigationStyle": "custom",
+    "disableScroll": true
+}

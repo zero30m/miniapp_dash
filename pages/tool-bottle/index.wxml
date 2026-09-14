@@ -1,0 +1,58 @@
+<view class="game-page {{showResult ? 'blurred' : ''}}">
+  <view class="page-glow"></view>
+  <view class="page-glow secondary"></view>
+
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <view class="bottle-stage">
+    <view
+      class="bottle-spinner {{isSpinning ? 'spinning' : 'ready'}}"
+      style="transform: rotate({{bottleRotation}}deg);"
+      catchtap="onBottleTap"
+    >
+      <image
+        class="bottle-image"
+        src="{{bottleImage}}"
+        mode="aspectFit"
+        lazy-load="{{false}}"
+      />
+    </view>
+  </view>
+
+  <view class="game-footer">
+    <view class="spin-hint {{isSpinning ? 'hidden' : ''}}">{{uiCopy.tapHint}}</view>
+  </view>
+</view>
+
+<view class="result-overlay {{showResult ? 'visible' : ''}}" catchtap="onNextRound">
+  <view class="result-container">
+    <view class="result-bottle-wrapper">
+      <image
+        class="result-bottle-image"
+        src="{{bottleImage}}"
+        mode="aspectFit"
+        style="transform: rotate({{resultRotation}}deg);"
+      />
+    </view>
+
+    <view class="result-text">
+      <text class="result-emoji">🫵</text>
+    </view>
+    <view class="result-text">
+      <text class="result-title">{{uiCopy.resultTitle}}</text>
+    </view>
+
+    <view class="result-drink-hint">{{uiCopy.resultDrinkHint}}</view>
+    <view class="result-hint">{{uiCopy.resultHint}}</view>
+  </view>
+
+  <view class="particle p1"></view>
+  <view class="particle p2"></view>
+  <view class="particle p3"></view>
+  <view class="particle p4"></view>
+  <view class="particle p5"></view>
+  <view class="particle p6"></view>
+</view>

@@ -1,0 +1,161 @@
+/**
+ * 卡牌滑动交互 - 健壮版
+ * 
+ * 设计原则：
+ * 1. 简单可靠的状态管理
+ * 2. 每次触摸都重新获取当前卡牌
+ * 3. 使用 hasTriggeredSwipe 防止重复触发
+ */
+
+var startX = 0;
+var startY = 0;
+var moveX = 0;
+var isDragging = false;
+var hasTriggeredSwipe = false;  // 本次触摸是否已触发滑动
+
+var THRESHOLD = 50;  // 滑动阈值
+
+function touchStart(event, ownerInstance) {
+  var touch = event.touches[0] || event.changedTouches[0];
+  if (!touch) return;
+  
+  startX = touch.clientX;
+  startY = touch.clientY;
+  moveX = 0;
+  isDragging = true;
+  hasTriggeredSwipe = false;
+  
+  // 获取当前激活的卡牌并准备拖动
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  if (currentCard) {
+    currentCard.setStyle({
+      'transition': 'none'
+    });
+  }
+}
+
+function touchMove(event, ownerInstance) {
+  if (!isDragging || hasTriggeredSwipe) return;
+  
+  var touch = event.touches[0] || event.changedTouches[0];
+  if (!touch) return;
+  
+  var deltaX = touch.clientX - startX;
+  var deltaY = touch.clientY - startY;
+  
+  // 检测下滑手势触发洗牌（向下滑动超过80px，且垂直方向为主）
+  if (deltaY > 80 && deltaY > Math.abs(deltaX) * 2) {
+    isDragging = false;
+    hasTriggeredSwipe = true;
+    // 触发洗牌
+    ownerInstance.callMethod('onShuffle', {});
+    return;
+  }
+  
+  // 首次水平移动之前，如果是明显的垂直滑动，取消本次拖动（但不触发洗牌）
+  // 注意：如果是下滑但还没到80px，继续等待
+  if (moveX === 0 && deltaY < 0 && Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+    // 上滑，取消拖动
+    isDragging = false;
+    return;
+  }
+  
+  moveX = deltaX;
+  
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  if (!currentCard) return;
+  
+  // 计算旋转角度（限制范围）
+  var rotation = moveX * 0.04;
+  if (rotation > 12) rotation = 12;
+  if (rotation < -12) rotation = -12;
+  
+  // 计算透明度
+  var opacity = 1 - Math.abs(moveX) / 400;
+  if (opacity < 0.5) opacity = 0.5;
+  
+  currentCard.setStyle({
+    'transform': 'translate3d(' + moveX + 'px, 0, 0) rotate(' + rotation + 'deg)',
+    'opacity': '' + opacity,
+    'transition': 'none'
+  });
+}
+
+function touchEnd(event, ownerInstance) {
+  if (!isDragging) return;
+  isDragging = false;
+  
+  // 如果本次触摸已触发滑动，跳过
+  if (hasTriggeredSwipe) {
+    moveX = 0;
+    return;
+  }
+  
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  var absMove = Math.abs(moveX);
+  
+  // 检查是否满足滑动条件
+  if (absMove > THRESHOLD && currentCard) {
+    // 标记已触发，防止重复
+    hasTriggeredSwipe = true;
+    
+    var endX = moveX > 0 ? 800 : -800;
+    var rotation = moveX > 0 ? 25 : -25;
+    var direction = moveX > 0 ? 'right' : 'left';
+    
+    // 1. 当前卡牌飞出动画
+    currentCard.setStyle({
+      'transition': 'transform 0.25s ease-out, opacity 0.25s ease-out',
+      'transform': 'translate3d(' + endX + 'px, 0, 0) rotate(' + rotation + 'deg)',
+      'opacity': '0'
+    });
+
+    // 2. 下一张卡牌升上来
+    var next1 = ownerInstance.selectComponent('.card-container.next1');
+    var next2 = ownerInstance.selectComponent('.card-container.next2');
+    
+    if (next1) {
+      next1.setStyle({
+        'transition': 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        'transform': 'scale(1) translateY(0) translateZ(0) rotate(0deg)',
+        'opacity': '1',
+        'z-index': '10'
+      });
+    }
+    
+    if (next2) {
+      next2.setStyle({
+        'transition': 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)',
+        'transform': 'scale(0.95) translateY(30rpx) translateZ(-50px) rotate(4deg)',
+        'opacity': '0.7',
+        'z-index': '9'
+      });
+    }
+    
+    // 3. 通知 JS 层
+    ownerInstance.callMethod('onSwipe', { direction: direction });
+    
+  } else if (currentCard && absMove > 0) {
+    // 回弹动画
+    currentCard.setStyle({
+      'transition': 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease',
+      'transform': 'translate3d(0, 0, 0) rotate(0deg)',
+      'opacity': '1'
+    });
+  }
+  
+  moveX = 0;
+}
+
+function onPropChange(newValue, oldValue, ownerInstance, instance) {
+  // JS 层数据更新后的回调
+  // 重置触发标记，允许下一次滑动
+  hasTriggeredSwipe = false;
+}
+
+module.exports = {
+  touchStart: touchStart,
+  touchMove: touchMove,
+  touchEnd: touchEnd,
+  onPropChange: onPropChange
+};

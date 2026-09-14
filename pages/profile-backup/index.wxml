@@ -1,0 +1,13 @@
+<view class="container {{animationClass}}">
+  <view class="feed-list">
+    <block wx:for="{{products}}" wx:key="id">
+      <view class="store-card-wrapper">
+        <store-product 
+          appid="{{storeAppId}}" 
+          product-id="{{item.id}}" 
+          custom-style="{{customStyle}}"
+        ></store-product>
+      </view>
+    </block>
+  </view>
+</view>

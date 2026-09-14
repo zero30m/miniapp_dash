@@ -1,0 +1,126 @@
+<view class="drinking-game-root theme-{{theme}}">
+  <!-- Grid Background -->
+  <view class="grid-bg"></view>
+  <view class="vignette"></view>
+
+  <!-- Header Removed -->
+
+  <wxs module="touch" src="./touch.wxs"></wxs>
+
+  <!-- Game Area -->
+  <view class="game-area">
+    <view class="stage-shell" style="padding-bottom: {{stageBottomReserve}}px;">
+      <view class="stack-stage" style="width: {{stageWidthPx}}px; height: {{stageHeightPx}}px; transform: translate(-50%, {{stageOffsetY}}px) scale({{stageScale}});">
+        <view class="card-frame">
+          <view class="side-hint left">
+            <view class="hint-icon">
+              <view class="arrow-shape left"></view>
+            </view>
+            <text class="hint-text">{{uiCopy.last}}</text>
+          </view>
+
+          <view class="side-hint right">
+            <text class="hint-text">{{uiCopy.next}}</text>
+            <view class="hint-icon">
+              <view class="arrow-shape right"></view>
+            </view>
+          </view>
+
+        <!-- 【方案B】添加切换动画类 -->
+          <view class="card-stack {{switchingClass}} {{diyFlying ? 'diy-fly-in' : ''}}" 
+                bindtouchstart="{{touch.touchStart}}" 
+                catchtouchmove="{{touch.touchMove}}" 
+                bindtouchend="{{touch.touchEnd}}" 
+                bindtouchcancel="{{touch.touchEnd}}"
+                deckLength="{{deckLength}}"
+                swipeTrigger="{{swipeTrigger}}"
+                change:swipeTrigger="{{touch.onPropChange}}">
+            <block wx:for="{{displayCards}}" wx:key="uniqueId">
+              <view class="card-container {{item.className}} {{item.color || ''}} {{(theme === 'zhexuejia' || (theme === 'diy' && item.sourceTheme === 'zhexuejia')) && item.isFlipped ? 'flipped' : ''}}">
+                <block wx:if="{{theme === 'zhexuejia' || (theme === 'diy' && item.sourceTheme === 'zhexuejia')}}">
+                  <view class="card-flipper {{item.isFlipped ? 'flipped' : ''}}">
+                    <view class="card-body card-front">
+                      <view class="card-title {{item.name.length > 20 ? 'long-title' : (item.name.length > 12 ? 'medium-title' : '')}}">{{item.name}}</view>
+                      <view class="card-line"></view>
+                      <view class="card-desc">{{item.description}}</view>
+                      <view class="card-intro" wx:if="{{item.intro}}">
+                        <text class="card-intro-text">{{item.intro}}</text>
+                      </view>
+                      <view class="card-subtitle" wx:if="{{item.subtitle}}">
+                        <text class="card-subtitle-text">{{item.subtitle}}</text>
+                      </view>
+                      <view class="flip-hint">
+                        <text class="flip-hint-text">{{uiCopy.flipFront}}</text>
+                      </view>
+                    </view>
+                    <view class="card-body card-back">
+                      <view class="philosopher-name">{{item.philosopherName}}</view>
+                      <view class="card-line"></view>
+                      <view class="philosopher-intro">{{item.philosopherIntro}}</view>
+                      <view class="card-type" wx:if="{{theme !== 'diy' && item.typeLabel}}">{{item.typeLabel}}</view>
+                      <view class="card-type diy-source" wx:if="{{theme === 'diy' && item.sourceLabel}}" style="background: {{item.sourceColor}}; color: {{item.sourceTextColor}}">{{item.sourceLabel}}</view>
+                      <view class="flip-hint">
+                        <text class="flip-hint-text">{{uiCopy.flipBack}}</text>
+                      </view>
+                    </view>
+                  </view>
+                </block>
+
+                <block wx:else>
+                  <view class="card-body">
+                    <view class="card-corner tl"></view>
+                    <view class="card-corner tr"></view>
+                    <view class="card-corner bl"></view>
+                    <view class="card-corner br"></view>
+
+                    <view class="card-title" wx:if="{{theme !== 'dare' && theme !== 'coffee' && item.name}}">{{item.name}}</view>
+                    <view class="card-line" wx:if="{{theme !== 'dare' && theme !== 'coffee' && item.name}}"></view>
+                    <view class="card-desc {{(theme === 'dare' || theme === 'coffee' || (theme === 'we' && item.isTruth)) ? 'dare-only' : ''}}">{{item.description}}</view>
+
+                    <view class="card-english" wx:if="{{item.showEnglishDesc}}">
+                      <text class="card-english-text">{{item.englishDesc}}</text>
+                    </view>
+
+                    <view class="card-subtitle" wx:if="{{item.subtitle}}">
+                      <text class="card-subtitle-text">{{item.subtitle}}</text>
+                    </view>
+
+                    <view class="card-type" wx:if="{{theme !== 'diy' && item.typeLabel}}">{{item.typeLabel}}</view>
+                    <view class="card-type diy-source" wx:if="{{theme === 'diy' && item.sourceLabel}}" style="background: {{item.sourceColor}}; color: {{item.sourceTextColor}}">{{item.sourceLabel}}</view>
+                  </view>
+                </block>
+              </view>
+            </block>
+            
+            <view class="deck-badge">
+              <text class="deck-count">{{deckLength}}</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="side-hint bottom {{theme}}" wx:if="{{enableShuffle && displayCards.length > 0}}">
+          <view class="hint-icon">
+            <view class="arrow-shape down"></view>
+          </view>
+          <text class="hint-text">{{uiCopy.shuffle}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 洗牌动画遮罩层 -->
+  <view class="shuffle-overlay {{isShuffling ? 'active' : ''}}">
+    <!-- 虚拟卡牌 - 用于动画（颜色跟随主题） -->
+    <view class="shuffle-card sc1 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    <view class="shuffle-card sc2 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    <view class="shuffle-card sc3 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    <view class="shuffle-card sc4 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    <view class="shuffle-card sc5 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    <view class="shuffle-card sc6 phase-{{shuffleAnimPhase}} theme-{{theme}}"></view>
+    
+    <!-- 洗牌文案 -->
+    <view class="shuffle-text {{shuffleAnimPhase >= 1 ? 'show' : ''}}">
+      <text>{{uiCopy.shuffling}}</text>
+    </view>
+  </view>
+</view>

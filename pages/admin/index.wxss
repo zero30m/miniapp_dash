@@ -1,0 +1,659 @@
+/* 基础容器 */
+.admin-container {
+  min-height: 100vh;
+  background: #050505;
+  padding: 20rpx;
+  padding-bottom: 200rpx;
+  position: relative;
+  z-index: 1;
+}
+
+/* 确保没有遮罩层 */
+page {
+  background: #050505;
+}
+
+
+/* Tab切换头部 */
+.tab-header {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24rpx;
+  padding: 8rpx;
+  margin-bottom: 30rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  position: relative;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: rgba(57, 255, 20, 0.15);
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: #888;
+  font-weight: bold;
+}
+
+.tab-item.active .tab-text {
+  color: #39FF14;
+}
+
+.tab-indicator {
+  position: absolute;
+  bottom: 8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background: #39FF14;
+  border-radius: 2rpx;
+}
+
+/* 面板 */
+.panel {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 创建邀请码区域 */
+.create-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+/* 天数显示 */
+.days-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 30rpx;
+}
+
+.days-number {
+  font-size: 80rpx;
+  font-weight: 900;
+  color: #39FF14;
+  font-family: 'DIN Alternate', monospace;
+  text-shadow: 0 0 20rpx rgba(57, 255, 20, 0.5);
+}
+
+.days-label {
+  font-size: 32rpx;
+  color: #888;
+  margin-left: 10rpx;
+}
+
+/* 天数按钮组 */
+.days-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.day-btn {
+  flex: 1;
+  min-width: 120rpx;
+  padding: 20rpx 24rpx;
+  background: rgba(57, 255, 20, 0.1);
+  border: 1rpx solid rgba(57, 255, 20, 0.3);
+  border-radius: 16rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #39FF14;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.day-btn:active {
+  transform: scale(0.95);
+  background: rgba(57, 255, 20, 0.2);
+}
+
+.day-btn.reset {
+  background: rgba(255, 0, 85, 0.1);
+  border-color: rgba(255, 0, 85, 0.3);
+  color: #FF0055;
+}
+
+/* 创建按钮 */
+.create-btn {
+  width: 100% !important;
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.6) 0%, rgba(0, 200, 0, 0.6) 100%);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 900;
+  padding: 28rpx 0;
+  border-radius: 50rpx;
+  border: 1rpx solid rgba(57, 255, 20, 0.6);
+  box-shadow: 0 8rpx 32rpx rgba(57, 255, 20, 0.3);
+}
+
+.create-btn:active {
+  transform: scale(0.98);
+}
+
+/* 筛选器 */
+.filter-section {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.filter-btn {
+  padding: 16rpx 32rpx;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  color: #888;
+  transition: all 0.2s ease;
+}
+
+.filter-btn.active {
+  background: rgba(57, 255, 20, 0.15);
+  border-color: rgba(57, 255, 20, 0.3);
+  color: #39FF14;
+}
+
+/* 列表区域 */
+.list-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24rpx;
+  padding: 30rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+/* 邀请码项 */
+.code-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+  min-height: 140rpx;
+  box-sizing: border-box;
+}
+
+.code-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.code-text {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #fff;
+  font-family: 'DIN Alternate', monospace;
+  letter-spacing: 4rpx;
+}
+
+.code-tag {
+  margin-left: 20rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+.code-tag.unused {
+  background: rgba(57, 255, 20, 0.15);
+  color: #39FF14;
+}
+
+.code-tag.used {
+  background: rgba(255, 255, 255, 0.1);
+  color: #888;
+}
+
+.code-info {
+  display: flex;
+  gap: 20rpx;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.code-actions {
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: flex-end;
+  min-height: 0;
+}
+
+.delete-btn {
+  padding: 12rpx 24rpx;
+  background: rgba(255, 0, 85, 0.1);
+  border: 1rpx solid rgba(255, 0, 85, 0.3);
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #FF0055;
+}
+
+/* 会员统计看板 */
+.stats-section {
+  margin-bottom: 30rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  border-radius: 20rpx;
+  padding: 24rpx 16rpx;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.stat-card:active {
+  transform: scale(0.98);
+}
+
+.stat-card.active {
+  border-width: 2rpx;
+}
+
+/* 总数 - 绿色 */
+.stat-card.stat-total {
+  grid-column: span 3;
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.08) 0%, rgba(0, 200, 0, 0.04) 100%);
+  border-color: rgba(57, 255, 20, 0.2);
+  padding: 30rpx;
+}
+
+.stat-card.stat-total.active {
+  border-color: rgba(57, 255, 20, 0.6);
+  box-shadow: 0 0 20rpx rgba(57, 255, 20, 0.2);
+}
+
+.stat-card.stat-total .stat-number {
+  font-size: 64rpx;
+  color: #39FF14;
+}
+
+/* 周卡 - 青色 */
+.stat-card.stat-week {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.08) 0%, rgba(0, 200, 200, 0.04) 100%);
+  border-color: rgba(0, 255, 255, 0.2);
+}
+
+.stat-card.stat-week.active {
+  border-color: rgba(0, 255, 255, 0.6);
+  box-shadow: 0 0 15rpx rgba(0, 255, 255, 0.2);
+}
+
+.stat-card.stat-week .stat-number {
+  color: #00FFFF;
+}
+
+/* 月卡 - 蓝色 */
+.stat-card.stat-month {
+  background: linear-gradient(135deg, rgba(0, 136, 255, 0.08) 0%, rgba(0, 100, 200, 0.04) 100%);
+  border-color: rgba(0, 136, 255, 0.2);
+}
+
+.stat-card.stat-month.active {
+  border-color: rgba(0, 136, 255, 0.6);
+  box-shadow: 0 0 15rpx rgba(0, 136, 255, 0.2);
+}
+
+.stat-card.stat-month .stat-number {
+  color: #0088FF;
+}
+
+/* 年卡 - 紫色 */
+.stat-card.stat-year {
+  background: linear-gradient(135deg, rgba(170, 0, 255, 0.08) 0%, rgba(120, 0, 180, 0.04) 100%);
+  border-color: rgba(170, 0, 255, 0.2);
+}
+
+.stat-card.stat-year.active {
+  border-color: rgba(170, 0, 255, 0.6);
+  box-shadow: 0 0 15rpx rgba(170, 0, 255, 0.2);
+}
+
+.stat-card.stat-year .stat-number {
+  color: #AA00FF;
+}
+
+/* 永久卡 - 金色 */
+.stat-card.stat-permanent {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 140, 0, 0.05) 100%);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.stat-card.stat-permanent.active {
+  border-color: rgba(255, 215, 0, 0.7);
+  box-shadow: 0 0 20rpx rgba(255, 215, 0, 0.3);
+}
+
+.stat-card.stat-permanent .stat-number {
+  color: #FFD700;
+}
+
+/* 免费用户 - 灰绿色 */
+.stat-card.stat-free {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(100, 180, 100, 0.1) 0%, rgba(80, 150, 80, 0.05) 100%);
+  border-color: rgba(100, 180, 100, 0.3);
+}
+
+.stat-card.stat-free.active {
+  border-color: rgba(100, 180, 100, 0.7);
+  box-shadow: 0 0 15rpx rgba(100, 180, 100, 0.3);
+}
+
+.stat-card.stat-free .stat-number {
+  color: #7CB87C;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: 900;
+  color: #39FF14;
+  font-family: 'DIN Alternate', monospace;
+  display: block;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #888;
+  margin-top: 6rpx;
+  display: block;
+
+}
+
+/* 会员项 */
+.member-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid rgba(255, 255, 255, 0.08);
+}
+
+.member-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.member-id {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  font-family: monospace;
+}
+
+.member-tag {
+  margin-left: 16rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+/* 周卡 - 青色 */
+.tag-week {
+  background: rgba(0, 255, 255, 0.15);
+  color: #00FFFF;
+  border: 1rpx solid rgba(0, 255, 255, 0.3);
+}
+
+/* 月卡 - 蓝色 */
+.tag-month {
+  background: rgba(0, 136, 255, 0.15);
+  color: #0088FF;
+  border: 1rpx solid rgba(0, 136, 255, 0.3);
+}
+
+/* 年卡 - 紫色 */
+.tag-year {
+  background: rgba(170, 0, 255, 0.15);
+  color: #AA00FF;
+  border: 1rpx solid rgba(170, 0, 255, 0.3);
+}
+
+/* 永久卡 - 金色 */
+.tag-permanent {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.2));
+  color: #FFD700;
+  border: 1rpx solid rgba(255, 215, 0, 0.3);
+}
+
+/* 已过期 - 红色 */
+.tag-expired {
+  background: rgba(255, 0, 85, 0.15);
+  color: #FF0055;
+  border: 1rpx solid rgba(255, 0, 85, 0.3);
+}
+
+/* 免费用户 - 灰绿色 */
+.tag-free {
+  background: rgba(100, 180, 100, 0.15);
+  color: #7CB87C;
+  border: 1rpx solid rgba(100, 180, 100, 0.3);
+}
+
+/* 筛选提示 */
+.filter-hint {
+  font-size: 24rpx;
+  color: #39FF14;
+  font-weight: normal;
+}
+
+.admin-badge {
+  margin-left: 16rpx;
+  padding: 8rpx 16rpx;
+  background: rgba(0, 255, 255, 0.15);
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  color: #00FFFF;
+  font-weight: bold;
+}
+
+.member-info {
+  font-size: 22rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: #666;
+}
+
+/* 加载状态 */
+.loading-state {
+  text-align: center;
+  padding: 40rpx 0;
+}
+
+.loading-text {
+  font-size: 24rpx;
+  color: #888;
+}
+
+/* 加载更多 */
+.load-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #39FF14;
+  font-size: 26rpx;
+}
+
+/* 底部安全区 */
+.safe-bottom {
+  height: calc(env(safe-area-inset-bottom) + 160rpx);
+}
+
+/* ==================== 自定义弹窗样式 ==================== */
+.custom-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+
+.custom-modal {
+  width: 560rpx;
+  background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+  border: 1rpx solid rgba(255, 255, 255, 0.15);
+  border-radius: 32rpx;
+  padding: 50rpx 40rpx;
+  text-align: center;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.5), 0 0 40rpx rgba(57, 255, 20, 0.1);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-icon {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30rpx;
+  font-size: 48rpx;
+  font-weight: bold;
+}
+
+.modal-icon.success {
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.2), rgba(0, 200, 0, 0.1));
+  border: 2rpx solid rgba(57, 255, 20, 0.5);
+  color: #39FF14;
+}
+
+.modal-icon.warning {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 0.2), rgba(255, 100, 100, 0.1));
+  border: 2rpx solid rgba(255, 0, 85, 0.5);
+  color: #FF0055;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 20rpx;
+}
+
+.modal-code {
+  font-size: 56rpx;
+  font-weight: 900;
+  color: #39FF14;
+  font-family: 'DIN Alternate', monospace;
+  letter-spacing: 8rpx;
+  margin: 30rpx 0;
+  text-shadow: 0 0 20rpx rgba(57, 255, 20, 0.5);
+}
+
+.modal-days {
+  font-size: 28rpx;
+  color: #888;
+  margin-bottom: 30rpx;
+}
+
+.modal-content {
+  font-size: 28rpx;
+  color: #888;
+  line-height: 1.6;
+  margin-bottom: 40rpx;
+}
+
+.modal-btn-row {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 20rpx;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 24rpx 0;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.modal-btn.primary {
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.6), rgba(0, 200, 0, 0.4));
+  border: 1rpx solid rgba(57, 255, 20, 0.6);
+  color: #fff;
+}
+
+.modal-btn.primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.modal-btn.cancel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  color: #888;
+}
+
+.modal-btn.cancel:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.modal-btn.danger {
+  background: linear-gradient(135deg, rgba(255, 0, 85, 0.6), rgba(200, 0, 50, 0.4));
+  border: 1rpx solid rgba(255, 0, 85, 0.6);
+  color: #fff;
+}
+
+.modal-btn.danger:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}

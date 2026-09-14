@@ -1,0 +1,7 @@
+{
+    "usingComponents": {
+        "drinking-game": "../../components/drinking-game/index"
+    },
+    "navigationBarTitleText": "满分激光枪",
+    "disableScroll": true
+}

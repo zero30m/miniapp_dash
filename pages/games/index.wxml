@@ -1,0 +1,158 @@
+<wxs module="touch" src="./touch.wxs"></wxs>
+
+<view class="container {{animationClass}} {{isExpanded ? 'expanded-mode' : ''}}"
+      bindtouchstart="{{touch.touchStart}}"
+      bindtouchmove="{{touch.touchMove}}"
+      bindtouchend="{{touch.touchEnd}}"
+      data-is-expanded="{{isExpanded}}"
+      isExpanded="{{isExpanded}}"
+      change:isExpanded="{{touch.onExpandChange}}"
+      isSwitching="{{isSwitching}}"
+      change:isSwitching="{{touch.onSwitchChange}}">
+  
+  <!-- ==================== 初始状态：横向药丸 ==================== -->
+  <view class="pill-header" style="padding-top: {{headerPaddingTop}}px;" wx:if="{{!isExpanded}}">
+    <!-- 下拉提示 -->
+    <view class="pull-hint-mini {{activeGame}}">
+      <text class="hint-text">{{uiCopy.pullToSwitch}}</text>
+      <text class="hint-arrow">↓</text>
+    </view>
+    
+    <!-- 当前游戏药丸 -->
+    <view class="current-pill">
+      <view class="pill-glow {{activeGame}}"></view>
+      <view class="pill-content">
+        <view class="pill-dot {{activeGame}}"></view>
+        <text class="pill-name">{{gameNames[activeGame]}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 展开状态：游戏选择器 ==================== -->
+  <view class="selector-overlay {{isExpanded ? 'visible' : ''}} {{isClosing ? 'closing' : ''}} {{viewMode === 'detail' ? 'detail-layout' : 'simple-layout'}}" 
+        bindtouchstart="onOverlayTouch"
+        bindtouchmove="onOverlaySwipe"
+        bindtouchend="onOverlayTouchEnd"
+        bindtap="onOverlayTap">
+    <view class="selector-container" catchtap="preventBubble">
+      <!-- 标题 -->
+      <view class="selector-title">{{uiCopy.selectorTitle}}</view>
+      
+      <!-- 【新增】单个切换按钮 -->
+      <view class="view-toggle-btn" bindtap="toggleViewMode">
+        <text class="toggle-text">{{viewMode === 'simple' ? uiCopy.detailView : uiCopy.simpleView}}</text>
+        <text class="toggle-icon">⇄</text>
+      </view>
+      
+      <!-- 游戏列表 -->
+      <scroll-view 
+        scroll-x="{{viewMode === 'simple'}}" 
+        scroll-y="{{viewMode === 'detail'}}"
+        class="game-scroll {{viewMode === 'detail' ? 'detail-mode' : ''}}" 
+        enhanced 
+        show-scrollbar="{{false}}" 
+        enable-flex="{{true}}">
+        
+        <view class="game-list {{viewMode === 'detail' ? 'vertical-layout' : ''}}">
+          <block wx:for="{{gameList}}" wx:key="*this">
+            <view class="game-card {{activeGame === item ? 'active' : ''}} {{item}} {{viewMode === 'detail' ? 'expanded' : ''}}" 
+                  catchtap="selectGame" 
+                  data-game="{{item}}"
+                  style="{{viewMode === 'detail' ? 'transition-delay:' + index * 0.03 + 's' : ''}}">
+              
+              <!-- 胶囊 -->
+              <view class="card-capsule {{viewMode === 'detail' ? 'horizontal' : ''}}">
+                <view class="capsule-inner {{item}}"></view>
+              </view>
+
+              <!-- 「新」斜向胶带标记 -->
+              <view class="new-tape" wx:if="{{recentGames[item]}}">新</view>
+              
+              <!-- 简约模式文字 -->
+              <view class="card-text {{viewMode === 'detail' ? 'hidden' : ''}}">
+                <text class="card-name">{{gameInfo[item].name}}</text>
+                <text class="card-desc">{{gameInfo[item].desc}}</text>
+                <view class="play-count-tag" wx:if="{{gameStats[item].displayPlays && viewMode === 'simple'}}">
+                  <text class="tag-icon">🔥</text>
+                  <text class="tag-num">{{gameStats[item].displayPlays}}</text>
+                </view>
+              </view>
+              
+              <!-- 详情模式信息区 -->
+              <view class="detail-info {{viewMode === 'detail' ? 'visible' : ''}}">
+                <view class="detail-header">
+                  <text class="detail-name">{{gameInfo[item].name}}</text>
+                  <text class="detail-desc">{{gameInfo[item].desc}}</text>
+                </view>
+                <text class="detail-intro">{{gameInfo[item].intro}}</text>
+                <view class="detail-footer">
+                  <view class="detail-tags">
+                    <block wx:for="{{gameInfo[item].tags}}" wx:key="*this" wx:for-item="tag">
+                      <text class="detail-tag">{{tag}}</text>
+                    </block>
+                  </view>
+                  <view class="play-count-tag" wx:if="{{gameStats[item].displayPlays}}">
+                    <text class="tag-icon">🔥</text>
+                    <text class="tag-num">{{gameStats[item].displayPlays}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
+      </scroll-view>
+      
+      <!-- 滑动提示 -->
+      <view class="scroll-hint">
+        <text class="scroll-arrow left" wx:if="{{viewMode === 'simple'}}">‹</text>
+        <text class="scroll-text">{{viewMode === 'simple' ? uiCopy.simpleScrollHint : uiCopy.detailScrollHint}}</text>
+        <text class="scroll-arrow right" wx:if="{{viewMode === 'simple'}}">›</text>
+      </view>
+      
+      <!-- 关闭提示（详情视图下隐藏，因为会被 TabBar 挡住） -->
+      <view class="close-hint" wx:if="{{viewMode === 'simple'}}">
+        <text class="close-hint-text">{{uiCopy.closeHint}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ==================== 游戏容器 ==================== -->
+  <view class="game-container" style="padding-top: {{gameAreaPaddingTop}}px;">
+    <!-- 卡牌游戏组件（得吃大逃杀 / 二本吻痕 / 喝酒之弈 / 酒桌大冒险 / 朋友真心话） -->
+    <!-- 【修复-思路2】使用 hidden 替代 wx:if，保留组件状态避免后台恢复时销毁重建 -->
+    <drinking-game 
+      class="game-stage-host"
+      id="drinkingGame"
+      hidden="{{!(activeGame === 'drinking' || activeGame === 'kiss' || activeGame === 'chess' || activeGame === 'dare' || activeGame === 'we' || activeGame === 'zhexuejia' || activeGame === 'taiqiu' || activeGame === 'couple_dare' || activeGame === 'couple_talk' || activeGame === 'coffee' || activeGame === 'diy')}}"
+      gameType="{{activeGame}}"
+      custom-cards="{{customCards}}" />
+
+    <!-- 更多游戏 -->
+    <view wx:if="{{activeGame === 'more'}}" class="placeholder-game">
+      <view class="placeholder-content">
+        <text class="placeholder-icon">🚀</text>
+        <text class="placeholder-title">{{uiCopy.placeholderTitle}}</text>
+        <text class="placeholder-desc">{{uiCopy.placeholderDesc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- DIY 独立设置入口；牌组直接展示在当前真心话大冒险页面内 -->
+  <games-diy-options
+    wx:if="{{activeGame === 'diy' && !isExpanded}}"
+    fab-top="{{diyFabTop}}"
+    players="{{players}}"
+    alcohol="{{alcohol}}"
+    stimulation="{{stimulation}}"
+    depth="{{depth}}"
+    ambiguity="{{ambiguity}}"
+    bindparamsChange="onDiyParamsChange"
+    bindpanelchange="onDiyPanelChange"
+  ></games-diy-options>
+</view>
+
+<!-- 【新增】登录弹窗（从首页迁移） -->
+<auth-modal 
+    show="{{configLoaded && requireLogin && !isLoggedIn}}" 
+    welcome-image="{{welcomeImage}}" 
+    bind:loginSuccess="onLoginSuccess" />

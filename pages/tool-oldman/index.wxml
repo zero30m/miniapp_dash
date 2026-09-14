@@ -1,0 +1,90 @@
+<!--
+  点老头游戏
+  4x4 网格的老头，找出真正的那个
+-->
+<view class="game-page {{showResult ? 'blurred' : ''}}">
+  <!-- 背景光效 -->
+  <view class="page-glow"></view>
+  <view class="page-glow secondary"></view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <!-- 顶部信息（使用自适应定位，位于老头网格上方） -->
+  <view class="game-header" style="padding-top: {{navTop + 80}}px;">
+    <view class="game-title">{{uiCopy.title}}</view>
+    <view class="game-hint">{{hintText}}</view>
+    <view class="round-badge" wx:if="{{round > 0}}">{{uiCopy.roundPrefix}}{{round}}{{uiCopy.roundSuffix}}</view>
+  </view>
+
+  <!-- 4x4 老头网格（无边框卡片） -->
+  <view class="oldman-grid">
+    <view 
+      wx:for="{{oldmen}}" 
+      wx:key="id"
+      class="oldman-cell {{item.flyDirection}} {{item.isVisible ? '' : 'hidden'}} {{targetIndex === index && showResult ? 'target-glow' : ''}}"
+      data-index="{{index}}"
+      bindtap="onTapOldman"
+    >
+      <image 
+        class="oldman-img" 
+        src="{{images.normal}}" 
+        mode="aspectFit"
+        lazy-load="{{false}}"
+      />
+      <!-- 点击波纹效果 -->
+      <view class="tap-ripple"></view>
+    </view>
+
+  <!-- 底部提示 -->
+  <view class="game-footer">
+    <view class="remaining-info">
+      <text class="remaining-label">{{uiCopy.remainingPrefix}}</text>
+      <text class="remaining-count">{{remainingCount}}</text>
+      <text class="remaining-label">{{uiCopy.remainingSuffix}}</text>
+    </view>
+  </view>
+  </view>
+
+</view>
+
+<!-- 找到真老头的结果弹窗 -->
+<view class="result-overlay {{showResult ? 'visible' : ''}}" catchtap="onCloseResult">
+  <view class="result-container {{resultAnimating ? 'animating' : ''}}" catchtap="">
+    <!-- 愤怒老头图片 -->
+    <view class="angry-oldman-wrapper">
+      <image 
+        class="angry-oldman-img" 
+        src="{{images.angry}}" 
+        mode="aspectFit"
+      />
+      <!-- 光晕效果 -->
+      <view class="angry-glow"></view>
+    </view>
+    
+    <!-- 文案 -->
+    <view class="result-text">
+      <text class="result-emoji">🫵</text>
+    </view>
+    <view class="result-text">
+      <text class="result-title">{{uiCopy.resultTitle}}</text>
+    </view>
+    
+    <!-- 喝酒提示 -->
+    <view class="result-drink-hint">{{uiCopy.resultDrinkHint}}</view>
+    
+    <!-- 点击提示（任何人都可以开始下一轮） -->
+    <view class="result-hint">{{uiCopy.resultHint}}</view>
+  </view>
+  
+  <!-- 装饰粒子 -->
+  <view class="particle p1"></view>
+  <view class="particle p2"></view>
+  <view class="particle p3"></view>
+  <view class="particle p4"></view>
+  <view class="particle p5"></view>
+  <view class="particle p6"></view>
+</view>

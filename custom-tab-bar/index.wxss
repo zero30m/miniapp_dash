@@ -1,0 +1,84 @@
+
+.tab-bar {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 30rpx);
+  left: 30rpx;
+  right: 30rpx;
+  height: 120rpx;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding-bottom: 0;
+  padding-top: 0;
+  border-radius: 60rpx;
+  box-shadow: 0 10rpx 40rpx rgba(0, 0, 0, 0.2);
+  z-index: 9000; /* Lower than auth modal (10000) */
+  position: fixed; /* Ensure relative positioning context for children if needed, but fixed is already set */
+}
+
+.active-indicator {
+  position: absolute;
+  top: 15rpx;
+  bottom: 15rpx;
+  background: rgba(57, 255, 20, 0.15); /* Neon green tint */
+  border-radius: 40rpx;
+  backdrop-filter: blur(10px);
+  border: 1rpx solid rgba(57, 255, 20, 0.3);
+  box-shadow: 0 0 20rpx rgba(57, 255, 20, 0.2);
+  transition: left 0.3s ease-out; /* Smooth movement without bounce */
+  z-index: 0;
+}
+
+.tab-bar-border {
+  display: none; /* Hide border for floating style */
+}
+
+.tab-bar-item {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+  z-index: 2;
+  /* Ensure no line-height interference */
+  line-height: normal;
+}
+
+.tab-icon {
+  width: 48rpx;
+  height: 48rpx;
+  min-width: 48rpx;
+  min-height: 48rpx;
+  max-width: 48rpx;
+  max-height: 48rpx;
+  margin-bottom: 6rpx;
+  object-fit: contain;
+}
+
+.tab-text {
+  font-size: 20rpx;
+  font-weight: bold;
+  white-space: nowrap; /* Prevent wrapping */
+  line-height: 1; /* Ensure consistent height */
+}
+
+.tab-bar-blur {
+  filter: blur(10px);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+/* 完全隐藏 TabBar（用于开屏动画期间） */
+.tab-bar-hidden {
+  opacity: 0 !important;
+  pointer-events: none;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  visibility: hidden;
+}

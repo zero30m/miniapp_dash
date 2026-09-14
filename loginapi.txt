@@ -1,0 +1,813 @@
+小程序登录：
+调用 wx.login() 获取 临时登录凭证code ，并回传到开发者服务器。
+调用 auth.code2Session 接口，换取 用户唯一标识 OpenID 、 用户在微信开放平台账号下的唯一标识UnionID（若当前小程序已绑定到微信开放平台账号） 和 会话密钥 session_key。
+之后开发者服务器可以根据用户标识来生成自定义登录态，用于后续业务逻辑中前后端交互时识别用户身份。
+
+wx.login(Object object)
+以 Promise 风格 调用：不支持
+
+小程序插件：支持，需要小程序基础库版本不低于 2.3.1
+
+在小程序插件中使用时，需要在用户信息功能页中获得用户授权或满足一定条件后调用。否则将返回 fail。详见 用户信息功能页
+
+微信 Windows 版：支持
+
+微信 Mac 版：支持
+
+微信 鸿蒙 OS 版：支持
+
+相关文档: 小程序登录、UnionID 机制说明、接口调用频率规范
+
+功能描述
+调用接口获取登录凭证（code）。通过凭证进而换取用户登录态信息，包括用户在当前小程序的唯一标识（openid）、微信开放平台账号下的唯一标识（unionid，若当前小程序已绑定到微信开放平台账号）及本次登录的会话密钥（session_key）等。用户数据的加解密通讯需要依赖会话密钥完成。
+
+参数
+Object object
+属性	类型	默认值	必填	说明	最低版本
+timeout	number		否	超时时间，单位ms	1.9.90
+success	function		否	接口调用成功的回调函数	
+fail	function		否	接口调用失败的回调函数	
+complete	function		否	接口调用结束的回调函数（调用成功、失败都会执行）	
+object.success 回调函数
+参数
+Object res
+属性	类型	说明
+code	string	用户登录凭证（有效期五分钟）。开发者需要在开发者服务器后台调用 code2Session，使用 code 换取 openid、unionid、session_key 等信息
+object.fail 回调函数
+参数
+Object err
+属性	类型	说明	最低版本
+errMsg	String	错误信息	
+errno	Number	errno 错误码，错误码的详细说明参考 Errno错误码	2.24.0
+示例代码
+wx.login({
+  success (res) {
+    if (res.code) {
+      //发起网络请求
+      wx.request({
+        url: 'https://example.com/onLogin',
+        data: {
+          code: res.code
+        }
+      })
+    } else {
+      console.log('登录失败！' + res.errMsg)
+    }
+  }
+})
+
+小程序登录
+ 调试诊断
+
+接口应在服务器端调用，详细说明参见服务端API。
+
+接口说明
+接口英文名
+code2Session
+
+功能描述
+登录凭证校验。通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。更多使用方法详见小程序登录。
+
+调用方式
+HTTPS 调用
+
+GET https://api.weixin.qq.com/sns/jscode2session 
+
+请求参数
+属性	类型	必填	说明
+appid	string	是	小程序 appId
+secret	string	是	小程序 appSecret
+js_code	string	是	登录时获取的 code，可通过wx.login获取
+grant_type	string	是	授权类型，此处只需填写 authorization_code
+返回参数
+属性	类型	说明
+session_key	string	会话密钥
+unionid	string	用户在开放平台的唯一标识符，若当前小程序已绑定到微信开放平台帐号下会返回，详见 UnionID 机制说明。
+errmsg	string	错误信息，请求失败时返回
+openid	string	用户唯一标识
+errcode	int32	错误码，请求失败时返回
+调用示例
+示例说明: HTTPS请求
+
+请求数据示例
+
+GET https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code 
+
+返回数据示例
+
+{
+"openid":"xxxxxx",
+"session_key":"xxxxx",
+"unionid":"xxxxx",
+"errcode":0,
+"errmsg":"xxxxx"
+}
+ 
+
+错误码
+错误码	错误描述	解决方案
+40029	code 无效	js_code无效
+45011	api minute-quota reach limit  mustslower  retry next minute	API 调用太频繁，请稍候再试
+40226	code blocked	高风险等级用户，小程序登录拦截 。风险等级详见用户安全解方案
+-1	system error	系统繁忙，此时请开发者稍候再试
+
+开发指引 /基础能力 /云函数 /获取小程序用户信息
+获取小程序用户信息
+云开发的云函数的独特优势在于与微信登录鉴权的无缝整合。当小程序端调用云函数时，云函数的传入参数中会被注入小程序端用户的 openid，开发者无需校验 openid 的正确性，因为微信已经完成了这部分鉴权，开发者可以直接使用该 openid。与 openid 一起同时注入云函数的还有小程序的 appid。
+
+从小程序端调用云函数时，开发者可以在云函数内使用 wx-server-sdk 提供的 getWXContext 方法获取到每次调用的上下文（appid、openid 等），无需维护复杂的鉴权机制，即可获取天然可信任的用户登录态（openid）。可以写这么一个云函数进行测试：
+
+// index.js
+const cloud = require('wx-server-sdk')
+exports.main = async (event, context) => {
+  // 这里获取到的 openId、 appId 和 unionId 是可信的，注意 unionId 仅在满足 unionId 获取条件时返回
+  let { OPENID, APPID, UNIONID } = cloud.getWXContext()
+
+  return {
+    OPENID,
+    APPID,
+    UNIONID,
+  }
+}
+假设云函数命名为 test，本地调试/上传并部署该云函数后，可在小程序中测试调用：
+
+wx.cloud.callFunction({
+  name: 'test',
+  complete: res => {
+    console.log('callFunction test result: ', res)
+  }
+})
+会在调试器看到输出的 res 为如下结构的对象：
+
+{
+  "APPID": "xxx",
+  "OPENID": "yyy",
+  "UNIONID": "zzz", // 仅在满足 unionId 获取条件时返回
+}
+
+Cloud.getWXContext(): Object
+支持端：云函数
+
+在云函数中获取微信调用上下文
+
+返回值
+Object
+wxContext
+
+属性	类型	说明
+OPENID	string	小程序用户 openid，小程序端调用云函数时有
+APPID	string	小程序 AppID，小程序端调用云函数时有
+UNIONID	string	小程序用户 unionid，小程序端调用云函数，并且满足 unionid 获取条件时有
+FROM_OPENID	string	调用来源方小程序/公众号用户 openid，跨账号调用时有
+FROM_APPID	string	调用来源方小程序/公众号 AppID，跨账号调用时有
+FROM_UNIONID	string	调用来源方用户 unionid，跨账号调用时有，并且满足 unionid 获取条件时有
+ENV	string	云函数所在环境的 ID
+SOURCE	string	调用来源（云函数本次运行是被什么触发）
+CLIENTIP	string	小程序客户端 IPv4 地址
+CLIENTIPV6	string	小程序客户端 IPv6 地址
+OPEN_DATA_INFO	string	通过云函数获取开放数据时，可用此校验入参中的开放数据是否来自微信后台
+使用说明
+SOURCE 值跟随调用链条传递，会表示调用链路情况（用英文逗号分隔），比如小程序调用云函数 A，再在云函数 A 内调用云函数 B，则 A 获得的 SOURCE 为 wx_client， B 内获得的 SOURCE 为 wx_client,scf（微信小程序调用，然后云函数调用）。
+
+SOURCE 的枚举类型：
+
+SOURCE 值	含义
+wx_devtools	微信 IDE 调用
+wx_client	微信小程序调用
+wx_http	微信 HTTP API 调用
+wx_trigger	云函数定时触发器调用
+wx_paycallback	微信支付回调
+wx_crawler	微信小程序爬虫调用
+wx_localdebug	微信 IDE 本地调试调用
+wx_unknown	微信未知来源调用
+scf	云函数调用云函数
+其他	非微信端触发
+如果在云函数本地调试中，ENV 会为 local，SOURCE 会为 wx_client。
+
+OPEN_DATA_INFO:
+
+通过云函数获取开放数据时，可用此校验入参中的开放数据是否来自微信后台。
+
+此值类型为 string，有可能为空，JSON 字符串。解开之后的格式：
+
+{
+  keys: ['包含微信后台给的开放数据字段 1', '包含微信后台给的开放数据字段 2']
+}
+注意事项
+请不要在 exports.main 外使用 getWXContext，此时尚没有调用上下文，无法获取得到信息。
+
+示例代码
+const cloud = require('wx-server-sdk')
+
+exports.main = async (event, context) => {
+  const {
+    OPENID,
+    APPID,
+    UNIONID,
+    ENV,
+  } = cloud.getWXContext()
+
+  return {
+    OPENID,
+    APPID,
+    UNIONID,
+    ENV,
+  }
+}
+
+UnionID 机制说明
+如果开发者拥有多个移动应用、网站应用、和公众账号（包括小程序），可通过 UnionID 来区分用户的唯一性，因为只要是同一个微信开放平台账号下的移动应用、网站应用和公众账号（包括小程序），用户的 UnionID 是唯一的。换句话说，同一用户，对同一个微信开放平台下的不同应用，UnionID是相同的。
+
+UnionID获取途径
+绑定了开发者账号的小程序，可以通过以下途径获取 UnionID。
+
+开发者可以直接通过 wx.login + code2Session 获取到该用户 UnionID，无须用户授权。
+
+小程序端调用云函数时，可在云函数中通过 Cloud.getWXContext 获取 UnionID。
+
+用户在小程序（暂不支持小游戏）中支付完成后，开发者可以直接通过getPaidUnionId接口获取该用户的 UnionID，无需用户授权。注意：本接口仅在用户支付完成后的5分钟内有效，请开发者妥善处理。
+
+开放能力 /用户信息 /开放数据校验与解密
+服务端获取开放数据
+小程序可以通过各种前端接口获取微信提供的开放数据。考虑到开发者服务端也需要获取这些开放数据，微信提供了两种获取方式：
+
+方式一：开发者后台校验与解密开放数据
+方式二：云调用直接获取开放数据（云开发）
+
+方式一：开发者后台校验与解密开放数据
+微信会对这些开放数据做签名和加密处理。开发者后台拿到开放数据后可以对数据进行校验签名和解密，来保证数据不被篡改。
+
+
+
+签名校验以及数据加解密涉及用户的会话密钥 session_key。 开发者应该事先通过 wx.login 登录流程获取会话密钥 session_key 并保存在服务器。为了数据不被篡改，开发者不应该把 session_key 传到小程序客户端等服务器外的环境。
+
+数据签名校验
+为了确保开放接口返回用户数据的安全性，微信会对明文数据进行签名。开发者可以根据业务需要对数据包进行签名校验，确保数据的完整性。
+
+通过调用接口（如 wx.getUserInfo）获取数据时，接口会同时返回 rawData、signature，其中 signature = sha1( rawData + session_key )
+开发者将 signature、rawData 发送到开发者服务器进行校验。服务器利用用户对应的 session_key 使用相同的算法计算出签名 signature2 ，比对 signature 与 signature2 即可校验数据的完整性。
+如 wx.getUserInfo的数据校验：
+
+接口返回的rawData：
+
+{
+  "nickName": "Band",
+  "gender": 1,
+  "language": "zh_CN",
+  "city": "Guangzhou",
+  "province": "Guangdong",
+  "country": "CN",
+  "avatarUrl": "http://wx.qlogo.cn/mmopen/vi_32/1vZvI39NWFQ9XM4LtQpFrQJ1xlgZxx3w7bQxKARol6503Iuswjjn6nIGBiaycAjAtpujxyzYsrztuuICqIM5ibXQ/0"
+}
+用户的 session-key：
+
+HyVFkGl5F5OQWJZZaNzBBg==
+用于签名的字符串为：
+
+{"nickName":"Band","gender":1,"language":"zh_CN","city":"Guangzhou","province":"Guangdong","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/1vZvI39NWFQ9XM4LtQpFrQJ1xlgZxx3w7bQxKARol6503Iuswjjn6nIGBiaycAjAtpujxyzYsrztuuICqIM5ibXQ/0"}HyVFkGl5F5OQWJZZaNzBBg==
+使用sha1得到的结果为
+
+75e81ceda165f4ffa64f4068af58c64b8f54b88c
+加密数据解密算法
+接口如果涉及敏感数据（如wx.getUserInfo当中的 openId 和 unionId），接口的明文内容将不包含这些敏感数据。开发者如需要获取敏感数据，需要对接口返回的加密数据(encryptedData) 进行对称解密。 解密算法如下：
+
+对称解密使用的算法为 AES-128-CBC，数据采用PKCS#7填充。
+对称解密的目标密文为 Base64_Decode(encryptedData)。
+对称解密秘钥 aeskey = Base64_Decode(session_key), aeskey 是16字节。
+对称解密算法初始向量 为Base64_Decode(iv)，其中iv由数据接口返回。
+微信官方提供了多种编程语言的示例代码（（点击下载）。每种语言类型的接口名字均一致。调用方式可以参照示例。
+
+另外，为了应用能校验数据的有效性，会在敏感数据加上数据水印( watermark )
+
+watermark参数说明：
+
+参数	类型	说明
+appid	String	敏感数据归属 appId，开发者可校验此参数与自身 appId 是否一致
+timestamp	Int	敏感数据获取的时间戳, 开发者可以用于数据时效性校验
+如接口 wx.getUserInfo 敏感数据当中的 watermark：
+
+{
+    "openId": "OPENID",
+    "nickName": "NICKNAME",
+    "gender": GENDER,
+    "city": "CITY",
+    "province": "PROVINCE",
+    "country": "COUNTRY",
+    "avatarUrl": "AVATARURL",
+    "unionId": "UNIONID",
+    "watermark":
+    {
+        "appid":"APPID",
+        "timestamp":TIMESTAMP
+    }
+}
+注：
+
+解密后得到的json数据根据需求可能会增加新的字段，旧字段不会改变和删减，开发者需要预留足够的空间
+会话密钥 session_key 有效性
+开发者如果遇到因为 session_key 不正确而校验签名失败或解密失败，请关注下面几个与 session_key 有关的注意事项。
+
+wx.login 调用时，用户的 session_key 可能会被更新而致使旧 session_key 失效（刷新机制存在最短周期，如果同一个用户短时间内多次调用 wx.login，并非每次调用都导致 session_key 刷新）。开发者应该在明确需要重新登录时才调用 wx.login，及时通过 code2Session 接口更新服务器存储的 session_key。
+微信不会把 session_key 的有效期告知开发者。我们会根据用户使用小程序的行为对 session_key 进行续期。用户越频繁使用小程序，session_key 有效期越长。
+开发者在 session_key 失效时，可以通过重新执行登录流程获取有效的 session_key。使用接口 wx.checkSession可以校验 session_key 是否有效，从而避免小程序反复执行登录流程。
+当开发者在实现自定义登录态时，可以考虑以 session_key 有效期作为自身登录态有效期，也可以实现自定义的时效性策略。
+
+方式二：云调用直接获取开放数据
+接口如果涉及敏感数据（如wx.getWeRunData），接口的明文内容将不包含这些敏感数据，而是在返回的接口中包含对应敏感数据的 cloudID 字段，数据可以通过云函数获取。完整流程如下：
+
+1. 获取 cloudID
+
+使用 2.7.0 或以上版本的基础库，如果小程序已开通云开发，在开放数据接口的返回值中可以通过 cloudID 字段获取（与 encryptedData 同级），cloudID 有效期五分钟。
+
+2. 调用云函数
+
+调用云函数时，对传入的 data 参数，如果有顶层字段的值为通过 wx.cloud.CloudID 构造的 CloudID，则调用云函数时，这些字段的值会被替换为 cloudID 对应的开放数据，一次调用最多可替换 5 个 CloudID。
+
+示例：
+
+在小程序获取到 cloudID 之后发起调用：
+
+wx.cloud.callFunction({
+  name: 'myFunction',
+  data: {
+    weRunData: wx.cloud.CloudID('xxx'), // 这个 CloudID 值到云函数端会被替换
+    obj: {
+      shareInfo: wx.cloud.CloudID('yyy'), // 非顶层字段的 CloudID 不会被替换，会原样字符串展示
+    }
+  }
+})
+在云函数收到的 event 示例：
+
+// event
+{
+  // weRunData 的值已被替换为开放数据
+  "weRunData": {
+    "cloudID": "xxx",
+    "data": {
+      "stepInfoList": [
+        {
+          "step": 5000,
+          "timestamp": 1554814312,
+        }
+      ],
+      "watermark": {
+        "appid": "wx1111111111",
+        "timestamp": 1554815786
+      }
+    }
+  },
+  "obj": {
+    // 非顶层字段维持原样
+    "shareInfo": "yyy",
+  }
+}
+如果 cloudID 非法或过期，则在 event 中获取得到的将是一个有包含错误码、错误信息和原始 cloudID 的对象。过期 cloudID 换取结果示例：
+
+// event
+{
+  "weRunData": {
+    "cloudID": "xxx",
+    "errCode": -601006,
+    "errMsg": "cloudID expired."
+  },
+  // ...
+}
+
+小程序登录 /检验登录态
+检验登录态
+接口应在服务器端调用，详细说明参见服务端API。
+
+接口说明
+接口英文名
+checkSessionKey
+
+功能描述
+校验服务器所保存的登录态 session_key 是否有效。为了保持 session_key 私密性，接口不明文传输 session_key，而是通过校验登录态签名完成。
+
+session_key 具有唯一性，在使用小程序时，同一用户在同一时刻仅有一个有效的 session_key。 通过 code2Session 接口获得的用户 session_key 拥有一定的时效性。 除了过期失效外，触发获取临时登录凭证 code 的操作（小程序登录 和 数据预拉取）也可能会生成新的登录态 session_key，从而使旧的 session_key 被顶替而失效。
+
+为了处理以上失效情况，可以通过本接口校验用户 session_key 的有效性。
+
+调用方式
+HTTPS 调用
+
+GET https://api.weixin.qq.com/wxa/checksession?access_token=ACCESS_TOKEN&signature=SIGNATURE&openid=OPENID&sig_method=SIG_METHOD 
+
+第三方调用
+调用方式以及出入参和HTTPS相同，仅是调用的token不同
+
+该接口所属的权限集id为：18
+
+服务商获得其中之一权限集授权后，可通过使用authorizer_access_token代商家进行调用
+
+请求参数
+属性	类型	默认值	必填	说明
+access_token	string		是	接口调用凭证，该参数为 URL 参数，非 Body 参数。使用access_token或者authorizer_access_token
+openid	string		是	用户唯一标识符
+signature	string		是	用户登录态签名，用session_key对空字符串签名得到的结果。即 signature = hmac_sha256(session_key, "")
+sig_method	string		是	用户登录态签名的哈希方法，目前只支持 hmac_sha256
+返回值
+返回的 JSON 数据包
+
+属性	类型	说明
+errcode	number	错误码
+errmsg	string	错误信息
+调用示例
+示例说明: checkSessionKey请求示例
+
+请求数据示例
+
+GET https://api.weixin.qq.com/wxa/checksession?access_token=OsAoOMw4niuuVbfSxxxxxxxxxxxxxxxxxxx&signature=fefce01bfba4670c85b228e6ca2b493c90971e7c442f54fc448662eb7cd72509&openid=oGZUI0egBJY1zhBYw2KhdUfwVJJE&sig_method=hmac_sha256 
+
+返回数据示例
+
+{"errcode": 0, "errmsg": "ok"} 
+
+错误码
+错误码	错误描述	解决方案
+0	ok	ok
+87009	invalid signature	无效的签名
+
+基础能力 /数据预拉取
+数据预拉取
+预拉取能够在小程序冷启动的时候通过微信后台提前向第三方服务器拉取业务数据，当代码包加载完时可以更快地渲染页面，减少用户等待时间，从而提升小程序的打开速度 。
+
+使用流程
+1. 配置数据下载地址
+数据来源为开发者服务器时支持配置灰度比例，灰度数据下载地址可以区别于数据下载地址，灰度比例不可回退，且 100% 灰度视为更新数据地址为灰度数据地址, 如需进行测试，可将灰度比例改为百分之 0，即只对开发者体验者进行灰度。
+
+登录小程序 MP 管理后台，进入开发管理 -> 开发设置 -> 数据预加载，点击开启
+个人主体小程序仅支持配置云开发环境
+非个人主体小程序支持配置HTTPS数据下载地址、 云开发环境
+ 
+2. 设置 TOKEN
+用户登录小程序后，小程序可以调用 wx.setBackgroundFetchToken() 设置一个自定义 TOKEN 字符串，可以跟用户态相关，TOKEN 会在下一次预拉取或周期性更新，向开发者服务器发起请求时带上，便于服务器校验请求合法性。
+
+Tips: wx.setBackgroundFetchToken 是可选接口，不是必须调用的。
+
+示例：
+
+App({
+  onLaunch() {
+    // 用户登录后
+    wx.setBackgroundFetchToken({
+      token: 'xxx'
+    })
+  }
+})
+3. 微信客户端提前拉取数据
+当用户打开小程序时，微信服务器将向开发者服务器（上面配置的数据下载地址）发起一个 HTTP GET 请求，其中包含的 query 参数如下，数据获取到后会将整个 HTTP body 缓存到本地。
+
+参数中 token 和 code 只会存在一个，用于标识用户身份。注意：如果选择使用 code，触发数据预拉取时可能会刷新用户登录态，详见 checkSessionKey。
+
+参数	类型	必填	说明
+appid	String	是	小程序标识。
+token	String	否	前面设置的 TOKEN。
+code	String	否	用户登录凭证，未设置TOKEN时由微信侧预生成，可在开发者后台调用 auth.code2Session，换取 openid 等信息。
+timestamp	Number	是	时间戳，微信客户端发起请求的时间
+path	String	否	打开小程序的路径。
+query	String	否	打开小程序的query。
+scene	Number	否	打开小程序的场景值。
+customMiniprogramVersion	String	否	小程序版本号
+query 参数会使用 urlencode 处理
+
+开发者服务器接口返回的数据类型应为字符串，且大小应不超过 256KB，否则将无法缓存数据
+
+4. 读取数据
+用户启动小程序时，调用 wx.getBackgroundFetchData 和 wx.onBackgroundFetchData 获取已缓存到本地的数据。
+
+示例：
+
+App({
+  onLaunch() {
+    wx.onBackgroundFetchData(() => {
+      console.log(res.fetchedData) // 缓存数据
+      console.log(res.timeStamp) // 客户端拿到缓存数据的时间戳
+    })
+    wx.getBackgroundFetchData({
+      fetchType: 'pre',
+      success(res) {
+        console.log(res.fetchedData) // 缓存数据
+        console.log(res.timeStamp) // 客户端拿到缓存数据的时间戳
+        console.log(res.path) // 页面路径
+        console.log(res.query) // query 参数
+        console.log(res.scene) // 场景值
+      }
+    })
+  }
+})
+调试方法
+为了方便调试数据预拉取，工具提供了下面的调试能力给到开发者，具体可查看预拉取数据调试。
+
+小程序登录 /重置登录态
+重置登录态
+接口应在服务器端调用，详细说明参见服务端API。
+
+接口说明
+接口英文名
+ResetUserSessionKey
+
+功能描述
+重置指定的登录态 session_key。为了保持 session_key 私密性，接口不明文传入 session_key，而是通过校验登录态签名完成。
+
+调用方式
+HTTPS 调用
+
+GET https://api.weixin.qq.com/wxa/resetusersessionkey?access_token=ACCESS_TOKEN 
+
+第三方调用
+调用方式以及出入参和HTTPS相同，仅是调用的token不同
+
+该接口所属的权限集id为：18
+
+服务商获得其中之一权限集授权后，可通过使用authorizer_access_token代商家进行调用
+
+请求参数
+属性	类型	默认值	必填	说明
+access_token	string		是	接口调用凭证，该参数为 URL 参数，非 Body 参数。使用access_token或者authorizer_access_token
+openid	string		是	用户唯一标识符
+signature	string		是	用户登录态签名，用session_key对空字符串签名得到的结果。即 signature = hmac_sha256(session_key, "")
+sig_method	string		是	用户登录态签名的哈希方法，目前只支持 hmac_sha256
+返回值
+返回的 JSON 数据包
+
+属性	类型	说明
+errcode	number	错误码
+errmsg	string	错误信息
+openid	string	用户唯一标识符
+session_key	string	重置后的用户登录态
+其他说明
+重置用户session_key后，原有的session_key会失效。请注意接口调用时机，以免影响用户在小程序中的体验。
+重置后的session_key会继承原有的session_key的过期时间，重置操作不能为session_key续期。
+单个小程序appid请求量频率限制为 60000 次 / 分钟。
+不允许频繁重置同一个用户的登录态。
+调用示例
+示例说明: ResetUserSessionKey请求示例
+
+请求数据示例
+
+GET https://api.weixin.qq.com/wxa/resetusersessionkey?access_token=ACCESS_TOKEN&openid=OPENID&signature=SIGNATURE&sig_method=hmac_sha256 
+
+返回数据示例
+
+{"errcode": 0, "errmsg": "ok", "openid": "xxxxxxx", "session_key": "xxxxxxxx" } 
+
+错误码
+错误码	错误描述	解决方案
+45011	api minute-quota reach limit  mustslower  retry next minute	API 调用太频繁，请稍候再试
+87008	invalid sig_method	
+87007	session_key is not existd or expired	
+-1	system error	系统繁忙，此时请开发者稍候再试
+87009	invalid signature	无效的签名
+40097	invalid args	参数错误
+
+快速开始 /方案调研指南 /云托管小程序登录优化
+云托管小程序登录流程优化
+微信云托管提供的是后端云服务，从一定程度上来说，和你之前使用的服务器一样，都是为小程序的运行提供后端支撑的。
+
+微信云托管有很多优势，除了容器化之外，最核心的，就是其强大的微信生态属性。
+
+小程序原始登录
+如果你用的是服务器，要判定一个小程序用户到底是谁，你可以通过两种形式：
+
+第一种，按照一个WEB网页的思维来解决，不管是谁，直接先用户名密码登录，或者手机号发送短信登录，握手验证之后下发一个token令牌或者cookie，后续就直接按照这个令牌来标识，失效了就重新登录。
+
+第二种，通过微信小程序的 wx.login 方法，获取一个code，然后拿着这个code在后端向微信服务器寻求认证，最终得到这个用户的身份ID，一般叫做openid（一个微信用户和一个小程序的关系称为openid，不同用户不同小程序的openid都不一样），由此我们可以判定身份，然后通过其他的登录附加（手机号认证、三要素、四要素认证，内部密码登录）将自己业务的用户库和微信的用户体系关联起来。这么做的好处就是，一经关联，后续就不需要再进行附加认证了，直接判定关系就可以确定用户身份和权限。这是典型的SSO单点登录。
+
+
+但无论如何，最终后端服务都需要根据用户标识来生成自定义登录态，用于后续业务逻辑中前后端交互时识别用户身份。
+
+在文档中明确表示，wx.login后，通过auth.code2Session接口获取的会话密钥 session_key 是对用户数据进行加密签名的密钥。为了应用自身的数据安全，不应该把会话密钥下发到小程序，也不应该对外提供这个密钥。
+
+微信云托管优化
+当你的项目从服务器迁移到云托管中时，上述的wx.login获取code置换登录的流程就没有存在的必要了。
+
+在小程序端，通过 wx.cloud.callContainer 向你的云托管服务发起请求时，你的服务会在header中获得该请求用户的全部信息。
+
+header	说明
+X-WX-OPENID	小程序用户 openid
+X-WX-APPID	小程序 AppID
+X-WX-UNIONID	小程序用户 unionid，并且满足 unionid 获取条件时有
+X-WX-FROM-OPENID	资源复用情况下，小程序用户 openid
+X-WX-FROM-APPID	资源复用情况下，使用方小程序 AppID
+X-WX-FROM-UNIONID	资源复用情况下，小程序用户 unionid，并且满足 unionid 获取条件时有
+X-WX-ENV	所在云环境 ID
+X-WX-SOURCE	调用来源（本次运行是被什么触发）
+X-Forwarded-For	客户端 IPv4 或IPv6 地址
+你可以直接从header中拿到信息后做业务判定，然后进行业务正常服务。不需要wx.login登录，也不需要code换session
+
+这个能力是不带任何条件的，小程序只要使用wx.cloud.callContainer，云托管服务收到这个请求，信息就自然而然带入进来了。
+
+而且云托管免登录验证的这些信息，是由微信团队保证的，全程进行了加密处理，防刷防攻击。
+
+不仅省去了code转换的步骤，而且还不需要自己做登录态了，因为你可以再任意请求都可以拿到用户的身份信息。
+
+如果你坚持使用原本的auth.code2Session接口置换code登录这个流程，也没有什么问题，云托管并不会阻碍你这么用，但需要明确的是，这种情况并不会有任何安全、防刷的能力提升，完全是无视了微信云托管的生态属性，当成一个普通服务器来用。
+
+总结
+我们目睹了很多开发者因为接入的不严谨，导致各种信息泄漏和握手漏洞问题频发。我们也清楚的理解，并不是所有开发者都有大团队那么丰富的安全经验和高防配置，也无法自我发现和解决一些看起来非常常见的漏洞和泄漏风险。
+
+微信云托管从一定程度上缩短了开发者之间服务安全的差距，全力保证服务可信性，深度和微信生态融合。在这一基础上，开发者只需要专注自身业务，省心省力。
+开发指引 /调用云托管服务 /微信小程序
+微信小程序-访问云托管服务
+微信小程序中操作微信云托管服务，使用小程序基础库中 wx.cloud 方法对象，无需引入额外的SDK。
+
+需要注意，微信小程序基础库版本应该在 2.23.0 及以上，请务必配套在「小程序管理后台」-「设置」-「功能设置」-「基础库最低版本设置」中，将值设定为2.23.0 及以上。
+
+使用优势(对比wx.request)
+不耗费任何公网流量，前后端通信走内网；
+天然免疫DDoS攻击，仅授权小程序/公众号可访问后端，其他人即便拿到环境id和服务名也无法访问；
+通过微信就近接入节点加速，无视后端服务地域影响，没有跨地域延迟，后端无需多地部署；
+无需在小程序后台配置「服务器域名」；
+后端可直接获取用户信息，无需调接口即可以获取opneid等。
+因此，如果云托管服务只有微信小程序/公众号会调用，建议在服务设置中关闭公网访问。
+
+使用前提
+最简单的情况，「小程序」对「直属微信云托管环境」的服务进行访问，也就是登录微信云托管控制台时选择小程序进入的环境。
+
+以上情况我们约定为A小程序，如果你希望另外一个 B小程序/B公众号 也可以访问 A小程序 的云托管环境：
+
+A小程序 和 B小程序/B公众号同主体：需要配置资源复用。
+
+A小程序 和 B小程序/B公众号不同主体：推荐使用「微信开放平台-第三方平台」方式。
+
+A小程序和 B小程序/B公众号不同主体：将B小程序/B公众号视为「其他客户端」，通过公网访问。参考文档其他客户端-访问云托管服务。此方式下，B小程序/B公众号无法使用云调用/微信令牌，且需要配置「服务器域名」（使用云托管服务的默认公网域名/自定义域名均可）。
+
+如果你对以上正在支持的能力有任何建议和期待，欢迎在官方交流群联系我们。
+
+基本使用
+在小程序中使用如下的代码（取代原有wx.request用法）：
+
+// 确认已经在 onLaunch 中调用过 wx.cloud.init 初始化环境（任意环境均可，可以填空）
+const res = await wx.cloud.callContainer({
+  config: {
+    env: '填入云环境ID', // 微信云托管的环境ID
+  },
+  path: '/xxx', // 填入业务自定义路径和参数，根目录，就是 / 
+  method: 'POST', // 按照自己的业务开发，选择对应的方法
+  header: {
+    'X-WX-SERVICE': 'xxx', // xxx中填入服务名称（微信云托管 - 服务管理 - 服务列表 - 服务名称）
+    // 其他header参数
+  }
+  // dataType:'text', // 默认不填是以JSON形式解析返回结果，若不想让SDK自己解析，可以填text
+  // 其余参数同 wx.request
+});
+
+console.log(res);
+如上使用前，需要在小程序app.js中，执行wx.init，如下代码：
+
+App({
+  async onLaunch() {
+    // 使用callContainer前一定要init一下，全局执行一次即可
+    wx.cloud.init()
+    // 下面的请求可以在页面任意一处使用
+    const result = await wx.cloud.callContainer({
+      config: {
+        env: 'prod-01', // 微信云托管的环境ID
+      },
+      path: '/', // 填入业务自定义路径和参数，根目录，就是 / 
+      method: 'GET', // 按照自己的业务开发，选择对应的方法
+      header: {
+        'X-WX-SERVICE': 'xxx', // xxx中填入服务名称（微信云托管 - 服务管理 - 服务列表 - 服务名称）
+      }
+      // dataType:'text', // 默认不填是以JSON形式解析返回结果，若不想让SDK自己解析，可以填text
+    })
+    console.log(result)
+  }
+})
+如果资源复用情况下，需要在 wx.cloud.init 中填写环境来源的账号appid，
+
+例如，小程序A（appid：WXAAA）的环境 prod_001 授权给 小程序B（appid：WXBBB），则应是如下：
+
+const c1 = new wx.cloud.Cloud({
+  resourceAppid: 'WXAAA', // 环境所属的账号appid
+  resourceEnv: 'prod_001', // 微信云托管的环境ID
+})
+await c1.init()
+await c1.callContainer({
+  config: {
+    env: 'prod_001', // 微信云托管的环境ID
+  },
+  path: '/xxx', // 填入业务自定义路径和参数，根目录，就是 / 
+  method: 'POST', // 按照自己的业务开发，选择对应的方法
+  // dataType:'text', // 如果返回的不是json格式，需要添加此项
+  header: {
+    'X-WX-SERVICE': 'xxx', // xxx中填入服务名称（微信云托管 - 服务管理 - 服务列表 - 服务名称）
+    // 其他header参数
+  }
+  // 其余参数同 wx.request
+})
+如果你想深入了解 callContainer 的原理，建议阅读这篇文章
+
+在这里我们提供了一个万能的封装方法，无论是自己的小程序还是资源复用形态，均可以正常使用。
+
+在小程序app.js中建立一个call方法，并将appid、环境ID、服务名称填入适当的位置
+
+App({
+  async onLaunch() {
+    // 这里演示如何在app.js中使用，没有用请删掉
+    // const res = await this.call({
+    //   path:'/',
+    //   method: 'POST'
+    // })
+    // console.log('业务返回结果',res)
+  },
+  /**
+   * 封装的微信云托管调用方法
+   * @param {*} obj 业务请求信息，可按照需要扩展
+   * @param {*} number 请求等待，默认不用传，用于初始化等待
+   */
+  async call(obj, number=0){
+    const that = this
+    if(that.cloud == null){
+      const cloud = new wx.cloud.Cloud({
+        resourceAppid: 'WXAAA', // 微信云托管环境所属账号，服务商appid、公众号或小程序appid
+        resourceEnv: 'prod-001', // 微信云托管的环境ID
+      })
+      that.cloud = cloud
+      await that.cloud.init() // init过程是异步的，需要等待init完成才可以发起调用
+    }
+    try{
+      const result = await that.cloud.callContainer({
+        path: obj.path, // 填入业务自定义路径和参数，根目录，就是 / 
+        method: obj.method||'GET', // 按照自己的业务开发，选择对应的方法
+        // dataType:'text', // 如果返回的不是json格式，需要添加此项
+        header: {
+          'X-WX-SERVICE': 'xxx', // xxx中填入服务名称（微信云托管 - 服务管理 - 服务列表 - 服务名称）
+          // 其他header参数
+        }
+        // 其余参数同 wx.request
+      })
+      console.log(`微信云托管调用结果${result.errMsg} | callid:${result.callID}`)
+      return result.data // 业务数据在data中
+    } catch(e){
+      const error = e.toString()
+       // 如果错误信息为未初始化，则等待300ms再次尝试，因为init过程是异步的
+      if(error.indexOf("Cloud API isn't enabled")!=-1 && number<3){
+        return new Promise((resolve)=>{
+          setTimeout(function(){
+            resolve(that.call(obj,number+1))
+          },300)
+        })
+      } else {
+        throw new Error(`微信云托管调用失败${error}`)
+      }
+    }
+  }
+})
+在page页面js中，可以如下使用：
+
+const app = getApp()
+Page({
+  async onLoad(){
+    const res = await app.call({
+      path:'/'
+    })
+    console.log('业务返回结果',res)
+  }
+})
+
+请求参数
+wx.cloud.callContainer 其他参数，直接参考 wx.request API，在这里列举常用参数：
+
+属性	类型	默认值	必填	说明	最低版本
+config.env	string		是	微信云托管环境 ID	
+path	string		是	后端服务接口地址	
+data	string/object/ArrayBuffer		否	请求的参数	
+header	Object		是	设置请求的 header，header 中不能设置 Referer。
+content-type 默认为 application/json	
+timeout	number		否	超时时间，单位为毫秒.最大值不能超过15秒，否则无效	
+method	string	GET	否	HTTP 请求方法	
+dataType	string	json	否	返回的数据格式	
+responseType	string	text	否	响应的数据类型	
+success	function		否	接口调用成功的回调函数	
+fail	function		否	接口调用失败的回调函数	
+complete	function		否	接口调用结束的回调函数（调用成功、失败都会执行）	
+如果希望 wx.cloud.container 返回 Promise，请勿传 success, fail 和 complete
+
+object.method 的合法值
+值	说明	最低版本
+OPTIONS	HTTP 请求 OPTIONS	
+GET	HTTP 请求 GET	
+HEAD	HTTP 请求 HEAD	
+POST	HTTP 请求 POST	
+PUT	HTTP 请求 PUT	
+DELETE	HTTP 请求 DELETE	
+TRACE	HTTP 请求 TRACE	
+CONNECT	HTTP 请求 CONNECT	
+object.dataType 的合法值
+值	说明	最低版本
+json	返回的数据为 JSON，返回后会对返回的数据进行一次 JSON.parse	
+其他	不对返回的内容进行 JSON.parse	
+object.responseType 的合法值
+值	说明	最低版本
+text	响应的数据为文本	
+arraybuffer	响应的数据为 ArrayBuffer	
+后端直接获取用户信息
+小程序向云托管服务发起callcontainer调用时，你的服务请求header中会自动带有用户信息，包括openid、unionid、ip地址、可信来源等等，无需再通过小程序wx.login登录，然后调接口置换，大幅简化了流程。
+
+注意，资源复用情况下，获取openid的字段和普通获取不一致。
+
+使用限制
+请求大小限制100KiB (对象类型限制 20 MiB，请求中不建议包含图片，可通过对象存储处理)；
+返回包大小限制 1000KiB。

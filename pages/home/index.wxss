@@ -1,0 +1,732 @@
+/* ==================== 本地字体定义（精简版 WOFF2 Base64） ==================== */
+@font-face {
+  font-family: 'TitleFont';
+  src: url('data:font/woff2;base64,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') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SubtitleFont';
+  src: url('data:font/woff2;base64,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') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+page {
+  /* ==================== 1. 全局配色变量 (Color Palette) ==================== */
+  --bg-cream: #FFFDE7;
+  --text-black: #000000;
+  --border-black: #000000;
+  --accent-red: #FF5252;
+  --accent-blue: #448AFF;
+  --accent-green: #4CAF50;
+  --accent-yellow: #F0E634; /* Kano Yellow */
+  --accent-purple: #9B5DE5; /* Vibrant Purple */
+  --accent-orange: #FF5F1F; /* Neon Orange */
+  --accent-cyan: #3FA9F5; /* Kano Blue */
+  --accent-pink: #FF0055; /* Hot Red/Pink */
+  --accent-mint: #00D084; /* Pop Green */
+  
+  --shadow-hard: 6px 6px 0px 0px #000000;
+  --shadow-hard-sm: 4px 4px 0px 0px #000000;
+  
+  /* 统一圆角 */
+  --radius-std: 16rpx;
+  
+  /* 关键：设置页面背景色 */
+  background-color: var(--bg-cream);
+  
+  /* 【Fix】隐藏页面滚动条 */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 【Fix】隐藏页面滚动条 - 多浏览器兼容 */
+page::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* 【Fix】Firefox 兼容 */
+page {
+  scrollbar-width: none;
+}
+
+.container {
+  padding: 24rpx;
+  /* 【Fix】scroll-view 需要固定高度才能滚动 */
+  height: 100vh;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--text-black);
+  background-color: var(--bg-cream);
+}
+
+/* ==================== 2. Banner 轮播区域 (Neo-Brutalism) ==================== */
+.banner-swiper {
+  height: 380rpx; /* 略微增高以适应新风格 */
+  margin-bottom: 60rpx;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  border-radius: var(--radius-std);
+}
+
+.banner-card {
+  height: 90%; /* 留出底部阴影空间 */
+  margin: 0 10rpx;
+  border-radius: var(--radius-std);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40rpx;
+  position: relative;
+  overflow: hidden;
+  
+  /* Neo-Brutalism Style */
+  background-color: var(--accent-yellow) !important; /* 强制黄色底 */
+  border: 4px solid var(--border-black);
+  box-shadow: var(--shadow-hard);
+  color: var(--text-black);
+  
+  /* 【Fix】使用 clip-path 确保内容在圆角边框内正确裁剪 */
+  clip-path: inset(0 round var(--radius-std));
+  transform: translateZ(0);
+}
+
+.banner-cover-image {
+  position: absolute;
+  /* 【Fix】使用负定位将图片扩展到边框区域下方 */
+  top: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  z-index: 0;
+  /* 保持图片原样，遮罩层由 .banner-overlay 处理 */
+  opacity: 1;
+  /* 【Fix】圆角需要比容器稍大以完全覆盖边框圆角区域 */
+  border-radius: calc(var(--radius-std) + 4px);
+}
+
+.fan-test-banner-cover {
+  top: -14px;
+  left: -14px;
+  width: calc(100% + 28px);
+  height: calc(100% + 28px);
+}
+
+/* 新增：Banner 渐变遮罩层 */
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  /* 从底部向上渐变黑色，确保底部文字清晰 - 采用旧UI更强的渐变参数 */
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+}
+
+.banner-content {
+  color: var(--text-black);
+  z-index: 2;
+  flex: 1;
+  padding-right: 20rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.banner-title {
+  font-size: 40rpx; /* Exact match to backup UI to fix line-wrap issues */
+  font-weight: 900;
+  /* White text with hard black shadow for max readability on any image */
+  color: #FFFFFF;
+  text-shadow: 4px 4px 0 #000000;
+  margin-bottom: 20rpx; 
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0; /* Standard spacing for better readability */
+}
+
+.banner-desc {
+  font-size: 28rpx;
+  font-weight: 700;
+  /* New Description Style based on feedback: Match UI_home.html solid block style */
+  opacity: 1;
+  color: #000000;
+  background: #FFFFFF; /* High contrast white block */
+  display: block; /* 恢复 block 以支持 ellipsis */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: fit-content; /* 自适应内容宽度 */
+  padding: 8rpx 20rpx;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0 0 #000000;
+  font-weight: 800;
+  border-radius: 8rpx;
+  margin-top: 8rpx;
+
+}
+
+/* 按钮样式改造 */
+.glass-btn {
+  position: relative;
+  padding: 16rpx 40rpx;
+  background: #000000;
+  border-radius: 999rpx;
+  border: none;
+  flex-shrink: 0;
+  min-width: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: var(--shadow-hard-sm);
+  transition: all 0.1s ease;
+}
+
+.glass-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* 移除旧的伪元素 */
+.glass-btn::before {
+  display: none;
+}
+
+.btn-text {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: none;
+}
+
+/* ==================== 3. 标题通栏 ==================== */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+
+.section-bar {
+  width: 24rpx;
+  height: 24rpx;
+  background: #000;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.section-title-text {
+  font-size: 40rpx;
+  font-weight: 900;
+  color: #000;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+/* ==================== 4. 最近玩过 (Square Capsules) ==================== */
+.recent-capsules-container {
+  display: flex;
+  flex-direction: column; /* 垂直排列项? 不，是水平滚动还是垂直列表？UI_home是水平滚动的正方形卡片 */
+  /* 参考 UI_home: flex gap-4 overflow-x-auto, 但原代码是 flex-row wrap? 原代码是 flex-row, calc(1/3) width */
+  flex-direction: row;
+  gap: 24rpx;
+  margin-bottom: 60rpx;
+  padding: 10rpx; 
+}
+
+.recent-capsule {
+  position: relative;
+  flex: 0 0 calc((100% - 48rpx) / 3);
+  width: calc((100% - 48rpx) / 3);
+  /* 强制正方形: 使用 padding-bottom 实现或固定高度 */
+  height: 0;
+  padding-bottom: calc((100% - 48rpx) / 3); 
+  
+  border-radius: var(--radius-std);
+  overflow: visible;
+  display: flex;
+  flex-direction: column; /* 内容垂直居中 */
+  
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  background: #fff;
+  border: 4px solid #000;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.recent-capsule:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.recent-capsule .capsule-bg {
+  /* 使用纯白背景，不再需要额外的 bg div，直接在 .recent-capsule 设置 */
+  display: none; 
+}
+
+/* 由于使用了 padding-bottom hack 实现正方形，内部内容需要绝对定位 */
+.capsule-content {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* 文字在底部 */
+  align-items: center;
+  padding: 16rpx;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.capsule-title {
+  color: #000;
+  font-size: 24rpx;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0;
+  text-shadow: none;
+  margin-top: auto;
+}
+
+/* 图标容器：上移以避免遮挡文字 */
+.recent-capsule .capsule-stage {
+  position: absolute;
+  top: 40%; /* 上移中心点 */
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  width: 100%;
+  height: 100%;
+  z-index: 1; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+/* 移除特定的几何背景设置 */
+.recent-capsule:nth-child(3n+1) .capsule-stage { background: transparent; border-radius: 0; }
+.recent-capsule:nth-child(3n+2) .capsule-stage { background: transparent; border-radius: 0; }
+.recent-capsule:nth-child(3n+3) .capsule-stage { background: transparent; border-radius: 0; transform: translate(-50%, -50%); }
+
+/* 图片稍微缩小一点，避免过于拥挤 */
+.capsule-image {
+  width: 70%;
+  height: 70%;
+  filter: drop-shadow(4px 4px 0px #000000); /* 硬阴影 */
+}
+/* 移除之前的旋转修正 */
+.recent-capsule:nth-child(3n+3) .capsule-image { transform: none; }
+
+
+/* ==================== 5. 抽奖红包入口 ==================== */
+.lottery-entry-anchor {
+  height: 0;
+  position: relative;
+  z-index: 12;
+}
+
+.lottery-entry {
+  position: absolute;
+  right: 4rpx;
+  top: -78rpx;
+  width: 98rpx;
+  height: 98rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.12s ease;
+}
+
+.lottery-entry:active {
+  transform: scale(0.94);
+}
+
+.lottery-entry-icon {
+  width: 86rpx;
+  height: 86rpx;
+}
+
+
+/* ==================== 5. 道具卡片列表 (Tools List) ==================== */
+.tool-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40rpx;
+  margin-bottom: 40rpx;
+  /* 【Fix】底部留白 + iOS 安全区域，确保内容延伸到底部横条下方 */
+  padding-bottom: calc(env(safe-area-inset-bottom) + 180rpx);
+}
+
+.tool-card-horizontal {
+  position: relative;
+  width: 100%;
+  height: 220rpx;
+  border-radius: var(--radius-std);
+  overflow: visible; /* 必须 visible 才能破框 */
+  color: #000; /* Unified to Black for Neo-Brutalism consistency */
+  display: flex;
+  align-items: center;
+  
+  /* Neo-Brutalism Base */
+  border: 4px solid #000;
+  box-shadow: var(--shadow-hard);
+  background: var(--accent-blue); /* fallback */
+  transition: all 0.1s ease;
+}
+
+/* 循环配色 - 6色循环 (6n) 以避免重复 */
+.tool-card-horizontal:nth-child(6n+1) { background-color: var(--accent-cyan); }
+.tool-card-horizontal:nth-child(6n+2) { background-color: var(--accent-orange); }
+.tool-card-horizontal:nth-child(6n+3) { background-color: var(--accent-mint); }
+.tool-card-horizontal:nth-child(6n+4) { background-color: var(--accent-yellow); }
+.tool-card-horizontal:nth-child(6n+5) { background-color: var(--accent-purple); }
+.tool-card-horizontal:nth-child(6n+6) { background-color: var(--accent-pink); }
+
+/* 针对黄色卡片的特殊处理 (文字变黑 - 对应 6n+4) */
+/* 针对黄色卡片的特殊处理 (已移除文字颜色覆盖，统一为黑色) */
+/* .tool-card-horizontal:nth-child(6n+4) .tool-card-title-horizontal... removed */
+
+
+
+.tool-card-horizontal:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* 隐藏原有背景层 */
+.tool-card-bg, .tool-card-glass {
+  display: none;
+}
+
+/* 横向卡片 - 左侧文字内容 */
+.tool-card-body-horizontal {
+  position: relative;
+  z-index: 2;
+  padding: 30rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12rpx;
+  flex: 1;
+  min-width: 0;
+  max-width: 65%; /* Slightly increased to fit text better */
+}
+
+.tool-card-horizontal .tool-card-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 800;
+  padding: 6rpx 20rpx;
+  border-radius: 8rpx; /* Match standard radius */
+  /* Redesigned to Black Pill Style for Neo-Brutalism consistency */
+  border: none !important; /* Override inline border style */
+  background: #000000 !important; /* Override transparent bg */
+  color: #FFFFFF !important; /* High contrast white text */
+  letter-spacing: 1rpx;
+  align-self: flex-start;
+  box-shadow: 2px 2px 0 0 rgba(255,255,255,0.3); /* Subtle pop */
+  text-transform: uppercase;
+}
+
+.tool-card-title-horizontal {
+  font-size: 56rpx;
+  font-weight: 900;
+  letter-spacing: -2rpx;
+  text-shadow: none;
+  line-height: 1;
+  margin-top: 10rpx; /* Push title down slightly for better visual balance */
+}
+
+.tool-card-subtitle-horizontal {
+  font-size: 26rpx;
+  font-weight: 700;
+  opacity: 0.9;
+  color: inherit; /* 跟随父级颜色 */
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tool-card-subtitle-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+.tool-play-count-tag {
+  background: #FFFFFF;
+  color: #000000;
+  padding: 4rpx 12rpx;
+  border: 2px solid #000000;
+  border-radius: 8rpx; /* Slight radius looks better for small tags */
+  font-size: 22rpx; /* Slightly larger text */
+  font-weight: 900;
+  box-shadow: 2px 2px 0 0 #000000;
+  z-index: 10;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* 横向卡片 - 右侧图片区域 (不再破框) */
+.tool-card-stage-horizontal {
+  position: absolute;
+  top: 50%;
+  right: 32rpx;
+  transform: translateY(-50%);
+  width: 200rpx; /* Reduced size to fit inside */
+  height: 200rpx;
+  z-index: 10; 
+  pointer-events: none;
+  /* Removed float animation for cleaner look */
+}
+
+/* 横向卡片 - 图片样式 */
+.stage-hero-gif-horizontal {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Removed drop-shadow to keep it clean inside the card, or keep subtle one */
+  filter: drop-shadow(0 4rpx 8rpx rgba(0, 0, 0, 0.2));
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.tool-card-horizontal:active .stage-hero-gif-horizontal {
+  transform: rotate(0deg) scale(0.95);
+}
+
+/* 占位符 */
+.stage-hero-horizontal {
+  width: 160rpx;
+  height: 160rpx;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.stage-hero-placeholder-text {
+  color: #000;
+  font-weight: 900;
+}
+
+/* ==================== 6. Banner 骨架屏 (适配新风格) ==================== */
+.banner-skeleton-inner {
+  background: #eee;
+}
+.banner-skeleton-inner::after {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+}
+.skeleton-title { background: #ddd; }
+.skeleton-desc { background: #ddd; }
+
+/* ==================== 7. Splash Screen (Cream Background) ==================== */
+/* ==================== 7. Splash Screen (Restored & Refined) ==================== */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: var(--bg-cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash-bg-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  background-size: 40rpx 40rpx;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+}
+
+.skip-btn {
+  position: absolute;
+  /* Adjust for safe area if possible, using a safe fallback */
+  top: 100rpx; 
+  right: 40rpx;
+  z-index: 100;
+  padding: 12rpx 32rpx;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 900;
+  color: #000;
+  box-shadow: 4px 4px 0 0 #000;
+  text-transform: uppercase;
+  transition: transform 0.1s;
+}
+
+.skip-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.splash-container {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo Glitch Wrapper */
+.logo-glitch-wrapper {
+  position: relative;
+  width: 280rpx;
+  height: 280rpx;
+  margin-bottom: 60rpx;
+}
+
+.splash-logo {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: contain;
+}
+
+.splash-logo.main {
+  z-index: 2;
+  position: relative; /* relative for main ensures it takes space if needed, but here wrapper has size */
+}
+
+/* Glitch Layers Positioning */
+.logo-layer, .glitch-text.layer-r, .glitch-text.layer-b {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.8;
+  mix-blend-mode: multiply; /* Better blending for cream bg */
+}
+
+.logo-layer.red { 
+  z-index: 1;
+  animation: glitch-anim-1 2.5s infinite linear alternate-reverse;
+}
+.logo-layer.blue { 
+  z-index: 1;
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+/* Text Glitch Wrapper */
+.glitch-wrapper {
+  position: relative;
+  margin-bottom: 24rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.glitch-text {
+  font-family: 'TitleFont', sans-serif;
+  font-size: 72rpx;
+  font-weight: 900; /* Fallback */
+  color: #000;
+  letter-spacing: 4rpx;
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+.layer-r {
+  color: var(--accent-red);
+  z-index: 1;
+  animation: glitch-anim-text-1 3s infinite linear alternate-reverse;
+}
+
+.layer-b {
+  color: var(--accent-blue);
+  z-index: 1;
+  animation: glitch-anim-text-2 2.5s infinite linear alternate-reverse;
+}
+
+.splash-subtitle {
+  font-family: 'SubtitleFont', sans-serif;
+  font-size: 28rpx;
+  letter-spacing: 12rpx;
+  color: #000;
+  opacity: 0.6;
+  font-weight: bold;
+}
+
+.laser-scan {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
+  z-index: 3;
+  animation: scan 3s linear infinite;
+  pointer-events: none;
+  display: none; /* Disable for cleaner look per user pref usually, or keep active */
+}
+
+/* Keyframes (Standard Glitch) */
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-4rpx, 2rpx); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(4rpx, -2rpx); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-4rpx, 4rpx); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(4rpx, -4rpx); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-2rpx, 2rpx); }
+  100% { clip-path: inset(30% 0 50% 0); transform: translate(2rpx, -2rpx); }
+}
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(10% 0 60% 0); transform: translate(4rpx, -2rpx); }
+  20% { clip-path: inset(80% 0 5% 0); transform: translate(-4rpx, 4rpx); }
+  40% { clip-path: inset(30% 0 20% 0); transform: translate(4rpx, -4rpx); }
+  60% { clip-path: inset(15% 0 80% 0); transform: translate(-2rpx, 2rpx); }
+  80% { clip-path: inset(55% 0 10% 0); transform: translate(2rpx, -2rpx); }
+  100% { clip-path: inset(40% 0 30% 0); transform: translate(-4rpx, 4rpx); }
+}
+@keyframes glitch-anim-text-1 {
+  0% { transform: translate(-2rpx, 0); clip-path: inset(0 0 0 0); }
+  20% { transform: translate(2rpx, 0); clip-path: inset(20% 0 80% 0); }
+  100% { transform: translate(-2rpx, 0); }
+}
+@keyframes glitch-anim-text-2 {
+  0% { transform: translate(2rpx, 0); clip-path: inset(0 0 0 0); }
+  20% { transform: translate(-2rpx, 0); clip-path: inset(80% 0 20% 0); }
+  100% { transform: translate(2rpx, 0); }
+}

@@ -1,0 +1,132 @@
+<!-- 骰子页面 - CSS绘制版 -->
+<view class="dice-page">
+  <!-- 背景光效 -->
+  <view class="bg-glow top-left"></view>
+  <view class="bg-glow bottom-right"></view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <!-- 顶部区域：标题 -->
+  <view class="header-section">
+    <view class="page-title">{{uiCopy.navTitle}}</view>
+  </view>
+
+  <!-- 中间区域：骰子容器 -->
+  <view class="dice-area">
+    <view class="dice-wrapper">
+      <!-- 骰子区域：根据滑动进度逐渐变清晰 -->
+      <view 
+        class="dice-container {{showCover ? 'dice-blurred' : ''}}" 
+        style="{{showCover ? 'filter: blur(' + (12 * (1 - coverSwipeProgress)) + 'rpx); opacity: ' + (0.4 + 0.6 * coverSwipeProgress) + ';' : ''}}"
+        bindtap="rollDice"
+      >
+        <block wx:for="{{diceValues}}" wx:key="index">
+          <view class="dice-item {{isRolling ? 'rolling' : ''}}" style="animation-delay: {{index * 0.05}}s;">
+            <view class="dice-face">
+              <!-- 根据点数显示不同排列 -->
+              <block wx:if="{{item === 1}}">
+                <view class="dot center"></view>
+              </block>
+              <block wx:elif="{{item === 2}}">
+                <view class="dot top-right"></view>
+                <view class="dot bottom-left"></view>
+              </block>
+              <block wx:elif="{{item === 3}}">
+                <view class="dot top-right"></view>
+                <view class="dot center"></view>
+                <view class="dot bottom-left"></view>
+              </block>
+              <block wx:elif="{{item === 4}}">
+                <view class="dot top-left"></view>
+                <view class="dot top-right"></view>
+                <view class="dot bottom-left"></view>
+                <view class="dot bottom-right"></view>
+              </block>
+              <block wx:elif="{{item === 5}}">
+                <view class="dot top-left"></view>
+                <view class="dot top-right"></view>
+                <view class="dot center"></view>
+                <view class="dot bottom-left"></view>
+                <view class="dot bottom-right"></view>
+              </block>
+              <block wx:elif="{{item === 6}}">
+                <view class="dot top-left"></view>
+                <view class="dot top-right"></view>
+                <view class="dot middle-left"></view>
+                <view class="dot middle-right"></view>
+                <view class="dot bottom-left"></view>
+                <view class="dot bottom-right"></view>
+              </block>
+            </view>
+          </view>
+        </block>
+      </view>
+      
+      <!-- 骰盅 - 3D立体设计 -->
+      <view 
+        class="dice-cup {{coverAnimating ? 'animating' : ''}} {{isRolling ? 'shaking' : ''}}"
+        style="{{coverAnimating ? '' : 'transform: translate(-50%, calc(-50% - ' + coverOffsetY + 'px));'}} opacity: {{coverOpacity}};"
+        catchtouchstart="onCoverTouchStart"
+        catchtouchmove="onCoverTouchMove"
+        catchtouchend="onCoverTouchEnd"
+        wx:if="{{showCover}}"
+      >
+        <!-- 3D透视容器 -->
+        <view class="cup-3d-wrapper">
+          <!-- 骰盅主体 -->
+          <view class="cup-body" style="width: {{cupSize.width}}rpx; height: {{cupSize.height}}rpx;">
+            <!-- 左侧边缘高光 -->
+            <view class="cup-edge-left"></view>
+            <!-- 右侧边缘阴影 -->
+            <view class="cup-edge-right"></view>
+            <!-- 底部边缘 -->
+            <view class="cup-rim"></view>
+            
+            <!-- 骰盅内容 -->
+            <view class="cup-content">
+              <!-- 摇晃中显示 -->
+              <block wx:if="{{isRolling}}">
+                <view class="cup-icon shaking-icon">🎲</view>
+                <view class="state-pill">{{uiCopy.rolling}}</view>
+              </block>
+              
+              <!-- 摇晃结束显示 -->
+              <block wx:else>
+                <view class="mystery-mark">?</view>
+                <view class="swipe-hint-pill">
+                  <view class="arrow-icon">▲</view>
+                  <text>{{uiCopy.reveal}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 骰盅底部阴影 -->
+        <view class="cup-shadow"></view>
+      </view>
+    </view>
+    
+    <!-- 提示语 -->
+    <view class="hint-text {{isRolling || showCover ? 'fade-out' : ''}}">{{hintText}}</view>
+  </view>
+
+  <!-- 底部区域：数量选择器 -->
+  <view class="footer-section">
+    <view class="dice-selector">
+      <view class="selector-options">
+        <view 
+          wx:for="{{[1,2,3,4,5,6]}}" 
+          wx:key="*this"
+          class="selector-num {{diceCount === item ? 'active' : ''}}"
+          catchtap="onDiceCountChange"
+          data-count="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+  </view>
+</view>

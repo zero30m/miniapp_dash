@@ -1,0 +1,70 @@
+<view class="joker-mark-only size-{{size}} {{card.color || 'black'}}" wx:if="{{jokerMarkOnly}}">
+    <view class="joker-clown-mark">
+        <view class="clown-hat-tip tip-left"></view>
+        <view class="clown-hat-tip tip-center"></view>
+        <view class="clown-hat-tip tip-right"></view>
+        <view class="clown-hat-dot dot-left"></view>
+        <view class="clown-hat-dot dot-center"></view>
+        <view class="clown-hat-dot dot-right"></view>
+        <view class="clown-face">
+            <view class="clown-eye eye-left"></view>
+            <view class="clown-eye eye-right"></view>
+            <view class="clown-nose"></view>
+            <view class="clown-smile"></view>
+        </view>
+    </view>
+</view>
+
+<view class="poker-card size-{{size}} {{card.color || 'black'}} {{card.isJoker ? 'joker' : ''}} {{hideCorners ? 'hide-corners' : ''}}" wx:else>
+    <block wx:if="{{card.isJoker}}">
+        <view class="joker-corner top">
+            <view class="joker-clown-mark">
+                <view class="clown-hat-tip tip-left"></view>
+                <view class="clown-hat-tip tip-center"></view>
+                <view class="clown-hat-tip tip-right"></view>
+                <view class="clown-hat-dot dot-left"></view>
+                <view class="clown-hat-dot dot-center"></view>
+                <view class="clown-hat-dot dot-right"></view>
+                <view class="clown-face">
+                    <view class="clown-eye eye-left"></view>
+                    <view class="clown-eye eye-right"></view>
+                    <view class="clown-nose"></view>
+                    <view class="clown-smile"></view>
+                </view>
+            </view>
+        </view>
+        <view class="joker-center">
+            <text class="joker-word">JOKER</text>
+            <text class="joker-center-star">★</text>
+            <text class="joker-kind">{{card.jokerType === 'big' ? 'BIG' : 'SMALL'}}</text>
+        </view>
+        <view class="joker-corner bottom">
+            <view class="joker-clown-mark">
+                <view class="clown-hat-tip tip-left"></view>
+                <view class="clown-hat-tip tip-center"></view>
+                <view class="clown-hat-tip tip-right"></view>
+                <view class="clown-hat-dot dot-left"></view>
+                <view class="clown-hat-dot dot-center"></view>
+                <view class="clown-hat-dot dot-right"></view>
+                <view class="clown-face">
+                    <view class="clown-eye eye-left"></view>
+                    <view class="clown-eye eye-right"></view>
+                    <view class="clown-nose"></view>
+                    <view class="clown-smile"></view>
+                </view>
+            </view>
+        </view>
+    </block>
+
+    <block wx:else>
+        <view class="card-corner top">
+            <text class="corner-rank">{{card.rank}}</text>
+            <text class="corner-suit">{{card.suit}}</text>
+        </view>
+        <text class="center-suit">{{card.suit}}</text>
+        <view class="card-corner bottom">
+            <text class="corner-rank">{{card.rank}}</text>
+            <text class="corner-suit">{{card.suit}}</text>
+        </view>
+    </block>
+</view>

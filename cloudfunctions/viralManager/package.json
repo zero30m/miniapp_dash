@@ -1,0 +1,11 @@
+{
+    "name": "viral-manager",
+    "version": "1.0.1",
+    "description": "沉寂朋友聚合云函数：记录互动、获取统计、用户资料管理",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "latest"
+    },
+    "author": "",
+    "license": "ISC"
+}

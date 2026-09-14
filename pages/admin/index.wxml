@@ -1,0 +1,186 @@
+<view class="admin-container">
+  <!-- Tab切换 -->
+  <view class="tab-header">
+    <view class="tab-item {{activeTab === 'codes' ? 'active' : ''}}" bindtap="switchTab" data-tab="codes">
+      <text class="tab-text">{{uiCopy.tabs.codes}}</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 'codes'}}"></view>
+    </view>
+    <view class="tab-item {{activeTab === 'members' ? 'active' : ''}}" bindtap="switchTab" data-tab="members">
+      <text class="tab-text">{{uiCopy.tabs.members}}</text>
+      <view class="tab-indicator" wx:if="{{activeTab === 'members'}}"></view>
+    </view>
+  </view>
+
+  <!-- 邀请码管理面板 -->
+  <view class="panel" wx:if="{{activeTab === 'codes'}}">
+    <!-- 创建邀请码区域 -->
+    <view class="create-section">
+      <view class="section-title">{{uiCopy.createTitle}}</view>
+      
+      <!-- 天数显示 -->
+      <view class="days-display">
+        <text class="days-number">{{createDays}}</text>
+        <text class="days-label">{{uiCopy.daysUnit}}</text>
+      </view>
+      
+      <!-- 快捷选择按钮 -->
+      <view class="days-buttons">
+        <view class="day-btn" bindtap="addDays" data-days="7">{{uiCopy.addDays7}}</view>
+        <view class="day-btn" bindtap="addDays" data-days="30">{{uiCopy.addDays30}}</view>
+        <view class="day-btn" bindtap="addDays" data-days="90">{{uiCopy.addDays90}}</view>
+        <view class="day-btn" bindtap="addDays" data-days="180">{{uiCopy.addDays180}}</view>
+        <view class="day-btn" bindtap="addDays" data-days="365">{{uiCopy.addDays365}}</view>
+        <view class="day-btn reset" bindtap="resetDays">{{uiCopy.resetDays}}</view>
+      </view>
+      
+      <!-- 创建按钮 -->
+      <button class="create-btn" bindtap="createInviteCode" loading="{{creating}}" disabled="{{creating}}">
+        {{uiCopy.createButton}}
+      </button>
+    </view>
+    
+    <!-- 筛选器 -->
+    <view class="filter-section">
+      <view class="filter-btn {{codeFilter === 'all' ? 'active' : ''}}" bindtap="setCodeFilter" data-filter="all">{{uiCopy.codeFilters.all}}</view>
+      <view class="filter-btn {{codeFilter === 'unused' ? 'active' : ''}}" bindtap="setCodeFilter" data-filter="unused">{{uiCopy.codeFilters.unused}}</view>
+      <view class="filter-btn {{codeFilter === 'used' ? 'active' : ''}}" bindtap="setCodeFilter" data-filter="used">{{uiCopy.codeFilters.used}}</view>
+    </view>
+    
+    <!-- 邀请码列表 -->
+    <view class="list-section">
+      <view class="section-title">{{uiCopy.codeListTitle}} ({{codesTotal}})</view>
+      
+      <view class="code-list">
+        <view class="code-item" wx:for="{{codes}}" wx:key="_id">
+          <view class="code-main">
+            <text class="code-text">{{item.code}}</text>
+            <view class="code-tag {{item.used ? 'used' : 'unused'}}">
+              {{item.used ? uiCopy.codeUsed : uiCopy.codeUnused}}
+            </view>
+          </view>
+          <view class="code-info">
+            <text class="days-info">{{uiCopy.codeExpiryPrefix}}{{item.shichangtian}}{{uiCopy.codeExpirySuffix}}</text>
+            <text class="user-info" wx:if="{{item.UnionID}}">{{uiCopy.codeUserPrefix}}{{item.UnionID}}</text>
+          </view>
+          <view class="code-actions" wx:if="{{!item.used}}">
+            <view class="delete-btn" bindtap="deleteCode" data-id="{{item._id}}">{{uiCopy.delete}}</view>
+          </view>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{codes.length === 0 && !codesLoading}}">
+          <text class="empty-text">{{uiCopy.emptyCodes}}</text>
+        </view>
+        
+        <!-- 加载中 -->
+        <view class="loading-state" wx:if="{{codesLoading}}">
+          <text class="loading-text">{{uiCopy.loading}}</text>
+        </view>
+        
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{codesHasMore && !codesLoading}}" bindtap="loadMoreCodes">
+          <text>{{uiCopy.loadMore}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员管理面板 -->
+  <view class="panel" wx:if="{{activeTab === 'members'}}">
+    <!-- 统计看板 -->
+    <view class="stats-section">
+      <view class="stats-grid">
+        <view class="stat-card stat-total {{memberFilter === 'all' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="all">
+          <text class="stat-number">{{membersTotal}}</text>
+          <text class="stat-label">{{uiCopy.statsTotal}}</text>
+        </view>
+        <view class="stat-card stat-free {{memberFilter === 'free' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="free">
+          <text class="stat-number">{{memberStats.free || 0}}</text>
+          <text class="stat-label">{{uiCopy.statsFree}}</text>
+        </view>
+        <view class="stat-card stat-week {{memberFilter === 'week' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="week">
+          <text class="stat-number">{{memberStats.week || 0}}</text>
+          <text class="stat-label">{{uiCopy.statsWeek}}</text>
+        </view>
+        <view class="stat-card stat-month {{memberFilter === 'month' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="month">
+          <text class="stat-number">{{memberStats.month || 0}}</text>
+          <text class="stat-label">{{uiCopy.statsMonth}}</text>
+        </view>
+        <view class="stat-card stat-year {{memberFilter === 'year' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="year">
+          <text class="stat-number">{{memberStats.year || 0}}</text>
+          <text class="stat-label">{{uiCopy.statsYear}}</text>
+        </view>
+        <view class="stat-card stat-permanent {{memberFilter === 'permanent' ? 'active' : ''}}" bindtap="setMemberFilter" data-filter="permanent">
+          <text class="stat-number">{{memberStats.permanent || 0}}</text>
+          <text class="stat-label">{{uiCopy.statsPermanent}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <view class="list-section">
+      <view class="section-title">
+        {{uiCopy.memberListTitle}}
+        <text class="filter-hint" wx:if="{{memberFilter !== 'all'}}">{{uiCopy.filteredHintPrefix}}{{memberFilterLabel}}{{uiCopy.filteredHintSuffix}}</text>
+      </view>
+      
+      <view class="member-list">
+        <view class="member-item" wx:for="{{members}}" wx:key="_id">
+          <view class="member-main">
+            <text class="member-id">{{item.maskedId}}</text>
+            <view class="member-tag tag-{{item.localizedTagCode}}">
+              {{item.localizedTag}}
+            </view>
+            <view class="admin-badge" wx:if="{{item.admin}}">{{uiCopy.adminBadge}}</view>
+          </view>
+          <view class="member-info">
+            <text class="expiry-info">{{uiCopy.expiryPrefix}}{{item.memberExpiryFormatted}}</text>
+          </view>
+        </view>
+        
+        <!-- 空状态 -->
+        <view class="empty-state" wx:if="{{members.length === 0 && !membersLoading}}">
+          <text class="empty-text">{{uiCopy.emptyMembers}}</text>
+        </view>
+        
+        <!-- 加载中 -->
+        <view class="loading-state" wx:if="{{membersLoading}}">
+          <text class="loading-text">{{uiCopy.loading}}</text>
+        </view>
+        
+        <!-- 加载更多 -->
+        <view class="load-more" wx:if="{{membersHasMore && !membersLoading}}" bindtap="loadMoreMembers">
+          <text>{{uiCopy.loadMore}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部安全区域 -->
+  <view class="safe-bottom"></view>
+</view>
+
+<!-- 自定义弹窗 - 创建成功 -->
+<view class="custom-modal-mask" wx:if="{{showCodeModal}}" catchtap="closeCodeModal">
+  <view class="custom-modal" catchtap="">
+    <view class="modal-icon success">✓</view>
+    <view class="modal-title">{{uiCopy.modalCreateSuccessTitle}}</view>
+    <view class="modal-code">{{newCode}}</view>
+    <view class="modal-days">{{uiCopy.modalDaysPrefix}}{{newCodeDays}}{{uiCopy.modalDaysSuffix}}</view>
+    <view class="modal-btn-row">
+      <view class="modal-btn primary" bindtap="closeCodeModal">{{uiCopy.modalOk}}</view>
+    </view>
+  </view>
+</view>
+
+<!-- 自定义弹窗 - 确认删除 -->
+<view class="custom-modal-mask" wx:if="{{showDeleteModal}}" catchtap="cancelDelete">
+  <view class="custom-modal" catchtap="">
+    <view class="modal-icon warning">!</view>
+    <view class="modal-title">{{uiCopy.modalDeleteTitle}}</view>
+    <view class="modal-content">{{uiCopy.modalDeleteContent}}</view>
+    <view class="modal-btn-row">
+      <view class="modal-btn cancel" bindtap="cancelDelete">{{uiCopy.cancel}}</view>
+      <view class="modal-btn danger" bindtap="confirmDelete">{{uiCopy.delete}}</view>
+    </view>
+  </view>
+</view>

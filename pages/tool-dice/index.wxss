@@ -1,0 +1,418 @@
+/* 骰子页面 - Neo-Brutalism Style (Kano Blue) */
+.dice-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #FFFDE7; /* Cream Background */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40rpx;
+  box-sizing: border-box;
+  overflow: hidden;
+  --accent-blue: #3FA9F5; /* Kano Blue */
+  --text-black: #000000;
+  --border-black: #000000;
+}
+
+/* 移除旧的背景光效 */
+.bg-glow {
+  display: none;
+}
+
+/* 返回按钮 - Black Pill Style */
+.back-btn {
+  position: fixed;
+  left: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999rpx;
+  z-index: 50;
+  box-shadow: 4px 4px 0 0 #000000;
+  transition: all 0.1s ease;
+}
+
+.back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #000000;
+  line-height: 1;
+}
+
+.back-text {
+  font-size: 26rpx;
+  color: #000000;
+  font-weight: 800;
+}
+
+/* 顶部区域 */
+.header-section {
+  text-align: center;
+  margin-top: 100rpx;
+  width: 100%;
+  z-index: 10;
+}
+
+.page-title {
+  font-size: 48rpx;
+  font-weight: 900;
+  color: #000000 !important; /* Force Black */
+  letter-spacing: 0;
+  text-transform: uppercase;
+  margin-bottom: 40rpx;
+  text-shadow: none !important;
+}
+
+/* 总点数 (顶部) */
+.score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.total-score-label {
+  font-size: 28rpx;
+  color: #000000;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  margin-bottom: 10rpx;
+  opacity: 0.8;
+}
+
+.total-score-value {
+  font-size: 140rpx;
+  font-weight: 900;
+  color: var(--accent-blue);
+  font-family: 'DIN Alternate', sans-serif;
+  text-shadow: 6px 6px 0 #000000; /* Hard shadow */
+  -webkit-text-stroke: 4px #000000; /* Black outline */
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+/* 骰子容器 */
+.dice-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  gap: 24rpx;
+  max-width: 500rpx;
+  padding: 40rpx;
+  min-height: 280rpx;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 24rpx;
+  box-shadow: 8px 8px 0 0 #000;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+/* 提示语 */
+.hint-text {
+  width: 100%;
+  text-align: center;
+  font-size: 32rpx;
+  color: #000000;
+  font-weight: 800;
+  margin-top: 40rpx;
+  opacity: 1;
+  text-shadow: none;
+}
+
+.hint-text.fade-out {
+  opacity: 0;
+}
+
+/* 单个骰子 - Neo Style */
+.dice-item {
+  position: relative;
+  transition: transform 0.3s ease;
+  background: none; /* Reset */
+}
+
+.dice-face {
+  width: 130rpx;
+  height: 130rpx;
+  background: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 16rpx;
+  position: relative;
+  box-shadow: 4px 4px 0 0 #000000;
+}
+
+/* 骰子点 */
+.dot {
+  position: absolute;
+  width: 24rpx;
+  height: 24rpx;
+  background: #000000; /* Pure black dots */
+  border-radius: 50%;
+  box-shadow: none;
+}
+
+.dot.center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.dot.top-left { top: 16rpx; left: 16rpx; }
+.dot.top-right { top: 16rpx; right: 16rpx; }
+.dot.middle-left { top: 50%; left: 16rpx; transform: translateY(-50%); }
+.dot.middle-right { top: 50%; right: 16rpx; transform: translateY(-50%); }
+.dot.bottom-left { bottom: 16rpx; left: 16rpx; }
+.dot.bottom-right { bottom: 16rpx; right: 16rpx; }
+
+/* 底部区域：数量选择器 */
+.footer-section {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 100rpx;
+  z-index: 10;
+}
+
+.dice-selector {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.selector-options {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  background: #fff;
+  padding: 16rpx;
+  border-radius: 24rpx;
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+.selector-num {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  background: #fff;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #000000 !important; /* Force Black */
+  transition: all 0.2s ease;
+}
+
+.selector-num.active {
+  background: var(--accent-blue);
+  color: #000000 !important;
+  box-shadow: 2px 2px 0 0 #000;
+  transform: translate(-2px, -2px);
+}
+
+/* 骰盅包装器 */
+.dice-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-container.dice-blurred {
+  pointer-events: none;
+}
+
+/* ==================== 骰盅样式 (Neo-Brutalism Flat Style) ==================== */
+.dice-cup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* 【Fix】移除 transition，避免与拖动时的 setData 冲突导致抖动 */
+  /* 动画效果由 JS 通过 _animateBack 和 revealCover 控制 */
+}
+
+/* 3D Wrapper - Keep logical container but simplify visuals */
+.cup-3d-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* 骰盅主体 - 纯色扁平化 */
+.cup-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  /* Kano Blue Solid Fill */
+  background: var(--accent-blue);
+  
+  /* Shape - Matches old layout but flat color */
+  border-radius: 40rpx 40rpx 20rpx 20rpx;
+  
+  /* Chunky Border */
+  border: 6px solid #000000;
+  
+  /* Hard Shadow */
+  box-shadow: 12px 12px 0 0 #000000;
+  
+  overflow: hidden;
+  z-index: 2; /* Above shadow */
+}
+
+/* 简单的装饰线条模拟盖子结构 */
+.cup-rim {
+  display: block !important;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 20rpx;
+  background: #000000; /* Black Rim */
+  z-index: 10;
+}
+
+.cup-body::before {
+  /* Top highlight line */
+  content: '';
+  position: absolute;
+  top: 15rpx;
+  left: 15%;
+  right: 15%;
+  height: 6rpx;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4rpx;
+  display: block !important;
+}
+
+/* 骰盅内容区 */
+.cup-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Reduced padding to prevent overflow, flex auto distribution */
+  padding: 10rpx;
+  z-index: 11;
+}
+
+/* 摇晃中状态 */
+.cup-icon.shaking-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  animation: cupShakeIcon 0.15s ease-in-out infinite;
+}
+
+.state-pill {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: #000;
+  background: #FFF;
+  border: 4px solid #000;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  transform: rotate(-2deg);
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.2);
+}
+
+/* 静态神秘状态 */
+.mystery-mark {
+  font-size: 140rpx;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 40rpx;
+  /* White outline text effect */
+  text-shadow: 
+    4px 4px 0 rgba(255,255,255,0.4);
+}
+
+.swipe-hint-pill {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: #FFFFFF;
+  border: 4px solid #000;
+  padding: 16rpx 32rpx;
+  border-radius: 999rpx;
+  box-shadow: 6px 6px 0 0 #000;
+  animation: bounceHint 1.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  transform-origin: center bottom;
+}
+
+.arrow-icon {
+  font-size: 20rpx;
+  color: #000;
+  transform: scaleY(0.8); /* Squat triangle */
+}
+
+.swipe-hint-pill text {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: #000;
+  letter-spacing: 2rpx;
+}
+
+@keyframes bounceHint {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10rpx); }
+}
+
+@keyframes cupShakeIcon {
+  0% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+
+/* Clean up old classes */
+.cup-hint, .hint-arrow, .hint-label, .cup-text, .cup-icon {
+  /* Some might be reused, redefining is safer */
+}
+
+/* Disable old complex 3D parts but keep structure valid */
+.cup-edge-left, .cup-edge-right, .cup-handle {
+  display: none !important;
+}
+
+.cup-shadow {
+  display: none !important; /* Visual shadow handled by box-shadow on cup-body */
+}
+
+/* 骰盅出现动画 */
+.dice-cup.animating {
+  animation: cupAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes cupAppear {
+  0% { transform: translate(-50%, -80%) scale(0.8); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* 骰盅摇晃动画 */
+.dice-cup.shaking {
+  animation: cupShake 0.1s ease-in-out infinite;
+}
+
+@keyframes cupShake {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-3deg); }
+  25% { transform: translate(-48%, -52%) rotate(2deg); }
+  50% { transform: translate(-52%, -48%) rotate(-2deg); }
+  75% { transform: translate(-50%, -50%) rotate(3deg); }
+}
+
+.dice-cup.shaking {
+  pointer-events: none;
+}
+

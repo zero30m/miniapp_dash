@@ -1,0 +1,338 @@
+/**
+ * 游戏选择器 - 触摸交互（手指跟随版）
+ * 
+ * 优化重点：
+ * 1. 选择器跟随手指下拉渐显
+ * 2. 基于速度和位置的智能判断
+ * 3. 流畅的弹性动画
+ * 4. 稳定的震动反馈
+ */
+
+var startY = 0;
+var currentY = 0;
+var lastY = 0;
+var velocity = 0;
+var isTracking = false;
+var lastTime = 0;
+var hasVibratedStart = false;  // 是否已触发开始震动
+
+// 【修复】同步标志，用于解决 setData 异步导致的竞态条件
+var isExpandedFlag = false;
+// 【修复】切换游戏中标志，阻止切换动画期间的下拉追踪
+var isSwitchingFlag = false;
+
+// 配置
+var EXPAND_THRESHOLD = 80;
+var VELOCITY_THRESHOLD = 0.3;
+var VIBRATE_THRESHOLD = 0.25;  // 触发震动的进度阈值
+
+/**
+ * 触摸开始
+ */
+function touchStart(event, ownerInstance) {
+  // 【修复】先检查同步标志，避免 setData 异步导致的竞态条件
+  // 【修复】切换游戏期间也阻止下拉追踪，防止触摸穿透到页面层
+  if (isExpandedFlag || isSwitchingFlag) {
+    isTracking = false;
+    return;
+  }
+
+  var dataset = event.currentTarget.dataset || {};
+  if (dataset.isExpanded === true || dataset.isExpanded === 'true') {
+    isTracking = false;
+    return;
+  }
+  
+  var touch = event.touches[0] || event.changedTouches[0];
+  startY = touch.clientY;
+  currentY = startY;
+  lastY = startY;
+  velocity = 0;
+  lastTime = Date.now();
+  isTracking = true;
+  hasVibratedStart = false;  // 重置震动标志
+}
+
+/**
+ * 触摸移动 - 实时跟随
+ */
+function touchMove(event, ownerInstance) {
+  if (!isTracking) return;
+  
+  var touch = event.touches[0] || event.changedTouches[0];
+  var now = Date.now();
+  var dt = now - lastTime;
+  
+  currentY = touch.clientY;
+  var dy = currentY - startY;
+  
+  // 计算速度
+  if (dt > 0) {
+    velocity = (currentY - lastY) / dt;
+  }
+  lastY = currentY;
+  lastTime = now;
+  
+  // 只处理下拉
+  if (dy <= 0) {
+    dy = 0;
+  }
+  
+  var pill = ownerInstance.selectComponent('.current-pill');
+  var game = ownerInstance.selectComponent('.game-container');
+  var hint = ownerInstance.selectComponent('.pull-hint-mini');
+  var overlay = ownerInstance.selectComponent('.selector-overlay');
+  
+  if (!pill || !game) return;
+  
+  // 计算进度 (0-1)
+  var rawProgress = dy / EXPAND_THRESHOLD;
+  var progress = rawProgress > 1 ? 1 : rawProgress;
+  
+  // 弹性阻尼
+  var damped = 1 - Math.pow(1 - progress, 2.5);
+  
+  // 1. 胶囊变形
+  var scaleY = 1 + (damped * 0.35);
+  var scaleX = 1 - (damped * 0.12);
+  
+  pill.setStyle({
+    'transform': 'scaleX(' + scaleX + ') scaleY(' + scaleY + ')',
+    'transition': 'none'
+  });
+  
+  // 2. 游戏区域模糊+缩放
+  var blur = damped * 15;
+  var gameOpacity = 1 - (damped * 0.6);
+  var gameScale = 1 - (damped * 0.03);
+  
+  game.setStyle({
+    'filter': 'blur(' + blur + 'px)',
+    'opacity': '' + gameOpacity,
+    'transform': 'scale(' + gameScale + ')',
+    'transition': 'none'
+  });
+  
+  // 3. 提示文字淡出
+  if (hint) {
+    var hintOpacity = 1 - (progress * 2);
+    if (hintOpacity < 0) hintOpacity = 0;
+    hint.setStyle({
+      'opacity': '' + hintOpacity,
+      'transition': 'none'
+    });
+  }
+  
+  // 4. 选择器渐显
+  if (overlay && progress > 0.2) {
+    var overlayProgress = (progress - 0.2) / 0.8;
+    var overlayOpacity = overlayProgress * 0.95;
+    var overlayScale = 0.96 + (overlayProgress * 0.04);
+    
+    overlay.setStyle({
+      'opacity': '' + overlayOpacity,
+      'visibility': 'visible',
+      'transform': 'scale(' + overlayScale + ')',
+      'transition': 'none'
+    });
+  } else if (overlay) {
+    overlay.setStyle({
+      'opacity': '0',
+      'visibility': 'hidden',
+      'transform': 'scale(0.96)',
+      'transition': 'none'
+    });
+  }
+  
+  // 5. 触发震动反馈 - 优化：使用标志确保只触发一次
+  if (!hasVibratedStart && progress > VIBRATE_THRESHOLD) {
+    hasVibratedStart = true;
+    ownerInstance.callMethod('onPullStart');
+  }
+}
+
+/**
+ * 触摸结束 - 智能判断展开或回弹
+ */
+function touchEnd(event, ownerInstance) {
+  if (!isTracking) return;
+  isTracking = false;
+  
+  var dy = currentY - startY;
+  var progress = dy / EXPAND_THRESHOLD;
+  
+  // 判断是否展开：位置超过阈值 或 速度足够快
+  var shouldExpand = progress >= 1 || (progress > 0.4 && velocity > VELOCITY_THRESHOLD);
+  
+  var pill = ownerInstance.selectComponent('.current-pill');
+  var game = ownerInstance.selectComponent('.game-container');
+  var hint = ownerInstance.selectComponent('.pull-hint-mini');
+  var overlay = ownerInstance.selectComponent('.selector-overlay');
+  
+  if (shouldExpand) {
+    // 【关键修复】立即设置标志，同步阻止后续触摸被追踪
+    isExpandedFlag = true;
+    
+    // 展开选择器
+    ownerInstance.callMethod('onPullEnd');
+    
+    // 完成动画
+    if (pill) {
+      pill.setStyle({
+        'transform': 'scaleX(1) scaleY(1)',
+        'transition': 'transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1)'
+      });
+    }
+    
+    if (overlay) {
+      overlay.setStyle({
+        'opacity': '1',
+        'visibility': 'visible',
+        'transform': 'scale(1)',
+        'transition': 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)'
+      });
+    }
+    
+  } else {
+    // 回弹
+    resetStyles(pill, game, hint, overlay, false);
+  }
+  
+  // 重置
+  velocity = 0;
+  hasVibratedStart = false;
+}
+
+/**
+ * 重置样式 - 带弹性动画
+ * 【修复-思路5】改为清空内联样式，让 CSS 类接管
+ */
+function resetStyles(pill, game, hint, overlay, isFromExpanded) {
+  var duration = isFromExpanded ? '0.35s' : '0.3s';
+  var easing = 'cubic-bezier(0.34, 1.2, 0.64, 1)';
+  
+  if (pill) {
+    // 【修复】清空内联样式，让 CSS 类接管
+    pill.setStyle({
+      'transform': '',
+      'transition': 'transform ' + duration + ' ' + easing
+    });
+  }
+  
+  if (game) {
+    // 【修复】清空内联样式，让 CSS 类接管
+    game.setStyle({
+      'filter': '',
+      'opacity': '',
+      'transform': '',
+      'transition': 'all ' + duration + ' ' + easing
+    });
+  }
+  
+  if (hint) {
+    hint.setStyle({
+      'opacity': '',
+      'transition': 'opacity 0.25s ease-out'
+    });
+  }
+  
+  if (overlay) {
+    // 【修复】清空内联样式，让 CSS 类接管
+    overlay.setStyle({
+      'opacity': '',
+      'visibility': '',
+      'transform': '',
+      'transition': 'all 0.25s ease-out'
+    });
+  }
+}
+
+/**
+ * 展开状态变化
+ */
+function onExpandChange(newVal, oldVal, ownerInstance) {
+  var game = ownerInstance.selectComponent('.game-container');
+  
+  // 【修复-思路5】无论打开还是关闭，都先清空 .game-container 的内联样式
+  // 这可以防止后台恢复时样式残留
+  if (game) {
+    game.setStyle({
+      'filter': '',
+      'opacity': '',
+      'transform': '',
+      'transition': ''
+    });
+  }
+  
+  // 关闭选择器时 (true -> false)
+  if (!newVal && oldVal) {
+    // 【修复】同步重置标志
+    isExpandedFlag = false;
+    
+    var pill = ownerInstance.selectComponent('.current-pill');
+    var hint = ownerInstance.selectComponent('.pull-hint-mini');
+    var overlay = ownerInstance.selectComponent('.selector-overlay');
+    
+    resetStyles(pill, game, hint, overlay, true);
+    
+    // 重置状态
+    isTracking = false;
+    velocity = 0;
+    hasVibratedStart = false;
+  }
+  
+  // 【新增】打开选择器时 (false -> true)，从 JS 代码触发（如 onShow）
+  if (newVal && !oldVal) {
+    // 【修复】同步设置标志
+    isExpandedFlag = true;
+    
+    var game2 = ownerInstance.selectComponent('.game-container');
+    var overlay2 = ownerInstance.selectComponent('.selector-overlay');
+    
+    // 确保选择器正确显示
+    if (overlay2) {
+      overlay2.setStyle({
+        'opacity': '1',
+        'visibility': 'visible',
+        'transform': 'scale(1)',
+        'transition': 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
+      });
+    }
+    
+    // 确保游戏区域正确模糊
+    if (game2) {
+      game2.setStyle({
+        'filter': 'blur(20px)',
+        'opacity': '0.15',
+        'transform': 'scale(0.96)',
+        'transition': 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+      });
+    }
+    
+    // 重置触摸状态
+    isTracking = false;
+    velocity = 0;
+    hasVibratedStart = false;
+  }
+}
+
+/**
+ * 游戏切换状态变化
+ */
+function onSwitchChange(newVal, oldVal, ownerInstance) {
+  isSwitchingFlag = !!newVal;
+  // 切换开始时，立即停止正在进行的追踪
+  if (isSwitchingFlag) {
+    isTracking = false;
+    velocity = 0;
+    hasVibratedStart = false;
+  }
+}
+
+module.exports = {
+  touchStart: touchStart,
+  touchMove: touchMove,
+  touchEnd: touchEnd,
+  onExpandChange: onExpandChange,
+  onSwitchChange: onSwitchChange
+};

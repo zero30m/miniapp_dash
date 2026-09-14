@@ -1,0 +1,10 @@
+{
+    "name": "get-app-version",
+    "version": "1.0.0",
+    "description": "获取指定版本的更新日志",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "latest",
+        "@cloudbase/node-sdk": "latest"
+    }
+}

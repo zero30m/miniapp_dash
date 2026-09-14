@@ -1,0 +1,63 @@
+<view class="fan-test-page" catchtouchmove="preventMove">
+    <image class="bg-image" src="{{backgroundUrl}}" mode="aspectFill"></image>
+    <view class="page-shade"></view>
+
+    <view class="quiz-screen" wx:if="{{mode === 'quiz' && currentQuestion}}">
+        <view class="quiz-top">
+            <text class="quiz-count">{{currentIndex + 1}} / {{questionTotal}}</text>
+            <view class="progress-track">
+                <view class="progress-bar" style="width: {{progressPercent}}%;"></view>
+            </view>
+        </view>
+
+        <view class="question-panel">
+            <text class="question-text">{{currentQuestion.text}}</text>
+        </view>
+
+        <view class="option-list">
+            <view
+                class="option-entry"
+                wx:for="{{currentQuestion.options}}"
+                wx:key="key"
+            >
+                <view
+                    class="option-btn"
+                    data-key="{{item.key}}"
+                    bindtap="onOptionTap"
+                >
+                    <text class="option-key">{{item.key}}</text>
+                    <text class="option-text">{{item.text}}</text>
+                </view>
+            </view>
+
+            <view class="quiz-back-row" wx:if="{{currentIndex > 0}}">
+                <view class="back-question-btn" bindtap="onBackQuestion">返回上一题</view>
+            </view>
+        </view>
+    </view>
+
+    <view class="result-screen" wx:elif="{{mode === 'result' && result}}">
+        <view class="result-panel {{result.passed ? 'passed' : 'failed'}}">
+            <block wx:if="{{result.passed}}">
+                <text class="result-title">解锁了神秘入口</text>
+                <text class="enter-tip">长按进入</text>
+                <image
+                    class="group-qr-image"
+                    src="{{groupQrFileId}}"
+                    mode="widthFix"
+                    show-menu-by-longpress="{{true}}"
+                ></image>
+                <view class="qr-tip">
+                    <text>如果提示群聊人数已满</text>
+                    <text>请过一会（随缘）</text>
+                    <text>重新答题进入新群聊</text>
+                </view>
+            </block>
+
+            <block wx:else>
+                <text class="result-title">要不重新试试？</text>
+                <button class="primary-btn" bindtap="onRestart">重新开始</button>
+            </block>
+        </view>
+    </view>
+</view>

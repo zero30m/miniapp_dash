@@ -1,0 +1,113 @@
+/* ==================== DIY 选项面板 ==================== */
+
+/* 折叠态 - 小圆形按钮（右上角，卡牌区域上方） */
+.diy-fab {
+    position: fixed;
+    right: 32rpx;
+    top: 24rpx;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: #FFF;
+    border: 3rpx solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: breathe 2.5s ease-in-out infinite;
+    box-shadow: 3px 3px 0 0 #000;
+}
+
+.diy-fab.hidden {
+    display: none;
+}
+
+.fab-icon {
+    width: 44rpx;
+    height: 44rpx;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+/* ==================== 展开态 - 遮罩 + 浮动卡片 ==================== */
+
+.diy-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.diy-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 浮动卡片 - 无硬阴影，居中显示，自适应宽度 */
+.diy-panel {
+    width: 92vw;
+    max-height: 75vh;
+    background: #FFF;
+    border: 3rpx solid #000;
+    border-radius: 24rpx;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9) translateY(40rpx);
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    /* 无硬阴影 */
+    box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.12);
+}
+
+.diy-overlay.show .diy-panel {
+    transform: scale(1) translateY(0);
+}
+
+/* 标题栏 - 居中，与内容区背景统一，无分隔线 */
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28rpx 32rpx 12rpx;
+    background: #FFF;
+    position: relative;
+}
+
+.panel-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: 6rpx;
+    text-align: center;
+}
+
+/* 面板内容 - 内部有足够 padding 防止内容被裁切 */
+.panel-body {
+    padding: 20rpx 32rpx 16rpx;
+    max-height: 62vh;
+    box-sizing: border-box;
+}
+
+/* 底部关闭提示 */
+.panel-footer-hint {
+    padding: 12rpx 0 28rpx;
+    text-align: center;
+}
+
+.hint-text {
+    font-size: 22rpx;
+    color: #aaa;
+    letter-spacing: 2rpx;
+}

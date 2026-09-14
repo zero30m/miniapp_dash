@@ -1,0 +1,26 @@
+<view class="diy-slider-wrap">
+    <!-- 标签 -->
+    <view class="slider-label">{{label}}</view>
+
+    <view class="slider-row">
+        <!-- 左侧 SVG -->
+        <image class="slider-icon" src="{{iconLeft}}" mode="aspectFit" wx:if="{{iconLeft}}"></image>
+
+        <!-- 无限滚动线条轨道 -->
+        <view class="slider-scroll-area"
+              bindtouchstart="onTouchStart"
+              catchtouchmove="onTouchMove"
+              bindtouchend="onTouchEnd">
+            <!-- 第一层：细线（全区域可见，无限滚动） -->
+            <view class="slider-lines-thin" style="background-position-x: {{bgOffset}}px;"></view>
+            <!-- 第二层：粗线（通过 mask 仅在中央区域渐显，与细线同步滚动） -->
+            <view class="slider-lines-thick" style="background-position-x: {{bgOffset}}px;"></view>
+        </view>
+
+        <!-- 右侧 SVG -->
+        <image class="slider-icon" src="{{iconRight}}" mode="aspectFit" wx:if="{{iconRight}}"></image>
+    </view>
+
+    <!-- 当前值文字 -->
+    <view class="slider-value-text">{{displayValue}}</view>
+</view>

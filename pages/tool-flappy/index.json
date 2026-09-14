@@ -1,0 +1,8 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "像素鸟",
+    "backgroundColor": "#FFFDE7",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false,
+    "disableScroll": true
+}

@@ -1,0 +1,202 @@
+<view class="queen-game-root" style="--queen-stage-bottom: {{stageBottomPx}}px; --queen-stage-shift: {{stageOffsetPx}}px; --queen-overlay-bottom: {{overlayBottomPx}}px;">
+    <view class="share-hint" wx:if="{{gamePhase === 'waiting' && (!isOnlineMode || roomMembers.length <= 1)}}"
+          style="top: {{navTop + 56}}px; right: {{menuRight}}px; --arrow-right: {{menuDotRight - menuRight}}px;">
+        <text class="share-text">{{copy.shareHint}}</text>
+    </view>
+
+    <view class="waiting-stage" wx:if="{{gamePhase === 'waiting'}}">
+        <text class="waiting-title">{{copy.waitingTitle}}</text>
+        <view class="online-info">
+            <text class="online-label">{{copy.onlinePrefix}}{{onlineCount}}{{copy.peopleUnit}}</text>
+        </view>
+        <button class="start-button" bindtap="startGame" loading="{{isStarting}}" disabled="{{isStarting}}">START</button>
+        <text class="waiting-note">{{isOnlineMode ? copy.anyoneCanStart : copy.shareFirst}}</text>
+    </view>
+
+    <block wx:else>
+        <scroll-view class="players-strip" scroll-x enhanced show-scrollbar="{{false}}">
+            <view class="players-row"
+                  style="width: {{playerRowWidthPx}}px; padding-left: {{playerSidePaddingPx}}px; padding-right: {{playerSidePaddingPx}}px;">
+                <view class="player-chip {{item.isMe ? 'me' : ''}} {{item.isActive ? 'active' : ''}} {{item.isBoss ? 'boss' : ''}}"
+                      style="width: {{playerChipWidthPx}}px; --player-avatar-size: {{playerAvatarSizePx}}px;"
+                      wx:for="{{playerViews}}" wx:key="openId">
+                    <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                    <view class="player-chip-main">
+                        <view class="player-chip-head">
+                            <text class="player-name">{{item.name}}{{item.isMe ? copy.meSuffix : ''}}</text>
+                            <text class="player-drink">{{copy.drinkDebt}} {{item.drinkCount}}</text>
+                        </view>
+                        <view class="player-flags">
+                            <text class="player-flag boss-flag" wx:if="{{item.isBoss}}">{{copy.bossBadge}}</text>
+                            <text class="player-flag" wx:if="{{item.cameraCards}}">{{copy.cameraShort}} {{item.cameraCards}}</text>
+                            <text class="player-flag" wx:if="{{item.toiletCards}}">{{copy.toiletShort}} {{item.toiletCards}}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="spectator-badge" wx:if="{{isSpectator}}">{{copy.spectator}}</view>
+
+        <view class="queen-meta-row">
+            <text class="deck-pill">{{copy.remainingCards}} {{remainingCards}}</text>
+            <scroll-view class="cp-strip" scroll-x enhanced show-scrollbar="{{false}}" wx:if="{{cpPairs.length}}">
+                <view class="cp-strip-inner">
+                    <text class="cp-pill" wx:for="{{cpPairs}}" wx:key="id">{{item.label}}</text>
+                </view>
+            </scroll-view>
+        </view>
+
+        <view class="main-stage normal-stage" wx:if="{{gamePhase === 'normal'}}">
+            <text class="phase-kicker">{{copy.currentTurn}}</text>
+            <text class="phase-title">{{currentPlayerName}}</text>
+            <button class="draw-button" wx:if="{{canDraw}}" bindtap="drawCard" disabled="{{isActing}}">
+                <view class="draw-card-back"></view>
+                <text>{{copy.drawCard}}</text>
+            </button>
+            <text class="watching-turn" wx:else>{{copy.waitDraw}}</text>
+
+        </view>
+
+        <view class="main-stage select-stage" wx:elif="{{gamePhase === 'target'}}">
+            <view class="current-card-host">
+                <poker-card card="{{currentCard}}" size="drawn"></poker-card>
+            </view>
+            <text class="panel-title">{{targetMultiple ? copy.chooseDrinkGroup : copy.chooseDrinkOne}}</text>
+            <view class="target-grid {{targetLayoutClass}}">
+                <button class="target-button player-target-button {{item.selected ? 'selected' : ''}}" wx:for="{{targetPlayers}}" wx:key="openId"
+                        data-openid="{{item.openId}}" bindtap="toggleTarget" disabled="{{!canResolveEffect}}">{{item.name}}</button>
+            </view>
+            <button class="confirm-button" wx:if="{{canResolveEffect}}" bindtap="confirmTargets" disabled="{{!selectedTargetIds.length || isActing}}">{{targetMultiple ? copy.confirm : copy.confirmOne}}</button>
+            <text class="watching-turn" wx:else>{{copy.waitOwnerChoice}}</text>
+        </view>
+
+        <view class="main-stage cp-stage" wx:elif="{{gamePhase === 'cp'}}">
+            <view class="current-card-host">
+                <poker-card card="{{currentCard}}" size="drawn"></poker-card>
+            </view>
+            <text class="panel-title">{{copy.cpInstruction}}</text>
+            <view class="target-grid {{targetLayoutClass}}">
+                <button class="target-button player-target-button {{item.selected ? 'selected' : ''}}" wx:for="{{targetPlayers}}" wx:key="openId"
+                        data-openid="{{item.openId}}" bindtap="toggleTarget" disabled="{{!canResolveEffect}}">{{item.name}}{{item.openId === myOpenId ? copy.meSuffix : ''}}</button>
+            </view>
+            <button class="confirm-button" wx:if="{{canResolveEffect}}" bindtap="createCp" disabled="{{selectedTargetIds.length !== 2 || isActing}}">{{copy.lockCp}}</button>
+            <view class="existing-pairs" wx:if="{{canResolveEffect && cpPairs.length}}">
+                <text class="existing-title">{{copy.orUnlock}}</text>
+                <button class="pair-button" wx:for="{{cpPairs}}" wx:key="id" data-id="{{item.id}}" bindtap="removeCp">{{item.label}}</button>
+            </view>
+            <text class="watching-turn" wx:if="{{!canResolveEffect}}">{{copy.waitOwnerChoice}}</text>
+        </view>
+
+        <view class="main-stage minigame-stage" wx:elif="{{gamePhase === 'garden'}}">
+            <text class="minigame-label">{{copy.gardenTitle}}</text>
+            <view class="code-garden-mark"><view></view><view></view><view></view></view>
+            <text class="minigame-topic">{{topicText}}</text>
+            <button class="confirm-button" wx:if="{{isPlayer}}" bindtap="gardenEnd" disabled="{{isActing || actionsLocked}}">{{copy.gardenEnd}}</button>
+            <text class="watching-turn" wx:else>{{copy.spectatorWatching}}</text>
+        </view>
+
+        <view class="main-stage minigame-stage" wx:elif="{{gamePhase === 'link'}}">
+            <text class="minigame-label">{{copy.linkTitle}}</text>
+            <text class="turn-line">{{activePlayerName}}<text wx:if="{{countdownSeconds > 0}}"> · {{countdownSeconds}}</text></text>
+            <view class="link-board {{!canMiniAct ? 'locked' : ''}}"
+                  style="width: {{linkBoardSizePx}}px; height: {{linkBoardSizePx}}px; grid-template-columns: repeat({{linkBoardSide}}, minmax(0, 1fr)); grid-template-rows: repeat({{linkBoardSide}}, minmax(0, 1fr)); --queen-link-gap: {{linkCellGapPx}}px;">
+                <view class="link-cell pattern-{{item.code}} {{item.removed ? 'removed' : ''}} {{item.selected ? 'selected' : ''}}"
+                      wx:for="{{linkBoard}}" wx:key="id" data-id="{{item.id}}" bindtap="pickLink">
+                    <view class="link-shape"></view>
+                </view>
+            </view>
+            <text class="watching-turn" wx:if="{{!canMiniAct}}">{{copy.waitMiniTurn}}</text>
+        </view>
+
+        <view class="main-stage minigame-stage" wx:elif="{{gamePhase === 'mine'}}">
+            <text class="minigame-label">{{copy.mineTitle}}</text>
+            <text class="turn-line">{{activePlayerName}}<text wx:if="{{countdownSeconds > 0}}"> · {{countdownSeconds}}</text></text>
+            <view class="mine-board {{!canMiniAct ? 'locked' : ''}}"
+                  style="width: {{mineBoardSizePx}}px; height: {{mineBoardSizePx}}px; --queen-mine-gap: {{mineCellGapPx}}px; --queen-mine-font-size: {{mineCellFontSizePx}}px;">
+                <view class="mine-cell {{item.revealed ? 'revealed' : ''}} {{item.bomb ? 'bomb' : ''}}"
+                      wx:for="{{mineCells}}" wx:key="id" data-id="{{item.id}}" bindtap="pickMine">
+                    <text wx:if="{{item.revealed && !item.bomb && item.value}}">{{item.value}}</text>
+                    <view class="code-bomb" wx:if="{{item.bomb}}"><view></view></view>
+                </view>
+            </view>
+            <text class="watching-turn" wx:if="{{!canMiniAct}}">{{copy.waitMiniTurn}}</text>
+        </view>
+
+        <view class="main-stage minigame-stage medusa-stage" wx:elif="{{gamePhase === 'medusa'}}">
+            <text class="minigame-label">{{copy.medusaTitle}}</text>
+            <view class="medusa-eye"><view class="eye-core"></view></view>
+            <text class="countdown-big">{{countdownSeconds}}</text>
+            <text class="panel-title">{{copy.medusaInstruction}}</text>
+            <view class="target-grid {{targetLayoutClass}}" wx:if="{{isPlayer && !medusaSubmitted}}">
+                <button class="target-button player-target-button" wx:for="{{targetPlayers}}" wx:key="openId"
+                        data-openid="{{item.openId}}" bindtap="selectMedusa" disabled="{{actionsLocked}}">{{item.name}}</button>
+                <button class="target-button pass" data-openid="" bindtap="selectMedusa" disabled="{{actionsLocked}}">{{copy.chooseNobody}}</button>
+            </view>
+            <text class="watching-turn" wx:else>{{medusaSubmitted ? copy.choiceLocked : copy.spectatorWatching}}</text>
+        </view>
+
+        <view class="main-stage minigame-stage camera-stage" wx:elif="{{gamePhase === 'camera'}}">
+            <text class="minigame-label">{{copy.cameraTitle}}</text>
+            <text class="camera-source">{{copy.cameraTriggered}}</text>
+            <text class="countdown-big">{{countdownSeconds}}</text>
+            <button class="camera-button {{cameraPressed ? 'pressed' : ''}}" bindtap="pressCamera"
+                    disabled="{{cameraPressed || !isPlayer || isActing}}">
+                <view class="camera-ring"><view class="camera-core"></view></view>
+                <text>{{cameraPressed ? copy.cameraDone : copy.pressNow}}</text>
+            </button>
+        </view>
+
+        <view class="main-stage toilet-prompt-stage" wx:elif="{{gamePhase === 'toiletPrompt'}}">
+            <block wx:if="{{canChooseToilet}}">
+                <text class="toilet-prompt-title">{{copy.toiletPromptTitle}}</text>
+                <text class="toilet-prompt-warning">{{toiletPromptWarning}}</text>
+                <view class="toilet-prompt-actions">
+                    <button class="toilet-choice-button block" bindtap="useToiletBlock" disabled="{{isActing}}">{{copy.blockDrink}}</button>
+                    <button class="toilet-choice-button break" bindtap="useToiletBreak" disabled="{{isActing}}">{{copy.goToilet}}</button>
+                    <button class="toilet-choice-button skip" bindtap="skipToilet" disabled="{{isActing}}">{{copy.keepToilet}}</button>
+                </view>
+            </block>
+            <text class="watching-turn" wx:else>{{copy.waitToiletChoice}}</text>
+        </view>
+
+        <view class="main-stage finished-stage" wx:elif="{{gamePhase === 'finished'}}">
+            <text class="phase-title">{{copy.deckFinished}}</text>
+            <text class="waiting-note">{{copy.roundFinished}}</text>
+            <button class="start-button" bindtap="startGame" loading="{{isStarting}}" disabled="{{isStarting || actionsLocked}}">{{copy.playAgain}}</button>
+        </view>
+    </block>
+
+    <view class="floating-held-actions" wx:if="{{canTriggerBoss || canTriggerCamera}}">
+        <view class="floating-boss-targets" wx:if="{{showBossTargets && canTriggerBoss}}">
+            <button class="floating-boss-target-button" wx:for="{{targetPlayers}}" wx:key="openId"
+                    data-openid="{{item.openId}}" bindtap="bossTarget" disabled="{{isActing}}">{{item.name}}</button>
+        </view>
+        <button class="floating-action-button floating-boss-button" wx:elif="{{canTriggerBoss}}" bindtap="toggleBossTargets" disabled="{{isActing}}">
+            <view class="floating-laser-mark"><view></view></view>
+            <text>{{copy.fireLaser}}</text>
+        </button>
+        <button class="floating-action-button floating-camera-button" wx:if="{{canTriggerCamera}}" bindtap="triggerCamera" disabled="{{isActing}}">
+            <view class="floating-camera-mark"><view></view></view>
+            <text>{{copy.useCamera}} {{myCameraCards}}</text>
+        </button>
+    </view>
+
+    <view class="result-overlay" wx:if="{{showLocalResult}}" bindtap="continueResult">
+        <view class="result-content" catchtap="continueResult">
+            <view class="result-boss-card" wx:if="{{showBossCard}}">
+                <queen-card size="drawn" title="{{copy.bossCardTitle}}"></queen-card>
+            </view>
+            <view class="result-boss-card" wx:elif="{{showResultCard}}">
+                <poker-card card="{{resultCard}}" size="drawn"></poker-card>
+            </view>
+            <text class="result-hand" wx:if="{{showDrinkPointer}}">🫵</text>
+            <text class="result-title">{{resultTitle}}</text>
+            <text class="result-main">{{resultMain}}</text>
+            <view class="result-lines" wx:if="{{resultLines.length}}">
+                <text wx:for="{{resultLines}}" wx:key="*this">{{item}}</text>
+            </view>
+            <text class="result-hint">{{copy.tapContinue}}</text>
+        </view>
+    </view>
+</view>

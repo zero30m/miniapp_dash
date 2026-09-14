@@ -1,0 +1,7 @@
+{
+    "component": true,
+    "usingComponents": {
+        "poker-card": "/components/poker-card/index",
+        "queen-card": "/components/queen-card/index"
+    }
+}

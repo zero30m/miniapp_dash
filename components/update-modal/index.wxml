@@ -1,0 +1,33 @@
+<!-- 更新通知弹窗 -->
+<view class="update-modal-container" wx:if="{{show}}">
+  <view class="update-modal-mask" catchtap="preventBubble"></view>
+  <view class="update-modal-content">
+    <!-- 顶部图标 -->
+    <view class="update-icon-wrapper">
+      <view class="update-icon">🎉</view>
+    </view>
+    
+    <!-- 标题区域 -->
+    <view class="update-header">
+      <view class="update-version">{{versionInfo.version}}</view>
+      <view class="update-title">{{versionInfo.title}}</view>
+    </view>
+    
+    <!-- 更新内容 -->
+    <scroll-view class="update-content-scroll" scroll-y="{{true}}">
+      <view class="update-content">
+        <block wx:for="{{contentLines}}" wx:key="*this">
+          <view class="update-line {{item.type}}">
+            <text wx:if="{{item.bullet}}" class="update-bullet">{{item.bullet}}</text>
+            <text class="update-text">{{item.text}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    
+    <!-- 确认按钮 -->
+    <button class="confirm-btn" bindtap="onConfirm">
+      {{confirmText}}
+    </button>
+  </view>
+</view>

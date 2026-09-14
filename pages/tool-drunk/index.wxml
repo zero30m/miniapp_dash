@@ -1,0 +1,91 @@
+<!--
+  喝醉了吗 - 手抖检测小游戏
+-->
+<view class="drunk-page" bindtap="onPageTap">
+  
+  <!-- 背景光效 -->
+  <view class="bg-glow top-left"></view>
+  <view class="bg-glow bottom-right"></view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <!-- IDLE: 初始界面 -->
+  <view class="setup-container {{gameState === 'IDLE' ? 'show' : ''}}">
+    <view class="setup-badge">{{uiCopy.setupBadge}}</view>
+    <view class="setup-title">{{uiCopy.setupTitle}}</view>
+    <view class="setup-divider"></view>
+    <view class="setup-desc">{{uiCopy.setupDesc}}</view>
+    <view class="setup-subdesc">{{uiCopy.setupSubdescSolo}}</view>
+    
+    <view class="start-btn" catchtap="onStartTest">
+      <text class="start-btn-text">{{uiCopy.startTest}}</text>
+    </view>
+
+  </view>
+
+  <!-- TESTING: 测试进行中 -->
+  <view class="testing-container {{gameState === 'TESTING' ? 'show' : ''}}">
+    <view class="testing-title">{{uiCopy.testingTitle}}</view>
+    <view class="testing-countdown">{{testCountdown}}</view>
+    
+    <!-- 抖动程度可视化 -->
+    <view class="shake-meter">
+      <view class="shake-meter-bg"></view>
+      <view class="shake-meter-fill" style="width: {{shakePercent}}%;"></view>
+      <view class="shake-threshold" style="left: {{thresholdPercent}}%;"></view>
+      <view class="shake-indicator" style="left: {{shakePercent}}%;"></view>
+    </view>
+    
+    <view class="shake-labels">
+      <text class="shake-label">{{uiCopy.steadyLabel}}</text>
+      <text class="shake-label">{{uiCopy.shakyLabel}}</text>
+    </view>
+    
+    <!-- 实时抖动波纹 -->
+    <view class="shake-wave-container">
+      <view class="shake-wave" style="transform: scale({{1 + shakePercent / 100}});"></view>
+    </view>
+  </view>
+
+  <!-- RESULT: 单机模式结果界面 -->
+  <view class="result-overlay {{gameState === 'RESULT' ? 'visible' : ''}}">
+    <view class="result-container {{gameState === 'RESULT' ? 'animating' : ''}}">
+      <!-- 结果图标 -->
+      <view class="result-icon-wrap">
+        <text class="result-emoji">{{resultEmoji}}</text>
+      </view>
+      
+      <!-- 结果文案 -->
+      <view class="result-text-wrap">
+        <text class="result-title {{resultType}}">{{resultTitle}}</text>
+        <text class="result-desc">{{resultDesc}}</text>
+      </view>
+      
+      <!-- 抖动程度条（结果页） -->
+      <view class="result-meter">
+        <view class="result-meter-bg"></view>
+        <view class="result-meter-fill {{resultType}}" style="width: {{finalShakePercent}}%;"></view>
+      </view>
+      <view class="result-meter-labels">
+        <text>{{uiCopy.resultScaleSober}}</text>
+        <text>{{uiCopy.resultScaleTipsy}}</text>
+        <text>{{uiCopy.resultScaleDrunk}}</text>
+      </view>
+      
+      <view class="result-hint">{{uiCopy.resultHint}}</view>
+    </view>
+    
+    <!-- 装饰粒子 -->
+    <view class="particle p1"></view>
+    <view class="particle p2"></view>
+    <view class="particle p3"></view>
+    <view class="particle p4"></view>
+    <view class="particle p5"></view>
+    <view class="particle p6"></view>
+  </view>
+
+</view>

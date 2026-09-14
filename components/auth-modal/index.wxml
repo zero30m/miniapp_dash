@@ -1,0 +1,111 @@
+<view class="auth-modal-container" wx:if="{{show}}">
+  <view class="auth-modal-mask"></view>
+  <view class="auth-modal-content" style="{{keyboardVisible ? 'transform: translateY(-' + keyboardOffset + 'px);' : ''}}" >
+    
+    <!-- Step 1: Login -->
+    <block wx:if="{{step === 'login'}}">
+      <view class="auth-header">
+        <image class="pop-out-icon" src="{{welcomeImage}}" mode="aspectFit"></image>
+        <view class="auth-title">{{copy.loginTitle}}</view>
+        <view class="auth-subtitle">{{copy.loginSubtitle}}</view>
+      </view>
+
+      <view class="feature-list">
+        <view class="feature-item">
+          <view class="feature-icon">✨</view>
+          <view class="feature-text">{{copy.featurePersonalized}}</view>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon">🎲</view>
+          <view class="feature-text">{{copy.featureTools}}</view>
+        </view>
+        <view class="feature-item">
+          <view class="feature-icon">👑</view>
+          <view class="feature-text">{{copy.featureVip}}</view>
+        </view>
+      </view>
+
+      <button class="login-btn" bindtap="onLoginClick" loading="{{isProcessing}}" disabled="{{isProcessing}}">
+        {{copy.loginButton}}
+      </button>
+      <button class="cancel-btn" bindtap="onCancel">{{copy.cancelButton}}</button>
+    </block>
+
+    <!-- Step 1.5: Agreement Confirmation (仅未注册用户显示) -->
+    <block wx:if="{{step === 'agreement'}}">
+      <view class="agreement-content">
+        <view class="agreement-icon">📜</view>
+        <view class="auth-title">{{copy.agreementTitle}}</view>
+        <view class="agreement-desc">
+          {{copy.agreementDesc}}
+        </view>
+        
+        <view class="agreement-links">
+          <view class="agreement-link-item">
+            <text class="link-bullet">•</text>
+            <text class="link-text">{{copy.serviceAgreement}}</text>
+          </view>
+          <view class="agreement-link-item">
+            <text class="link-bullet">•</text>
+            <text class="link-text">{{copy.privacyPolicy}}</text>
+          </view>
+        </view>
+        
+        <view class="agreement-notice">
+          {{copy.agreementNotice}}
+        </view>
+        
+        <view class="agreement-buttons">
+          <button class="agree-btn" bindtap="onAgreeAndContinue">
+            {{copy.agreeButton}}
+          </button>
+          <button class="disagree-btn" bindtap="onCancelAgreement">
+            {{copy.disagreeButton}}
+          </button>
+        </view>
+      </view>
+    </block>
+
+    <!-- Step 2: Invite Code -->
+    <block wx:if="{{step === 'invite'}}">
+      <view class="invite-content">
+        <view class="auth-header">
+          <view class="auth-title">{{isRenewal ? copy.renewalTitle : copy.inviteTitle}}</view>
+          <view class="auth-subtitle">{{isRenewal ? copy.renewalSubtitle : copy.inviteSubtitle}}</view>
+        </view>
+        
+        <!-- 6个数字方框 -->
+        <view class="code-boxes" bindtap="focusInput">
+          <view class="code-box {{inviteCode.length === index && keyboardVisible ? 'active' : ''}} {{inviteCode.length > index ? 'filled' : ''}}" wx:for="{{6}}" wx:key="index">
+            <text class="code-digit">{{inviteCode[index] || ''}}</text>
+            <view class="cursor" wx:if="{{inviteCode.length === index && keyboardVisible}}"></view>
+          </view>
+        </view>
+        
+        <!-- 隐藏的真实输入框 -->
+        <input class="hidden-input" 
+               id="inviteInput"
+               type="number" 
+               maxlength="6" 
+               value="{{inviteCode}}"
+               bindinput="onInputInvite"
+               bindfocus="onInputFocus"
+               bindblur="onInputBlur"
+               focus="{{inputFocused}}"
+               adjust-position="{{false}}" />
+        
+        <button class="login-btn" bindtap="onVerifyInvite" loading="{{isProcessing}}" disabled="{{isProcessing}}">{{copy.verifyButton}}</button>
+      </view>
+    </block>
+
+    <!-- Step 3: Welcome -->
+    <block wx:if="{{step === 'welcome'}}">
+      <view class="welcome-container">
+        <view class="welcome-icon">🎉</view>
+        <view class="auth-title">{{copy.welcomeTitle}}</view>
+        <view class="auth-subtitle">{{copy.welcomeSubtitle}}</view>
+      </view>
+    </block>
+
+  </view>
+</view>

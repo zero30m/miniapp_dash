@@ -1,0 +1,55 @@
+<view class="container {{animationClass}}">
+  
+  <view class="game-layout">
+    <!-- Left: Question Card (Neo-Brutalism) -->
+    <view class="card-section">
+      <view class="neo-card {{cardAnimation}}">
+        <!-- Removed decorative corners, focusing on solid borders -->
+        
+        <view class="card-content">
+          <!-- 图片模式 -->
+          <block wx:if="{{showImage}}">
+            <!-- 加载中状态 -->
+            <view wx:if="{{imageLoading}}" class="loading-container">
+              <view class="loading-spinner"></view>
+              <text class="loading-text">{{uiCopy.loading}}</text>
+            </view>
+            <!-- 图片 -->
+            <image 
+              wx:if="{{imageUrl}}" 
+              src="{{imageUrl}}" 
+              class="card-image {{imageLoading ? 'hidden' : ''}}" 
+              mode="aspectFit"
+              bindload="onImageLoad"
+              binderror="onImageError">
+            </image>
+            <!-- 加载失败提示 -->
+            <view wx:if="{{imageError && !imageLoading}}" class="error-container">
+              <text class="error-text">{{uiCopy.imageEmpty}}</text>
+            </view>
+          </block>
+          <!-- 文字模式 -->
+          <view wx:else class="question-container">
+            <view class="question-title" wx:if="{{currentQuestion.title}}">{{currentQuestion.title}}</view>
+            <view class="question-content {{fontSizeClass}}">{{currentQuestion.content}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Right: Controls -->
+    <view class="control-section">
+      <view class="back-btn" bindtap="goBack">
+        <text class="back-btn-text">{{uiCopy.exit}}</text>
+      </view>
+
+      <view class="neo-btn next-btn" bindtap="nextQuestion" hover-class="btn-hover">
+        <text class="btn-text">{{uiCopy.next}}</text>
+      </view>
+
+      <view class="neo-btn last-btn" bindtap="lastQuestion" hover-class="btn-hover">
+        <text class="btn-text">{{uiCopy.last}}</text>
+      </view>
+    </view>
+  </view>
+</view>

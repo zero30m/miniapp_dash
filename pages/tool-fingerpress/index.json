@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "按手指",
+  "backgroundColor": "#050505",
+  "enablePullDownRefresh": false,
+  "disableScroll": true
+}

@@ -1,0 +1,544 @@
+/* 倒计时页面 - Neo-Brutalism (Yellow) */
+.countdown-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #FFFDE7; /* Cream */
+  overflow: hidden;
+  touch-action: none;
+  --accent-yellow: #F0E634;
+}
+
+/* 移除光效 */
+.bg-glow { display: none; }
+
+/* 返回按钮 */
+.back-btn {
+  position: fixed;
+  left: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999rpx;
+  z-index: 50;
+  box-shadow: 4px 4px 0 0 #000000;
+}
+
+.back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #000000;
+  line-height: 1;
+}
+
+.back-text {
+  font-size: 26rpx;
+  color: #000000;
+  font-weight: 800;
+}
+
+/* ==================== SETUP界面 ==================== */
+.setup-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.setup-container.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.setup-title {
+  font-size: 72rpx;
+  font-weight: 900;
+  color: #000;
+  letter-spacing: 4rpx;
+  margin-bottom: 20rpx;
+  text-shadow: none;
+  text-transform: uppercase;
+}
+
+.setup-desc {
+  font-size: 28rpx;
+  color: #000;
+  font-weight: 700;
+  opacity: 0.6;
+  margin-bottom: 80rpx;
+}
+
+/* 秒数选择器 */
+.timer-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40rpx;
+  margin-bottom: 60rpx;
+}
+
+.timer-btn {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 0 #000;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.timer-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.timer-btn.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+  background: #ccc;
+}
+
+.btn-icon {
+  font-size: 60rpx;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+}
+
+.timer-display {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+  min-width: 200rpx;
+  justify-content: center;
+  background: #fff;
+  border: 4px solid #000;
+  padding: 20rpx 40rpx;
+  border-radius: 20rpx;
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+.timer-number {
+  font-size: 120rpx;
+  font-weight: 900;
+  color: #000;
+  text-shadow: none;
+  line-height: 1;
+  font-family: 'DIN Alternate', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.timer-unit {
+  font-size: 32rpx;
+  color: #000;
+  font-weight: 800;
+  transform: translateY(-20rpx);
+}
+
+/* 开始按钮 */
+.start-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 440rpx;
+  height: 120rpx;
+  background: var(--accent-yellow);
+  border: 4px solid #000;
+  border-radius: 999rpx;
+  box-shadow: 6px 6px 0 0 #000;
+  transition: all 0.2s ease;
+}
+
+.start-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.start-btn-text {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #000;
+  letter-spacing: 4rpx;
+  text-shadow: none;
+}
+
+/* ==================== 倒计时数字 ==================== */
+.countdown-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.countdown-display.show { opacity: 1; }
+
+.countdown-number {
+  font-size: 300rpx;
+  font-weight: 900;
+  color: #000; /* Black numerals */
+  text-shadow: none;
+  animation: countPulse 1s ease-in-out infinite;
+  font-family: 'DIN Alternate', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-text-stroke: 4px #fff; /* White outline for separation */
+}
+
+@keyframes countPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* ==================== "开始!" 显示 ==================== */
+.start-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.start-display.show { opacity: 1; }
+
+.start-text {
+  display: block;
+  font-size: 120rpx;
+  font-weight: 900;
+  color: #000;
+  text-shadow: 6px 6px 0 var(--accent-yellow);
+  animation: startPulse 0.5s ease-in-out infinite alternate;
+  white-space: nowrap;
+}
+
+@keyframes startPulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+
+.start-hint {
+  display: block;
+  font-size: 32rpx;
+  color: #000;
+  font-weight: 700;
+  margin-top: 30rpx;
+  opacity: 0.7;
+}
+
+.start-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #000;
+  font-weight: 600;
+  margin-top: 16rpx;
+  opacity: 0.45;
+}
+
+/* ==================== release/liftFinger 阶段文案 ==================== */
+.release-phase-text {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #000;
+  opacity: 0.6;
+  margin-top: 20rpx;
+  text-align: center;
+}
+
+/* ==================== liftFinger "松!" 大字提示 ==================== */
+.lift-now-display {
+  margin-top: 10rpx;
+  text-align: center;
+}
+
+.lift-now-text {
+  font-size: 200rpx;
+  font-weight: 900;
+  color: #000;
+  text-shadow: 8px 8px 0 var(--accent-yellow);
+  animation: liftFlash 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes liftFlash {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.15); opacity: 0.8; }
+}
+
+/* ==================== 长按进度环 ==================== */
+.ring-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300rpx;
+  height: 300rpx;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color, rgba(0,0,0,0.8)) var(--progress, 0deg),
+    transparent var(--progress, 0deg)
+  );
+  -webkit-mask: radial-gradient(
+    transparent 65%, #000 65.5%, #000 69%, transparent 69.5%
+  );
+  mask: radial-gradient(
+    transparent 65%, #000 65.5%, #000 69%, transparent 69.5%
+  );
+  pointer-events: none;
+  transition: background 0.1s linear;
+}
+
+/* 进度环底部轨道 */
+.ring-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300rpx;
+  height: 300rpx;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 3rpx solid rgba(0, 0, 0, 0.1);
+  -webkit-mask: radial-gradient(
+    transparent 65%, #000 65.5%, #000 69%, transparent 69.5%
+  );
+  mask: radial-gradient(
+    transparent 65%, #000 65.5%, #000 69%, transparent 69.5%
+  );
+  background: rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+}
+
+/* ==================== 点击计数标签 ==================== */
+.tap-count {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28rpx;
+  font-weight: 900;
+  color: #000;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ==================== 触摸阶段倒计时 ==================== */
+.touch-countdown {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 25;
+  text-align: center;
+}
+
+.touch-countdown.show { opacity: 1; }
+
+.touch-countdown-number {
+  font-size: 120rpx;
+  font-weight: 900;
+  color: #000;
+  -webkit-text-stroke: 2px #fff;
+}
+
+/* ==================== 手指光晕 (复用 Finger Styles) ==================== */
+.finger-ring {
+  position: absolute;
+  width: 360rpx; /* Increased from 300 to match Finger Press */
+  height: 360rpx;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+.finger-ring.eliminated {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.3);
+}
+
+.ring-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 240rpx; /* Increased from 180 to match Finger Press */
+  height: 240rpx;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 6rpx solid #000;
+  background: var(--color);
+  box-shadow: 4px 4px 0 0 #000;
+  animation: ringPulse 1.5s infinite ease-in-out;
+}
+
+.ring-glow { display: none; }
+
+.ring-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 4rpx solid #000;
+  opacity: 0;
+  animation: ripple 2s infinite;
+}
+
+.finger-ring.winner .ring-core {
+  background: #fff;
+  border-width: 10rpx;
+  animation: winnerPulse 0.5s infinite alternate;
+}
+
+@keyframes ringPulse {
+  0% { transform: translate(-50%, -50%) scale(0.95); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(0.95); }
+}
+
+@keyframes ripple {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+}
+
+@keyframes winnerPulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* ==================== 结果弹窗 ==================== */
+.result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.result-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  background: #FFFDE7;
+  border: 6px solid #000;
+  padding: 60rpx;
+  border-radius: 40rpx;
+  box-shadow: 12px 12px 0 0 #000;
+  transform: scale(0.3);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.result-overlay.visible .result-container {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.winner-indicator {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 40rpx;
+}
+
+.winner-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 6rpx solid #000;
+  background: var(--winner-color, #FF0055);
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+.result-title {
+  font-size: 60rpx;
+  font-weight: 900;
+  color: #000;
+  margin-bottom: 20rpx;
+  text-align: center;
+}
+
+.result-hint {
+  font-size: 32rpx;
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 40rpx;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.result-hint2 {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 60rpx;
+  background: #000;
+  border-radius: 50rpx;
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: 800;
+  animation: fadeIn 0.5s ease-out 0.5s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.particle {
+  background: #000;
+  position: absolute;
+  width: 16rpx; height: 16rpx;
+  border-radius: 50%;
+}
+
+.result-overlay.visible .particle {
+  animation: particleFly 2.5s ease-out infinite;
+}
+
+@keyframes particleFly {
+  0% { opacity: 0; transform: scale(0) translateY(0); }
+  15% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.3) translateY(-250rpx); }
+}

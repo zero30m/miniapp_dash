@@ -1,0 +1,450 @@
+/* 时空裂缝发起页样式 */
+
+page {
+    background: #FFFDE7;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    overflow: hidden;
+    background: #FFFDE7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30rpx 40rpx env(safe-area-inset-bottom);
+    box-sizing: border-box;
+    /* 移除 touch-action: none，允许滚动 */
+}
+
+/* 顶部标题 */
+.header {
+    text-align: center;
+    margin-bottom: 30rpx;
+    padding-top: 20rpx;
+    flex-shrink: 0;
+}
+
+.title {
+    font-size: 48rpx;
+    font-weight: 900;
+    color: #000000;
+    display: block;
+    margin-bottom: 8rpx;
+    letter-spacing: -2rpx;
+}
+
+.subtitle {
+    font-size: 26rpx;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.6);
+    letter-spacing: 1rpx;
+}
+
+/* 用户信息卡片 */
+.user-card {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    padding: 24rpx 32rpx;
+    border-radius: 24rpx;
+    border: 4rpx solid #000000;
+    box-shadow: 4rpx 4rpx 0 0 #000000;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 30rpx;
+    flex-shrink: 0;
+}
+
+.user-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    border: 3rpx solid #000000;
+    flex-shrink: 0;
+}
+
+.user-info {
+    margin-left: 24rpx;
+    flex: 1;
+}
+
+.user-name {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 800;
+    color: #000000;
+}
+
+/* 内容区域 */
+.content-section {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow: hidden;
+    /* 【关键】设置最小高度为 0，允许 flex 子元素正确计算高度 */
+    min-height: 0;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 60rpx 0;
+}
+
+.empty-icon {
+    font-size: 100rpx;
+    display: block;
+    margin-bottom: 24rpx;
+    opacity: 0.6;
+}
+
+.empty-text {
+    font-size: 32rpx;
+    font-weight: 800;
+    color: #000000;
+    display: block;
+    margin-bottom: 12rpx;
+}
+
+.empty-sub {
+    font-size: 26rpx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* 助力用户区域 */
+.supporters-section {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* 【关键】设置最小高度为 0，允许 flex 子元素正确计算高度 */
+    min-height: 0;
+}
+
+/* 列表标题 + 刷新按钮 */
+.supporters-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20rpx;
+    margin-bottom: 20rpx;
+    flex-shrink: 0;
+}
+
+.title-text {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+/* 刷新按钮 - 绝对定位在右侧 */
+.refresh-btn {
+    position: absolute;
+    right: 0;
+    padding: 8rpx 20rpx;
+    border-radius: 999rpx;
+    border: 2rpx solid rgba(0, 0, 0, 0.15);
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.refresh-btn:active {
+    background: rgba(0, 0, 0, 0.05);
+    transform: scale(0.95);
+}
+
+.refresh-btn.refreshing {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.refresh-text {
+    font-size: 24rpx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.5);
+    line-height: 1;
+}
+
+/* 助力用户列表 - 可滚动 */
+.supporters-list {
+    flex: 1;
+    width: calc(100% + 16rpx);
+    margin-left: -8rpx;
+    padding: 8rpx;
+    padding-bottom: 16rpx;
+    box-sizing: border-box;
+    /* 【关键】设置最小高度为 0，让 flex: 1 生效并允许滚动 */
+    min-height: 0;
+    
+    /* 渐变遮罩淡入淡出效果 - 轻微版（避免黑边框虚化） */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 2%, black 96%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 2%, black 96%, transparent 100%);
+}
+
+/* 隐藏滚动条 */
+.supporters-list::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+}
+
+/* 每个好友独立卡片 */
+.supporter-card {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 28rpx;
+    background: #FFFFFF;
+    border-radius: 20rpx;
+    border: 4rpx solid #000000;
+    box-shadow: 4rpx 4rpx 0 0 #000000;
+    margin-bottom: 16rpx;
+    margin-right: 8rpx;
+}
+
+.supporter-card:last-child {
+    margin-bottom: 8rpx;
+}
+
+.supporter-avatar {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: 50%;
+    border: 3rpx solid #000000;
+    flex-shrink: 0;
+}
+
+.supporter-name {
+    margin-left: 24rpx;
+    font-size: 30rpx;
+    font-weight: 700;
+    color: #000000;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.supporter-placeholder {
+    padding: 40rpx;
+    text-align: center;
+}
+
+.placeholder-text {
+    font-size: 26rpx;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+/* 统计信息 */
+.supporters-footer {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    margin-top: 24rpx;
+    gap: 8rpx;
+    flex-shrink: 0;
+}
+
+.supporters-count {
+    font-size: 48rpx;
+    font-weight: 900;
+    color: #000000;
+    line-height: 1;
+}
+
+.supporters-label {
+    font-size: 26rpx;
+    font-weight: 800;
+    color: #000000;
+    line-height: 1;
+}
+
+/* 操作按钮区域 */
+.action-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+    margin-top: 30rpx;
+    flex-shrink: 0;
+}
+
+.share-btn,
+.timeline-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    height: 96rpx;
+    border-radius: 999rpx;
+    font-size: 30rpx;
+    font-weight: 900;
+    border: 4rpx solid #000000;
+    box-shadow: 4rpx 4rpx 0 0 #000000;
+    transition: all 0.1s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+}
+
+.share-btn:active,
+.timeline-btn:active {
+    transform: translate(2rpx, 2rpx);
+    box-shadow: 2rpx 2rpx 0 0 #000000;
+}
+
+.share-btn::after,
+.timeline-btn::after {
+    border: none;
+}
+
+.share-btn {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+.timeline-btn {
+    background: #9B5DE5;
+    color: #FFFFFF;
+}
+
+.btn-text {
+    font-size: 30rpx;
+    font-weight: 900;
+}
+
+.share-btn .btn-text {
+    color: #000000;
+}
+
+.timeline-btn .btn-text {
+    color: #FFFFFF;
+}
+
+/* 提示文案 */
+.tip-section {
+    text-align: center;
+    padding: 24rpx 0 20rpx;
+    flex-shrink: 0;
+}
+
+.tip-text {
+    font-size: 22rpx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+/* ==================== 单页模式样式（朋友圈打开时的访客视角）==================== */
+
+/* 发起人信息卡片 */
+.initiator-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    margin-top: 60rpx;
+}
+
+.initiator-avatar {
+    width: 120rpx;
+    height: 120rpx;
+    border-radius: 50%;
+    border: 4rpx solid #000000;
+    margin-bottom: 12rpx;
+}
+
+.initiator-name {
+    font-size: 32rpx;
+    font-weight: 800;
+    color: #000000;
+}
+
+/* 单页模式主要内容 */
+.single-page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* 主要文案 */
+.message-section {
+    text-align: center;
+    margin-bottom: 32rpx;
+}
+
+.message-text {
+    display: block;
+    font-size: 32rpx;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.7);
+    line-height: 1.6;
+}
+
+/* 副文案 */
+.sub-message {
+    text-align: center;
+    margin-bottom: 60rpx;
+}
+
+.sub-text {
+    display: block;
+    font-size: 28rpx;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.8;
+}
+
+/* Hi 按钮 */
+.hi-button-wrapper {
+    margin-bottom: 48rpx;
+}
+
+.hi-button {
+    width: 200rpx;
+    height: 200rpx;
+    border-radius: 50%;
+    background: #9B5DE5;
+    border: 6rpx solid #000000;
+    box-shadow: 8rpx 8rpx 0 0 #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hi-button-disabled {
+    opacity: 0.6;
+}
+
+.hi-text {
+    font-size: 72rpx;
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: -4rpx;
+}
+
+/* 单页模式引导 */
+.single-page-guide {
+    margin-top: 48rpx;
+    padding: 32rpx 40rpx;
+    text-align: center;
+    background: rgba(155, 93, 229, 0.1);
+    border-radius: 20rpx;
+    border: 2rpx dashed rgba(155, 93, 229, 0.4);
+}
+
+.guide-text {
+    font-size: 28rpx;
+    font-weight: 700;
+    color: #9B5DE5;
+    line-height: 1.6;
+}

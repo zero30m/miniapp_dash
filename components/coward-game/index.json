@@ -1,0 +1,6 @@
+{
+    "component": true,
+    "usingComponents": {
+        "poker-card": "/components/poker-card/index"
+    }
+}

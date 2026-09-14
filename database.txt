@@ -1,0 +1,743 @@
+模型名称：User
+模型标识：User
+*其中有效期字段数据类型为日期时间（时间戳），存储类型为NUMBER，最小值2025-12-16 00:00:00，最大值2029-12-31 00:00:00，最大值时默认为永久卡用户
+*其中最后登录时间字段数据类型为日期时间（时间戳），存储类型为NUMBER，最小值2025-12-16 00:00:00，最大值2029-12-31 00:00:00
+*其中累计登录次数字段数据类型为数字
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+OpenID
+OpenID	文本 | 单行文本	否	否
+已读版本	lastSeenVersion	文本 | 单行文本	否	否
+累计登录次数	loginCount	数字	否	否
+最后登录时间	lastLoginTime	日期时间	否	否
+有效期	memberExpiry	日期时间	否	否
+memberType
+memberType	文本 | 单行文本	否	否
+*memberType可选值: free(免费用户) / week(周卡) / month(月卡) / quarter(季卡) / year(年卡) / permanent(永久卡)
+admin
+admin	布尔值	否	否
+电话
+Phone	文本 | 单行文本	否	否
+UnionID
+UnionID	文本 | 单行文本	否	否
+索引名称
+索引属性
+索引字段
+操作
+idx_user_membertype	非唯一	
+memberType
+升序
+
+idx_user_openid	唯一	
+OpenID
+升序
+
+idx_user_unionid	唯一	
+UnionID
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+
+
+
+模型名称：RegistrationCode
+模型标识：RegistrationCode
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+OpenID
+OpenID	文本 | 单行文本	否	否
+注册码
+code	文本 | 单行文本	是	否
+是否已使用
+used	布尔值	否	否
+使用时间
+usedTime	日期时间	否	否
+创建时间
+createTime	日期时间	否	否
+时长（天）	shichangtian	数字	否	否
+绑定人	UnionID	文本 | 单行文本	否	否
+
+索引名称
+索引属性
+索引字段
+操作
+idx_code_used_createtime	非唯一	
+createTime
+降序
+
+used
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+uniq_reg_code	唯一	
+code
+升序
+
+
+
+
+模型名称：SystemConfig
+模型标识：SystemConfig
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+key
+key	文本 | 单行文本	是	是
+value	value	布尔值	是	否
+description	description	文本 | 单行文本	否	否
+索引名称
+索引属性
+索引字段
+操作
+lcap-index-key	唯一	
+key
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+
+模型名称：HomepageArticle
+模型标识：HomepageArticle
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+摘要
+summary	文本 | 单行文本	否	否
+imageurl	imageurl	文本 | 单行文本	否	否
+封面标题	titie1	文本 | 多行文本	是	否
+标签	tag	文本 | 多行文本	否	否
+公众号文章链接
+wechatArticleUrl	文本 | 单行文本	是	否
+更新时间
+updateTime	日期时间	否	否
+标题
+title	文本 | 单行文本	是	否
+创建时间
+createTime	日期时间	否	否
+排序
+sortOrder	数字	是	否
+状态
+status		否	否
+索引名称
+索引属性
+索引字段
+操作
+idx_article_status_order	非唯一	
+sortOrder
+升序
+
+status
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+
+模型名称：AppVersion
+模型标识：AppVersion
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+版本号
+version	文本 | 单行文本	是	是
+是否启用	enabled	布尔值	否	否
+发布时间	releaseTime	日期时间	是	否
+更新内容	content	文本 | 多行文本	是	否
+更新标题	title	文本 | 单行文本	是	否
+
+索引名称
+索引属性
+索引字段
+操作
+idx_release	非唯一	
+enabled
+升序
+
+releaseTime
+降序
+
+lcap-index-version	唯一	
+version
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+
+模型名称：GameStats
+模型标识：GameStats
+*该模型目前无数据
+*其中‘最后更新’数据类型为日期时间，最小值为2025-12-17 00:00:00，最大值为2029-12-31 00:00:00，存储类型为NUMBER
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+游戏类型
+gameType	文本 | 单行文本	是	是
+展示游玩次数	displayPlays	数字	否	否
+最后更新	lastUpdated	日期时间	否	否
+玩家人数	uniquePlayers	数字	否	否
+总游玩次数	totalPlays	数字	是	否
+展示游玩次数	displayPlays	数字	否	否
+索引名称
+索引属性
+索引字段
+操作
+lcap-index-gameType	唯一	
+gameType
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+
+模型名称：UserGameStats
+模型标识：UserGameStats
+*该模型目前无数据
+*其中‘最后游玩’数据类型为日期时间，最小值为2025-12-17 00:00:00，最大值为2029-12-31 00:00:00，存储类型为NUMBER
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+用户ID
+openId	文本 | 单行文本	是	否
+最后游玩	lastPlayed	日期时间	否	否
+游玩次数	playCount	数字	是	否
+游戏类型	gameType	文本 | 单行文本	是	否
+索引名称
+索引属性
+索引字段
+操作
+idx_gametype	非唯一	
+gameType
+升序
+
+PRIMARY	唯一	
+_id
+升序
+
+uniq_user_game	唯一	
+gameType
+升序
+
+openId
+升序
+
+
+模型名称：GameRoom
+模型标识：GameRoom
+
+字段名称
+字段标识
+数据类型
+是否必填
+是否唯一
+房间ID
+roomId	文本 | 单行文本	否	是
+*十点半、大姐牌、九宫格、胆小鬼使用“房主 OpenID + 游戏类型”的确定性组合键；同一房主的不同牌类游戏不会共用一条 GameRoom 文档。
+最大人数
+maxMembers	数字	否	否
+最后活跃
+lastActiveTime	日期时间	否	否
+创建时间
+createTime	日期时间	否	否
+成员列表
+members	数组	否	否
+*members 元素包含 openId、isHost、joinTime；十点半/大姐牌/九宫格/胆小鬼成员另含 connectionId、avatarUrl、nickname，用于连接代次与玩家预览栏显示。
+游戏状态数据
+gameState	Json	否	否
+房间状态
+status	文本 | 单行文本	否	否
+游戏类型
+gameType	文本 | 单行文本	否	否
+房主OpenID
+hostOpenId	文本 | 单行文本	否	否
+*其中日期时间类字段的数据类型为时间戳（NUMBER），为数组/对象类型的字段在MySQL数据库中仅支持部分基础功能，不支持搜索、排序等高级功能。
+索引名称
+索引列
+索引类型
+索引方式
+操作
+idx_room_host
+hostOpenId
+普通索引
+BTREE
+idx_room_status
+status, createTime
+普通索引
+BTREE
+lcap-index-roomId
+roomId
+唯一索引
+BTREE
+PRIMARY
+_id
+唯一索引
+BTREE
+
+集合名：TenHalfSecret
+*该集合为文档型数据库中的集合
+*用于保存“十点半”当前房间的秘密底牌与未翻开公牌；胆小鬼仅在此保存本局固定牌堆和抽牌游标，玩家当前私密手牌拆分保存到 CowardHand。
+*安全规则：客户端读取=false，客户端写入=false；仅 roomManager 云函数读写。
+字段名称
+字段标识
+数据类型
+说明
+私密状态ID
+_id	文本	基于 roomId 的 SHA-256 摘要，每个房间始终复用一条私密状态文档
+房间ID
+roomId	文本	关联 GameRoom.roomId
+本局标识
+roundToken	文本	每局唯一，防止客户端读取上一局底牌
+玩家底牌
+hands	数组	十点半专用，元素为 { openId, card }；仅由云函数按当前 OpenID 返回本人底牌，胆小鬼不再使用该字段保存手牌
+待拍卖公牌
+auctionCards	数组	8～10张未翻开的公牌，由云函数逐张写入 GameRoom.gameState.currentCard
+胆小鬼固定牌堆
+deck	数组	胆小鬼每局开始时一次性洗好的固定牌堆；本局内保持不变，不再在每次发牌或换牌时重写剩余牌组
+胆小鬼抽牌游标
+drawIndex	数字	胆小鬼从0开始记录已抽牌数量；roomManager 根据固定牌堆和游标发下一张牌，每次只递增该字段
+创建时间
+createdTime	数字	时间戳
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	集合主键
+idx_tenhalf_room
+roomId 升序	普通索引，非唯一	便于运维时按房间清理
+
+集合名：CowardHand
+*该集合为文档型数据库中的集合
+*用于按玩家拆分保存“胆小鬼”当前私密手牌；每位玩家只可读取本人文档。客户端监听 GameRoom 中本人的 cardRevision，版本变化时只直读一次本人文档，不再为 CowardHand 额外建立实时监听。
+*安全规则：客户端仅可读取 _openid == auth.openid（同时校验 ownerOpenId 为当前登录用户）的本人文档；客户端写入=false；仅 roomManager 云函数可创建、更新和删除。
+字段名称
+字段标识
+数据类型
+说明
+私密手牌ID
+_id	文本	建议使用 roomId 与 ownerOpenId 的确定性摘要；同一房间同一玩家始终复用一条手牌文档
+创建者OpenID
+_openid	文本	显式写入 ownerOpenId 对应的 OpenID，供云开发安全规则限制客户端只能读取本人文档
+玩家OpenID
+ownerOpenId	文本	手牌所属玩家；必须与 _openid 保持一致
+房间ID
+roomId	文本	关联 GameRoom.roomId
+本轮标识
+roundToken	文本	关联当前胆小鬼轮次；客户端忽略与 GameRoom 当前轮不一致的手牌更新
+当前手牌
+card	Json	仅保存该玩家当前的一张私密扑克牌
+手牌版本
+cardRevision	数字	每次换牌后递增；GameRoom 中同步保存公开版本号，客户端据此直读本人手牌、去重并触发翻牌动画
+创建时间
+createdTime	数字	时间戳
+更新时间
+updatedTime	数字	时间戳
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	集合主键
+uniq_coward_hand_room_player
+roomId 升序、ownerOpenId 升序	唯一索引	每个房间的每位玩家只保留一条当前私密手牌文档
+idx_coward_hand_room
+roomId 升序	普通索引，非唯一	roomManager 按房间批量创建、更新或清理玩家私密手牌
+
+集合名：QueenSecret
+*该集合为文档型数据库中的集合
+*用于保存“大姐牌”尚未抽出的牌堆、扫雷雷区和美杜莎秘密选择，不得允许小程序客户端直接读写。
+*安全规则：客户端读取=false，客户端写入=false；仅 roomManager 云函数读写。
+字段名称
+字段标识
+数据类型
+说明
+私密状态ID
+_id	文本	基于 roomId 的 SHA-256 摘要，每个房间始终复用一条私密状态文档
+房间ID
+roomId	文本	关联 GameRoom.roomId
+本局标识
+roundToken	文本	每局唯一，防止旧局私密状态串入新局
+固定牌堆
+deck	数组	本局开始时一次性洗好的52张无大小王牌堆；本局内保持不变
+抽牌游标
+drawIndex	数字	从0开始记录已抽牌数量；云函数根据固定牌堆与游标读取下一张牌，每次抽牌仅递增该字段
+扫雷雷区
+mineBombs	数组	当前扫雷小局的雷格编号；客户端只看到已翻开的安全格或爆雷结果
+美杜莎选择
+medusaChoices	Json	以玩家 OpenID 为键保存秘密选择；结算前不会写入 GameRoom
+创建时间
+createdTime	数字	时间戳
+更新时间
+updatedTime	数字	时间戳
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	集合主键
+idx_queen_secret_room
+roomId 升序	普通索引，非唯一	便于运维时按房间清理
+
+集合名：TenHalfPresence
+*该集合为文档型数据库中的集合
+*用于保存“十点半”、“大姐牌”、“九宫格”和“胆小鬼”玩家在线心跳。小程序客户端直接写入本人文档，不再通过 roomManager 心跳云函数更新 GameRoom。
+*安全权限：所有登录用户可读，仅创建者可写（包括更新和删除）；不得设置为“所有用户可写”。
+*客户端创建文档时由云开发自动写入 _openid，业务代码以 _openid 识别玩家，不接受客户端自行声明的 openId。
+字段名称
+字段标识
+数据类型
+说明
+文档ID
+_id	文本	云开发自动生成
+玩家OpenID
+_openid	文本	云开发自动写入；同一玩家只能维护自己的心跳文档
+房间ID
+roomId	文本	关联 GameRoom.roomId
+连接代次
+connectionId	文本	当前页面连接的随机标识；用于忽略旧页面延迟到达的离房请求及旧心跳
+最后在线时间
+activeAt	日期时间	使用客户端数据库 db.serverDate() 写入服务器时间
+最后更新时间
+updatedAt	日期时间	用于过期心跳清理
+胆小鬼本轮标识
+cowardRoundToken	文本	酒量技能所属 roundToken；与当前轮不一致时忽略
+胆小鬼技能是否使用
+cowardSkillUsed	布尔	客户端仅写本人文档；用于恢复“每轮只能使用一次”状态
+胆小鬼技能类型
+cowardSkillType	文本	alcoholPlus 或 alcoholMinus；换牌仍由 roomManager 处理
+胆小鬼酒量偏移
+cowardAlcoholAdjustment	数字	旧客户端兼容字段；新版本按 cowardAlcoholDelta 与事件时间计算全房间共享酒量
+胆小鬼酒量增减事件
+cowardAlcoholDelta	数字	本玩家本轮酒量技能产生的单次增减值，仅为10或-10；所有玩家事件按 cowardSkillUsedAt 排序后共同作用于同一个全局酒量
+胆小鬼技能使用时间
+cowardSkillUsedAt	日期时间	使用客户端数据库 db.serverDate() 写入服务器时间；用于确定多人酒量增减事件的统一顺序
+胆小鬼是否已拍桌
+cowardReady	布尔	客户端仅写本人文档；表示该玩家是否已确认当前结果并等待下一轮
+胆小鬼拍桌轮次
+cowardReadyRoundToken	文本	拍桌状态所属 roundToken；与当前结果轮次不一致时忽略，防止旧轮状态串入新轮
+胆小鬼拍桌时间
+cowardReadyAt	日期时间	使用客户端数据库 db.serverDate() 写入服务器时间；供 Presence 监听和确定性协调者判断全员完成
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	集合主键
+uniq_tenhalf_presence_room_player
+roomId 升序、_openid 升序	唯一索引	每个玩家在每个房间仅保留一条心跳文档
+idx_tenhalf_presence_room
+roomId 升序	普通索引，非唯一	客户端按房间读取在线玩家
+idx_tenhalf_presence_updated
+updatedAt 升序	普通索引，非唯一	roomManager 清理过期心跳文档
+
+集合名：ViralFriendship
+*该集合为文档型数据库中的集合
+*现有索引（云开发默认）
+索引名称
+索引属性
+索引字段
+命中次数
+ 	_openid_1	非唯一	
+_openid
+升序
+
+0
+	_id_	非唯一	
+_id
+升序
+
+0
+
+集合名：LotteryActivity
+*该集合为文档型数据库中的集合
+*抽奖活动主表。不要在活动文档中保存参与用户 OpenID 数组，避免万人抽奖时单文档膨胀。
+字段名称
+字段标识
+数据类型
+说明
+活动ID
+_id	文本	短随机 ID，示例 ppmj48sn7rwiq8ljm
+创建人OpenID哈希
+creatorOpenIdHash	文本	SHA256(OpenID)
+红包总金额（分）
+totalAmountFen	数字	以分为单位保存总金额
+红包个数
+prizeCount	数字	管理员填写的中奖名额
+开奖时间
+openAt	数字	时间戳，UTC+8 展示
+状态
+status	文本	scheduled / drawing / drawn
+参与人数
+participantCount	数字	join 成功后原子递增
+幸运数字序号
+luckySequence	数字	本场抽奖当前已分配到的最大幸运数字序号，新活动从 0 开始
+中奖人数
+winnerCount	数字	开奖后实际中奖人数；参与人数不足时小于 prizeCount
+创建时间
+createdAt	数字	时间戳
+开奖完成时间
+drawnAt	数字	时间戳，未开奖为空
+开奖方式
+drawSource	文本	timer_trigger / detail_fallback / join_fallback / admin_dashboard_fallback / user_dashboard_fallback / admin_manual_draw_due
+开奖方式说明
+drawSourceText	文本	用于调试输出，例如“定时触发器准点开奖”
+开奖调试日志时间
+drawDebugLoggedAt	数字	最后一次写入开奖调试信息的时间戳
+开奖错误
+drawError	文本	可选，仅异常时记录
+索引名称
+索引字段
+索引类型
+说明
+idx_lottery_status_openat
+status 升序, openAt 升序	普通索引，非唯一	查询待开奖活动
+idx_lottery_created
+createdAt 降序	普通索引，非唯一	后台列表倒序
+idx_lottery_creator_created
+creatorOpenIdHash 升序, createdAt 降序	普通索引，非唯一	管理员查看自己发起的抽奖
+idx_lottery_status_drawn
+status 升序, drawnAt 降序	普通索引，非唯一	调试输出最近一次已开奖活动
+PRIMARY
+_id	唯一索引	活动主键
+
+集合名：LotteryParticipant
+*该集合为文档型数据库中的集合
+*抽奖参与记录表。每个用户每个活动最多一条记录。
+字段名称
+字段标识
+数据类型
+说明
+参与ID
+_id	文本	lotteryId + "_" + openIdHash
+活动ID
+lotteryId	文本	关联 LotteryActivity._id
+OpenID
+openId	文本	仅服务端使用，不对客户端直接开放
+OpenID哈希
+openIdHash	文本	SHA256(OpenID)
+随机键
+randomKey	文本	开奖时按 lotteryId + randomKey 排序取前 N 名
+幸运数字序号
+luckyNumber	数字	按本场参与时间顺序从 1 递增；旧数据可为空
+幸运数字编码
+luckyCode	文本	MF + 六位数字，例如 MF000001；旧数据可为空
+参与时间
+joinedAt	数字	时间戳
+索引名称
+索引字段
+索引类型
+说明
+idx_participant_lottery_random
+lotteryId 升序, randomKey 升序	普通索引，非唯一	开奖抽样
+idx_participant_openid_joined
+openIdHash 升序, joinedAt 降序	普通索引，非唯一	普通用户查看参与记录
+idx_participant_lottery_joined
+lotteryId 升序, joinedAt 降序	普通索引，非唯一	活动参与记录查询
+PRIMARY
+_id	唯一索引	防重复参与
+
+集合名：LotteryWinner
+*该集合为文档型数据库中的集合
+*抽奖中奖结果表。
+字段名称
+字段标识
+数据类型
+说明
+中奖ID
+_id	文本	lotteryId + "_" + openIdHash
+活动ID
+lotteryId	文本	关联 LotteryActivity._id
+OpenID哈希
+openIdHash	文本	SHA256(OpenID)
+幸运数字序号
+luckyNumber	数字	中奖用户参与记录中的 luckyNumber；旧数据可为空
+幸运数字编码
+luckyCode	文本	中奖用户参与记录中的 luckyCode；旧数据可为空
+中奖金额（分）
+prizeAmountFen	数字	以分为单位保存
+中奖顺序
+rank	数字	从 1 开始；余数按随机中奖顺序逐个 +1 分
+开奖时间
+drawnAt	数字	时间戳
+索引名称
+索引字段
+索引类型
+说明
+idx_winner_lottery
+lotteryId 升序	普通索引，非唯一	活动中奖结果查询
+idx_winner_openid_drawn
+openIdHash 升序, drawnAt 降序	普通索引，非唯一	用户中奖记录查询
+PRIMARY
+_id	唯一索引	防重复写入中奖结果
+
+集合名：LotterySubscribeConsent
+*该集合为文档型数据库中的集合
+*抽奖订阅消息授权记录表。仅记录用户点击参与按钮时 wx.requestSubscribeMessage 的返回结果，不影响是否可以参与抽奖。
+字段名称
+字段标识
+数据类型
+说明
+授权ID
+_id	文本	lotteryId + "_" + openIdHash + "_" + templateIdHash
+活动ID
+lotteryId	文本	关联 LotteryActivity._id
+OpenID
+openId	文本	仅服务端使用，用于中奖后发送订阅消息
+OpenID哈希
+openIdHash	文本	SHA256(OpenID)
+模板ID
+templateId	文本	当前固定为 XFkqYn8Cw06bRDbo46cABhWhK-0IZyo9rFKvBaTo8gw
+模板ID哈希
+templateIdHash	文本	SHA1(templateId) 前 16 位
+订阅状态
+status	文本	accept / reject / ban / filter / fail / unsupported / unknown
+原始订阅状态
+rawStatus	文本	客户端返回的原始状态
+请求错误信息
+requestErrMsg	文本	客户端返回的 errMsg 或失败信息
+请求时间
+requestedAt	数字	用户点击参与按钮并完成弹窗的时间戳
+更新时间
+updatedAt	数字	最后写入时间戳
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	每个用户每场抽奖每个模板一条授权记录
+
+集合名：LotterySubscribeSendLog
+*该集合为文档型数据库中的集合
+*抽奖中奖订阅消息发送日志表。用于事件触发器重复触发时幂等，避免同一中奖结果重复发送通知。
+字段名称
+字段标识
+数据类型
+说明
+发送日志ID
+_id	文本	winnerId + "_" + templateIdHash
+中奖ID
+winnerId	文本	关联 LotteryWinner._id
+活动ID
+lotteryId	文本	关联 LotteryActivity._id
+OpenID哈希
+openIdHash	文本	SHA256(OpenID)
+模板ID
+templateId	文本	当前固定为 XFkqYn8Cw06bRDbo46cABhWhK-0IZyo9rFKvBaTo8gw
+模板ID哈希
+templateIdHash	文本	SHA1(templateId) 前 16 位
+发送状态
+status	文本	sending / sent / failed / skipped_no_consent / skipped_missing_openid
+创建时间
+createdAt	数字	日志创建时间戳
+发送时间
+sentAt	数字	实际调用 subscribeMessage.send 的时间戳，未发送为空
+完成时间
+finishedAt	数字	发送、失败或跳过的完成时间戳
+错误码
+errCode	数字	subscribeMessage.send 返回码或内部跳过原因码
+错误信息
+errMsg	文本	subscribeMessage.send 返回信息或内部跳过原因
+消息ID
+msgId	文本	subscribeMessage.send 返回的消息 ID，可为空
+原始发送结果
+rawResult	Json	可选，发送接口原始返回
+原始错误
+rawError	Json	可选，异常原始信息
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	同一中奖结果同一模板最多发送一次
+
+集合名：LotterySchedulerState
+*该集合为文档型数据库中的集合
+*动态精确定时触发器同步状态表，仅保存 singleton 文档。
+字段名称
+字段标识
+数据类型
+说明
+状态ID
+_id	文本	固定为 singleton
+当前触发器名称
+activeTriggerNames	数组	当前由 lotteryManager 管理的触发器名
+当前触发器时间
+activeTriggerTimes	数组	当前触发器对应的开奖时间戳
+同步锁到期时间
+syncingUntil	数字	防止并发同步触发器
+最后同步时间
+lastSyncedAt	数字	时间戳
+最后错误
+lastError	Json	可选，记录 manager-node 同步失败信息
+索引名称
+索引字段
+索引类型
+说明
+PRIMARY
+_id	唯一索引	singleton 状态主键
+
+集合名：ViralStats
+*该集合为文档型数据库中的集合
+*沉寂朋友资料与内心小孩测试结果共用该集合，便于复用用户头像昵称
+字段名称
+字段标识
+数据类型
+说明
+OpenID
+openId	文本	用户 OpenID
+头像
+avatarUrl	文本	云存储头像 fileID 或兼容旧数据的头像地址
+昵称
+nickname	文本	用户填写的昵称
+沉寂好友回应数
+hiCount	数字	沉寂好友页面的回应计数
+是否有新回应
+hasNew	布尔值	沉寂好友页面的新回应标记
+内心小孩结果
+innerChildResult	Json	{ code, title, scores, answers, updatedAt }
+内心小孩更新时间
+innerChildUpdatedAt	数字	时间戳
+最后更新时间
+lastUpdated	数字	时间戳
+*现有索引（云开发默认）
+索引名称
+索引属性
+索引字段
+命中次数
+ 	_openid_1	非唯一	
+_openid
+升序
+
+0
+	_id_	非唯一	
+_id
+升序
+
+0

@@ -1,0 +1,125 @@
+/* ==================== diy-slider 无限滚动线条滑块 ==================== */
+
+.diy-slider-wrap {
+    width: 100%;
+    padding: 16rpx 0;
+}
+
+.slider-label {
+    font-size: 24rpx;
+    font-weight: 800;
+    color: #000;
+    letter-spacing: 2rpx;
+    margin-bottom: 12rpx;
+    text-align: center;
+}
+
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.slider-icon {
+    width: 36rpx;
+    height: 36rpx;
+    flex-shrink: 0;
+}
+
+/* ==================== 无限滚动线条轨道 ==================== */
+
+.slider-scroll-area {
+    flex: 1;
+    height: 56rpx;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8rpx;
+}
+
+/*
+ * 第一层：细线 — 全区域可见
+ * repeating-linear-gradient 天然无限循环
+ * 线宽 1px，间隔 7px，高度 38%（较矮）
+ */
+.slider-lines-thin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        #C0C0C0 0px,
+        #C0C0C0 1px,
+        transparent 1px,
+        transparent 7px
+    );
+    background-size: 7px 38%;
+    background-position-y: center;
+    background-repeat: repeat;
+}
+
+/*
+ * 第二层：粗线 — 仅在中央区域渐显
+ * 同样的 7px 周期，线宽 2.5px，高度 90%（更高）
+ * 通过 mask-image 的 bell-curve 渐变实现中央聚焦效果
+ * 两层 background-position-x 同步 → 线条边缘完美对齐
+ */
+.slider-lines-thick {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        #111 0px,
+        #111 2.5px,
+        transparent 2.5px,
+        transparent 7px
+    );
+    background-size: 7px 90%;
+    background-position-y: center;
+    background-repeat: repeat;
+    /* Bell-curve 遮罩：中间全显，向两侧平滑过渡到透明 */
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 28%,
+        rgba(0,0,0,0.08) 33%,
+        rgba(0,0,0,0.25) 38%,
+        rgba(0,0,0,0.55) 43%,
+        rgba(0,0,0,1) 48%,
+        rgba(0,0,0,1) 52%,
+        rgba(0,0,0,0.55) 57%,
+        rgba(0,0,0,0.25) 62%,
+        rgba(0,0,0,0.08) 67%,
+        transparent 72%,
+        transparent 100%
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        transparent 28%,
+        rgba(0,0,0,0.08) 33%,
+        rgba(0,0,0,0.25) 38%,
+        rgba(0,0,0,0.55) 43%,
+        rgba(0,0,0,1) 48%,
+        rgba(0,0,0,1) 52%,
+        rgba(0,0,0,0.55) 57%,
+        rgba(0,0,0,0.25) 62%,
+        rgba(0,0,0,0.08) 67%,
+        transparent 72%,
+        transparent 100%
+    );
+}
+
+/* ==================== 当前值文字 ==================== */
+
+.slider-value-text {
+    font-size: 22rpx;
+    color: #666;
+    text-align: center;
+    margin-top: 6rpx;
+    font-weight: 600;
+}

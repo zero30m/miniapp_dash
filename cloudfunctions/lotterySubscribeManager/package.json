@@ -1,0 +1,11 @@
+{
+    "name": "lottery-subscribe-manager",
+    "version": "1.0.0",
+    "description": "抽奖订阅消息：保存授权结果、发送中奖通知、管理员测试发送",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "latest"
+    },
+    "author": "",
+    "license": "ISC"
+}

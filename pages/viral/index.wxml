@@ -1,0 +1,136 @@
+<!-- 沉寂朋友发起页 -->
+<view class="container">
+    
+    <!-- ==================== 单页模式（朋友圈打开）- 显示访客视角 ==================== -->
+    <block wx:if="{{isSinglePageMode}}">
+        <!-- 发起人信息 -->
+        <view class="initiator-card" wx:if="{{initiatorAvatarUrl && initiatorNickname}}">
+            <image class="initiator-avatar" src="{{initiatorAvatarUrl}}" mode="aspectFill"></image>
+            <text class="initiator-name">{{initiatorNickname}}</text>
+        </view>
+        
+        <!-- 主要内容 -->
+        <view class="single-page-content">
+            <!-- 主要文案 -->
+            <view class="message-section">
+                <text class="message-text">{{uiCopy.singlePageMessage}}</text>
+            </view>
+
+            <view class="sub-message">
+                <text class="sub-text">{{uiCopy.singlePageSubLine1}}</text>
+                <text class="sub-text">{{uiCopy.singlePageSubLine2}}</text>
+            </view>
+
+            <!-- Hi 按钮（单页模式下显示引导） -->
+            <view class="hi-button-wrapper">
+                <view class="hi-button hi-button-disabled">
+                    <text class="hi-text">{{uiCopy.hiText}}</text>
+                </view>
+            </view>
+
+            <!-- 单页模式引导提示 -->
+            <view class="single-page-guide">
+                <text class="guide-text">{{uiCopy.singlePageGuide}}</text>
+            </view>
+        </view>
+    </block>
+    
+    <!-- ==================== 正常模式 - 显示发起人视角 ==================== -->
+    <block wx:else>
+        <!-- 顶部标题 -->
+        <view class="header">
+            <text class="title">{{uiCopy.headerTitle}}</text>
+            <text class="subtitle">{{uiCopy.headerSubtitle}}</text>
+        </view>
+
+        <!-- 用户信息卡片（已填写资料时显示，不可点击修改） -->
+        <view class="user-card" wx:if="{{hasProfile}}">
+            <image class="user-avatar" src="{{avatarUrl}}" mode="aspectFill"></image>
+            <view class="user-info">
+                <text class="user-name">{{nickname}}</text>
+            </view>
+        </view>
+
+        <!-- 助力内容区域 -->
+        <view class="content-section">
+            <!-- 无助力状态 -->
+            <view class="empty-state" wx:if="{{!loading && hiCount === 0 && hasProfile}}">
+                <view class="empty-icon">📡</view>
+                <text class="empty-text">{{uiCopy.emptyText}}</text>
+                <text class="empty-sub">{{uiCopy.emptySub}}</text>
+            </view>
+
+            <!-- 有助力状态 - 助力用户列表 -->
+            <view class="supporters-section" wx:if="{{hiCount > 0}}">
+                <!-- 列表标题 + 刷新按钮 -->
+                <view class="supporters-header">
+                    <text class="title-text">{{uiCopy.supportersTitle}}</text>
+                    <view class="refresh-btn {{refreshing ? 'refreshing' : ''}}" bindtap="onRefreshSupporters">
+                        <text class="refresh-text">{{refreshing ? uiCopy.refreshing : uiCopy.refresh}}</text>
+                    </view>
+                </view>
+                
+                <scroll-view 
+                    class="supporters-list" 
+                    scroll-y 
+                    enhanced 
+                    show-scrollbar="{{false}}"
+                    enable-passive="{{true}}"
+                >
+                    <!-- 每个好友独立卡片 -->
+                    <view class="supporter-card" wx:for="{{supporters}}" wx:key="id">
+                        <image class="supporter-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                        <text class="supporter-name">{{item.nickname}}</text>
+                    </view>
+                    
+                    <!-- 如果列表为空但有数量，显示占位 -->
+                    <view class="supporter-placeholder" wx:if="{{supporters.length === 0 && hiCount > 0}}">
+                        <text class="placeholder-text">{{uiCopy.loadingPlaceholder}}</text>
+                    </view>
+                </scroll-view>
+                
+                <!-- 统计信息 -->
+                <view class="supporters-footer">
+                    <text class="supporters-count">{{hiCount}}</text>
+                    <text class="supporters-label">{{uiCopy.respondersSuffix}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- 操作按钮 -->
+        <view class="action-section">
+            <button class="share-btn" open-type="share">
+                <text class="btn-text">{{uiCopy.shareFriendButton}}</text>
+            </button>
+            
+            <button class="timeline-btn" bindtap="onGuideShareTimeline">
+                <text class="btn-text">{{uiCopy.shareTimelineButton}}</text>
+            </button>
+        </view>
+
+        <!-- 提示文案 -->
+        <view class="tip-section">
+            <text class="tip-text">{{uiCopy.tipText}}</text>
+        </view>
+    </block>
+
+</view>
+
+<!-- 头像昵称填写弹窗（仅正常模式下显示） -->
+<profile-modal 
+    wx:if="{{!isSinglePageMode}}"
+    id="profileModal"
+    visible="{{showProfileModal}}"
+    title="{{uiCopy.profileModalTitle}}"
+    description="{{uiCopy.profileModalDesc}}"
+    confirmText="{{uiCopy.profileModalConfirm}}"
+    bind:confirm="onProfileConfirm"
+    bind:close="onProfileClose"
+/>
+
+<!-- 隐藏的 Canvas 用于生成分享图 -->
+<canvas 
+    type="2d" 
+    id="shareCanvas" 
+    style="position:fixed;left:-1000px;top:-1000px;width:500px;height:400px;"
+/>

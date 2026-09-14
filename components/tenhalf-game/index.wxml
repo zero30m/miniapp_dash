@@ -1,0 +1,190 @@
+<view class="tenhalf-root">
+    <view class="share-hint" wx:if="{{gamePhase === 'waiting' && (!isOnlineMode || roomMembers.length <= 1)}}"
+          style="top: {{navTop + 56}}px; right: {{menuRight}}px; --arrow-right: {{menuDotRight - menuRight}}px;">
+        <text class="share-text">{{copy.shareHint}}</text>
+    </view>
+
+    <view class="waiting-stage" wx:if="{{gamePhase === 'waiting'}}">
+        <text class="waiting-title">{{copy.waitingTitle}}</text>
+        <view class="online-info">
+            <text class="online-label">{{copy.onlinePrefix}}{{onlineCount}}{{copy.peopleUnit}}</text>
+        </view>
+        <button class="start-button" bindtap="startGame" loading="{{isStarting}}" disabled="{{isStarting}}">
+            START
+        </button>
+        <text class="waiting-note">{{isOnlineMode ? copy.anyoneCanStart : copy.shareFirst}}</text>
+    </view>
+
+    <block wx:else>
+        <scroll-view class="players-strip" scroll-x enhanced show-scrollbar="{{false}}">
+            <view class="players-row"
+                  style="width: {{playerRowWidthPx}}px; padding-left: {{playerSidePaddingPx}}px; padding-right: {{playerSidePaddingPx}}px;">
+                <view class="player-chip {{item.isMe ? 'me' : ''}} {{item.isActive ? 'active' : ''}}"
+                      style="width: {{playerChipWidthPx}}px; --player-avatar-size: {{playerAvatarSizePx}}px;"
+                      wx:for="{{playerViews}}" wx:key="openId">
+                    <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                    <view class="player-chip-main">
+                        <view class="player-chip-head">
+                            <text class="player-name">{{item.name}}{{item.isMe ? copy.meSuffix : ''}}</text>
+                            <text class="player-debt">{{copy.debtLabel}} {{item.debt}}</text>
+                        </view>
+                        <scroll-view class="player-card-line" scroll-x enhanced show-scrollbar="{{false}}">
+                            <view class="player-card-line-inner">
+                                <view class="mini-card-back"></view>
+                                <view class="mini-public-card" wx:for="{{item.publicCards}}" wx:for-item="card" wx:key="id">
+                                    <poker-card card="{{card}}" size="mini"></poker-card>
+                                </view>
+                            </view>
+                        </scroll-view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="spectator-badge" wx:if="{{isSpectator}}">{{copy.spectator}}</view>
+
+        <view class="dealing-stage" wx:if="{{gamePhase === 'dealing'}}">
+            <text class="phase-title">{{copy.dealing}}</text>
+            <text class="phase-subtitle">{{copy.keepItSecret}}</text>
+        </view>
+
+        <view class="auction-stage"
+              style="top: {{auctionStageTopPx}}px; bottom: {{auctionStageBottomPx}}px;"
+              wx:elif="{{gamePhase === 'auction' || gamePhase === 'auctionResult'}}">
+            <view class="auction-progress">{{copy.auctionLabel}} {{auctionProgress}}</view>
+            <view class="auction-price {{currentBidType === 'kill' ? 'kill' : ''}}">
+                <text>{{currentPriceLabel}}</text>
+            </view>
+
+            <view class="auction-card-host">
+                <poker-card card="{{currentCard}}" size="drawn"></poker-card>
+            </view>
+
+            <view class="auction-outcome" wx:if="{{gamePhase === 'auctionResult'}}">
+                <text>{{outcomeText}}</text>
+            </view>
+
+            <block wx:else>
+                <view class="turn-line">
+                    <text>{{turnLabel}}</text>
+                    <text class="countdown-number">{{countdownSeconds}}</text>
+                </view>
+
+                <view class="auction-actions" wx:if="{{canAct}}">
+                    <button class="auction-button bid" data-choice="bid" bindtap="onAuctionAction" disabled="{{isActing}}">{{copy.bid}}</button>
+                    <button class="auction-button kill" data-choice="kill" bindtap="onAuctionAction" disabled="{{isActing}}">{{copy.kill}}</button>
+                    <button class="auction-button pass" data-choice="pass" bindtap="onAuctionAction" disabled="{{isActing}}">{{copy.pass}}</button>
+                </view>
+                <text class="watching-turn" wx:else>{{isSpectator ? copy.spectatorWatching : (isAuctionLeader ? copy.leadingAuction : (hasSubmittedChoice ? copy.choiceSubmitted : copy.waitRound))}}</text>
+            </block>
+        </view>
+
+        <scroll-view class="settlement-stage" scroll-y wx:elif="{{gamePhase === 'dice' || gamePhase === 'finished'}}">
+            <view class="settlement-content"
+                  style="width: {{settlementPanelWidthPx}}px; margin-left: {{playerSidePaddingPx}}px;">
+            <view class="my-dice-panel" wx:if="{{myNeedsDice}}">
+                <text class="dice-title">{{copy.yourDiceTurn}}</text>
+                <view class="dice-row {{isActing ? 'rolling' : ''}}"
+                      bindtap="rollDice">
+                    <view class="tenhalf-die" wx:for="{{displayDice}}" wx:key="index">
+                        <view class="tenhalf-die-face">
+                            <block wx:if="{{item === 1}}">
+                                <view class="die-dot center"></view>
+                            </block>
+                            <block wx:elif="{{item === 2}}">
+                                <view class="die-dot top-right"></view>
+                                <view class="die-dot bottom-left"></view>
+                            </block>
+                            <block wx:elif="{{item === 3}}">
+                                <view class="die-dot top-right"></view>
+                                <view class="die-dot center"></view>
+                                <view class="die-dot bottom-left"></view>
+                            </block>
+                            <block wx:elif="{{item === 4}}">
+                                <view class="die-dot top-left"></view>
+                                <view class="die-dot top-right"></view>
+                                <view class="die-dot bottom-left"></view>
+                                <view class="die-dot bottom-right"></view>
+                            </block>
+                            <block wx:elif="{{item === 5}}">
+                                <view class="die-dot top-left"></view>
+                                <view class="die-dot top-right"></view>
+                                <view class="die-dot center"></view>
+                                <view class="die-dot bottom-left"></view>
+                                <view class="die-dot bottom-right"></view>
+                            </block>
+                            <block wx:else>
+                                <view class="die-dot top-left"></view>
+                                <view class="die-dot top-right"></view>
+                                <view class="die-dot middle-left"></view>
+                                <view class="die-dot middle-right"></view>
+                                <view class="die-dot bottom-left"></view>
+                                <view class="die-dot bottom-right"></view>
+                            </block>
+                        </view>
+                    </view>
+                </view>
+                <text class="roll-times">{{rollSummaryText}}</text>
+            </view>
+
+            <view class="settlement-player {{item.isLoser ? 'loser' : 'safe'}}"
+                  wx:for="{{playerViews}}" wx:key="openId">
+                <view class="settlement-player-head">
+                    <text>{{item.name}}</text>
+                    <text class="player-result-state">{{item.resultState}}</text>
+                </view>
+                <view class="settlement-cards">
+                    <view class="settlement-card" wx:if="{{item.holeCard}}">
+                        <poker-card card="{{item.holeCard}}" size="mini"></poker-card>
+                    </view>
+                    <view class="settlement-card" wx:for="{{item.publicCards}}" wx:for-item="card" wx:key="id">
+                        <poker-card card="{{card}}" size="mini"></poker-card>
+                    </view>
+                </view>
+                <view class="settlement-numbers">
+                    <text>{{copy.pointsLabel}} {{item.pointsText}}</text>
+                    <text>{{copy.debtLabel}} {{item.debt}}</text>
+                    <text wx:if="{{item.totalDrinks !== null}}">{{copy.totalLabel}} {{item.totalDrinks}}</text>
+                </view>
+                <view class="roll-history" wx:if="{{item.rolls.length}}">
+                    <text wx:for="{{item.rolls}}" wx:for-item="roll" wx:key="at">{{roll.sum}}</text>
+                    <text class="best-roll">{{copy.bestRoll}} {{item.bestRoll}}</text>
+                </view>
+            </view>
+            </view>
+        </scroll-view>
+
+        <view class="secret-card-slot secret-card-target {{showSecretDock ? 'visible' : ''}}"
+              style="bottom: {{secretBottomPx}}px;"
+              wx:if="{{isPlayer && privateHand}}">
+            <view class="secret-card-face">
+                <poker-card card="{{privateHand}}" size="petal"></poker-card>
+            </view>
+            <scroll-view class="secret-public-cards" scroll-x enhanced show-scrollbar="{{false}}">
+                <view class="secret-public-cards-inner">
+                    <view class="secret-public-card" wx:for="{{myPublicCards}}" wx:key="id">
+                        <poker-card card="{{item}}" size="petal"></poker-card>
+                    </view>
+                </view>
+            </scroll-view>
+            <text class="secret-label">{{copy.secretCard}}</text>
+        </view>
+    </block>
+
+    <view class="deal-overlay" wx:if="{{showDealOverlay}}">
+        <view class="deal-card-host {{dealMoving ? 'moving' : ''}}"
+              style="transform: translate({{dealMoveX}}px, {{dealMoveY}}px) scale({{dealMoveScale}});">
+            <poker-card card="{{privateHand}}" size="drawn"></poker-card>
+        </view>
+        <text class="deal-hint">{{copy.yourSecretCard}}</text>
+    </view>
+
+    <view class="tenhalf-result-overlay" wx:if="{{showDiceResult}}" bindtap="onDiceResultContinue">
+        <view class="tenhalf-result-content">
+            <text class="tenhalf-result-player">{{diceResultPlayerName}}</text>
+            <text class="tenhalf-result-hand">🫵</text>
+            <text class="tenhalf-result-main">{{diceResultText}}</text>
+            <text class="tenhalf-result-hint">{{copy.resultContinue}}</text>
+        </view>
+    </view>
+</view>

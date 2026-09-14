@@ -1,0 +1,102 @@
+.diy-fab {
+    position: fixed;
+    right: 32rpx;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: #FFF;
+    border: 3rpx solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: breathe 2.5s ease-in-out infinite;
+    box-shadow: 3px 3px 0 0 #000;
+}
+
+.diy-fab.hidden {
+    display: none;
+}
+
+.fab-icon {
+    width: 44rpx;
+    height: 44rpx;
+}
+
+@keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.diy-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.diy-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.diy-panel {
+    width: 92vw;
+    max-height: 75vh;
+    background: #FFF;
+    border: 3rpx solid #000;
+    border-radius: 24rpx;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.9) translateY(40rpx);
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.12);
+}
+
+.diy-overlay.show .diy-panel {
+    transform: scale(1) translateY(0);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28rpx 32rpx 12rpx;
+    background: #FFF;
+    position: relative;
+}
+
+.panel-title {
+    font-size: 30rpx;
+    font-weight: 900;
+    color: #000;
+    letter-spacing: 6rpx;
+    text-align: center;
+}
+
+.panel-body {
+    padding: 20rpx 32rpx 16rpx;
+    max-height: 62vh;
+    box-sizing: border-box;
+}
+
+.panel-footer-hint {
+    padding: 12rpx 0 28rpx;
+    text-align: center;
+}
+
+.panel-hint-text {
+    font-size: 22rpx;
+    color: #aaa;
+    letter-spacing: 2rpx;
+}

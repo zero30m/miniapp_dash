@@ -1,0 +1,67 @@
+<view class="flappy-page">
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack" wx:if="{{screen === 'rules' || gameState === 'gameOver'}}">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <block wx:if="{{screen === 'rules'}}">
+    <scroll-view class="rules-scroll" scroll-y="{{true}}" show-scrollbar="{{false}}" enhanced="{{true}}">
+      <view class="rules-content" style="padding-top: {{rulesTop}}px;">
+        <view class="rules-guide">
+          <view class="rules-card-title">{{uiCopy.rulesTitle}}</view>
+
+          <view class="rules-section">
+            <view class="rule-item" wx:for="{{uiCopy.rules}}" wx:key="*this">
+              <view class="rule-number">{{index + 1}}</view>
+              <view class="rule-text">{{item}}</view>
+            </view>
+          </view>
+        </view>
+
+        <view class="start-btn" catchtap="onStartGame">
+          <text class="start-btn-text">{{uiCopy.start}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </block>
+
+  <block wx:else>
+    <canvas
+      id="flappyCanvas"
+      type="2d"
+      class="flappy-canvas"
+      disable-scroll="{{true}}"
+      catchtouchstart="onCanvasTouch"
+      wx:if="{{gameState !== 'gameOver'}}"
+    ></canvas>
+
+    <cover-view class="tap-hint" wx:if="{{showTapHint && gameState === 'playing'}}">
+      <cover-view class="tap-hand">☝️</cover-view>
+      <cover-view>{{uiCopy.tapHint}}</cover-view>
+    </cover-view>
+
+    <cover-view class="game-overlay loading-overlay" wx:if="{{gameState === 'loading'}}">
+      <cover-view class="loading-card">
+        <cover-image class="loading-bird" src="{{birdImagePath}}"></cover-image>
+        <cover-view class="loading-text" wx:if="{{!assetError}}">{{uiCopy.loading}}</cover-view>
+        <cover-view class="loading-text load-error" wx:else>{{uiCopy.loadFailed}}</cover-view>
+        <cover-view class="small-action-btn" wx:if="{{assetError}}" catchtap="onRetryAssetLoad">{{uiCopy.retryLoad}}</cover-view>
+      </cover-view>
+    </cover-view>
+
+    <view class="game-overlay result-overlay" wx:if="{{gameState === 'gameOver'}}">
+      <view class="result-card">
+        <view class="result-emoji">💥</view>
+        <view class="result-kicker">{{uiCopy.gameOverKicker}}</view>
+        <view class="result-title">{{uiCopy.gameOver}}</view>
+        <view class="result-score-label">{{uiCopy.score}}</view>
+        <view class="result-score-line">
+          <text class="result-score">{{finalScore}}</text>
+        </view>
+        <view class="result-best">{{uiCopy.best}}{{bestScore}}{{uiCopy.scoreUnit}}</view>
+
+        <view class="retry-btn" catchtap="onRetryGame">{{uiCopy.retry}}</view>
+      </view>
+    </view>
+  </block>
+</view>

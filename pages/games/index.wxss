@@ -1,0 +1,1083 @@
+/** index.wxss **/
+.container {
+  /* Neo-Brutalism Theme Variables */
+  --bg-cream: #FFFDE7;
+  --text-black: #000000;
+  --border-black: #000000;
+  --shadow-hard: 6px 6px 0px 0px #000000;
+  --radius-std: 24rpx;
+
+  /* Accent Colors */
+  --accent-red: #FF5252;
+  --accent-pink: #FF4081;
+  --accent-yellow: #FFD740;
+  --accent-cyan: #18FFFF;
+  --accent-orange: #FF6E40;
+  --accent-blue: #448AFF;
+  --accent-green: #69F0AE;
+  --accent-purple: #B388FF;
+  --accent-forest: #43A047;
+  --accent-teal: #1DE9B6;
+  --accent-heartbeat: #E91E63;
+  --accent-sweettalk: #FFAB91;
+  --accent-coffee: #8D6E63;
+  --accent-diy: linear-gradient(135deg, #FF5A5F 0%, #FFB800 24%, #39D98A 48%, #45A3FF 72%, #A66CFF 100%);
+
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-cream);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================
+   初始状态：横向药丸头部
+   ========================================== */
+.pill-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 50;
+  flex-shrink: 0;
+  padding-bottom: 20rpx;
+}
+
+/* 下拉提示 - 简洁文字样式 */
+.pull-hint-mini {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+  padding: 10rpx 30rpx;
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  border-radius: 40rpx;
+  box-shadow: 4px 4px 0 0 #000;
+  transition: transform 0.2s;
+}
+
+.pull-hint-mini:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.hint-text {
+  font-size: 24rpx;
+  color: var(--text-black);
+  letter-spacing: 2rpx;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.hint-arrow {
+  font-size: 24rpx;
+  font-weight: 900;
+  color: var(--text-black);
+  display: inline-block;
+}
+
+/* 颜色跟随主题 */
+.pull-hint-mini.drinking { background: var(--accent-red); }
+.pull-hint-mini.kiss { background: var(--accent-pink); }
+.pull-hint-mini.chess { background: var(--accent-yellow); }
+.pull-hint-mini.dare { background: var(--accent-cyan); }
+.pull-hint-mini.coffee { background: var(--accent-coffee); }
+.pull-hint-mini.we { background: var(--accent-forest); }
+.pull-hint-mini.zhexuejia { background: var(--accent-purple); }
+.pull-hint-mini.taiqiu { background: var(--accent-teal); }
+.pull-hint-mini.couple_dare { background: var(--accent-heartbeat); }
+.pull-hint-mini.couple_talk { background: var(--accent-sweettalk); }
+.pull-hint-mini.diy { background: var(--accent-diy); }
+.pull-hint-mini.more { background: var(--accent-blue); }
+
+/* 当前游戏药丸 - Neo Style */
+.current-pill {
+  position: relative;
+  min-width: 320rpx;
+  height: 88rpx;
+  border-radius: 44rpx;
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  box-shadow: var(--shadow-hard);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  will-change: transform;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.current-pill:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* Remove glow effects */
+.pill-glow {
+  display: none;
+}
+
+.pill-content {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  z-index: 1;
+}
+
+.pill-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  border: 3rpx solid var(--border-black);
+  background: var(--text-black); /* Default */
+}
+
+/* Dot colors */
+.pill-dot.drinking { background: var(--accent-red); }
+.pill-dot.kiss { background: var(--accent-pink); }
+.pill-dot.chess { background: var(--accent-yellow); }
+.pill-dot.dare { background: var(--accent-cyan); }
+.pill-dot.coffee { background: var(--accent-coffee); }
+.pill-dot.we { background: var(--accent-forest); }
+.pill-dot.zhexuejia { background: var(--accent-purple); }
+.pill-dot.taiqiu { background: var(--accent-teal); }
+.pill-dot.couple_dare { background: var(--accent-heartbeat); }
+.pill-dot.couple_talk { background: var(--accent-sweettalk); }
+.pill-dot.diy { background: var(--accent-diy); }
+.pill-dot.more { background: var(--accent-blue); }
+
+.pill-name {
+  font-size: 32rpx;
+  color: var(--text-black);
+  font-weight: 900;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   展开状态：游戏选择器覆盖层
+   ========================================== */
+.selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 253, 231, 0.96); /* Cream opacity */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  opacity: 0;
+  visibility: hidden;
+  /* 【修复】移除 visibility 过渡，确保 overlay 立即可交互 */
+  transition: opacity 0.3s ease;
+}
+
+.selector-overlay.simple-layout {
+  justify-content: center;
+  padding-top: 0;
+}
+
+/* Detail View Layout Fixes */
+.selector-overlay.detail-layout {
+  justify-content: flex-start;
+  /* Reduced padding to move content up */
+  padding-top: calc(200rpx + env(safe-area-inset-top)); 
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+}
+
+.selector-overlay.detail-layout .selector-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  /* Allow title to overflow if needed, manage scroll overflow on child */
+  overflow: visible; 
+  max-height: 100%;
+}
+
+.selector-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.selector-overlay.closing {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.selector-title {
+  font-size: 36rpx;
+  color: var(--text-black);
+  background: var(--accent-yellow);
+  padding: 12rpx 48rpx; /* Ample padding */
+  border: 3rpx solid var(--border-black);
+  box-shadow: 4px 4px 0 0 #000;
+  letter-spacing: 6rpx;
+  margin-bottom: 30rpx; /* Reduced margin */
+  font-weight: 900;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+  /* Ensure rotation doesn't get clipped by screen edge */
+  margin-right: 20rpx;
+  margin-left: 20rpx;
+  z-index: 10;
+}
+
+/* View Toggle Button */
+.view-toggle-btn {
+  margin-bottom: 20rpx; /* Reduced margin */
+  padding: 14rpx 36rpx;
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  box-shadow: 4px 4px 0 0 #000;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.view-toggle-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.toggle-text {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: var(--text-black);
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+/* Fixed invisible arrow - enforced black color */
+.toggle-icon {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: var(--text-black); 
+}
+
+/* Game Scroll Area */
+.game-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* Detail Mode Scrolling Fix + Vignette */
+.game-scroll.detail-mode {
+  flex: 1;
+  width: 100%;
+  height: 100%; 
+  padding: 0 10rpx;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Masking for Fade Effect applied ONLY to the scroll area */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 5%, black 90%, transparent 100%);
+}
+
+.game-list {
+  display: inline-flex;
+  gap: 30rpx;
+  padding: 30rpx 40rpx;
+  justify-content: center;
+  min-width: 100%;
+  transition: all 0.3s ease;
+}
+
+/* Detail View Layout - Vertical List */
+.game-list.vertical-layout {
+  flex-direction: column;
+  align-items: stretch; /* Stretch to fill width */
+  white-space: normal;
+  padding: 60rpx 40rpx 200rpx; /* Extra padding for mask clearing */
+  gap: 20rpx; /* Further reduced gap */
+}
+
+/* ==========================================
+   游戏卡片 - Neo Style
+   ========================================== */
+.game-card {
+  width: 240rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  border-radius: var(--radius-std);
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  box-shadow: 6px 6px 0 0 #ccc; /* Default shadow */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0.9;
+  flex-shrink: 0; /* Prevent shrinking in list */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Simple View Active State */
+.game-card.active {
+  transform: scale(1.05) rotate(-1deg);
+  opacity: 1;
+  border-color: var(--border-black);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-hard);
+}
+
+.game-card:active {
+  transform: scale(0.98);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* ==========================================
+   Detail View - Compact Expanded Card
+   ========================================== */
+.game-card.expanded {
+  width: 100%; /* Full Width */
+  flex-direction: row; /* Horizontal Layout */
+  align-items: flex-start;
+  padding: 20rpx; /* Further reduced padding */
+  height: auto;
+  min-height: 160rpx; /* Further reduced min-height */
+  gap: 20rpx; /* Further reduced gap */
+  
+  /* Reset Transform from Simple View */
+  transform: none;
+  opacity: 1;
+  box-shadow: var(--shadow-hard);
+}
+
+.game-card.expanded.active {
+  transform: translate(-2px, -2px);
+  background: #FFFFFF;
+  border-color: var(--border-black); 
+}
+
+/* Card Capsule inside Game Card */
+.card-capsule {
+  width: 100rpx;
+  height: 150rpx;
+  border-radius: 50rpx;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  border: 3rpx solid var(--border-black);
+  flex-shrink: 0;
+  box-shadow: 2px 2px 0 0 rgba(0,0,0,0.2);
+}
+
+/* Expanded Capsule - Ultra Compact Size */
+.game-card.expanded .card-capsule {
+  width: 90rpx; /* Reduced */
+  height: 130rpx; /* Reduced */
+  border-radius: 40rpx;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.1);
+}
+
+.capsule-inner {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+}
+
+/* Plain colors for capsules */
+.capsule-inner.drinking { background: var(--accent-red); }
+.capsule-inner.kiss { background: var(--accent-pink); }
+.capsule-inner.chess { background: var(--accent-yellow); }
+.capsule-inner.dare { background: var(--accent-cyan); }
+.capsule-inner.coffee { background: var(--accent-coffee); }
+.capsule-inner.we { background: var(--accent-forest); }
+.capsule-inner.zhexuejia { background: var(--accent-purple); }
+.capsule-inner.taiqiu { background: var(--accent-teal); }
+.capsule-inner.couple_dare { background: var(--accent-heartbeat); }
+.capsule-inner.couple_talk { background: var(--accent-sweettalk); }
+.capsule-inner.diy { background: var(--accent-diy); }
+.capsule-inner.more { background: var(--accent-blue); }
+
+/* Card Text */
+.card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  width: 100%;
+}
+
+/* Hide Simple Text in Expanded Mode */
+.game-card.expanded .card-text {
+  display: none;
+}
+
+.card-name {
+  font-size: 28rpx;
+  color: var(--text-black);
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.game-card.active .card-name {
+  background: var(--accent-green);
+  padding: 2rpx 10rpx;
+  transform: rotate(-2deg);
+  border: 2rpx solid #000;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.card-desc {
+  font-size: 20rpx;
+  color: #666;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   Detail Info Section
+   ========================================== */
+.detail-info {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 8rpx; /* Tightest gap */
+  align-items: flex-start;
+}
+
+/* Show Detail Info */
+.game-card.expanded .detail-info {
+  display: flex;
+}
+
+.detail-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.detail-name {
+  font-size: 32rpx; /* Slightly reduced for compactness */
+  font-weight: 900;
+  color: var(--text-black);
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+}
+
+/* Highlight Name in Expanded View based on Theme */
+.game-card.expanded.active.drinking .detail-name { color: var(--accent-red); }
+.game-card.expanded.active.kiss .detail-name { color: var(--accent-pink); }
+.game-card.expanded.active.chess .detail-name { color: var(--accent-yellow); text-shadow: 1px 1px 0 #000; }
+.game-card.expanded.active.dare .detail-name { color: var(--accent-cyan); }
+.game-card.expanded.active.coffee .detail-name { color: var(--accent-coffee); }
+.game-card.expanded.active.we .detail-name { color: var(--accent-forest); }
+.game-card.expanded.active.zhexuejia .detail-name { color: var(--accent-purple); }
+.game-card.expanded.active.taiqiu .detail-name { color: var(--accent-teal); }
+.game-card.expanded.active.couple_dare .detail-name { color: var(--accent-heartbeat); }
+.game-card.expanded.active.couple_talk .detail-name { color: var(--accent-sweettalk); }
+.game-card.expanded.active.more .detail-name { color: var(--accent-blue); }
+
+.detail-desc {
+  font-size: 18rpx;
+  font-weight: 700;
+  color: #000;
+  background: #FFF;
+  padding: 4rpx 10rpx;
+  border-radius: 10rpx;
+  border: 2rpx solid #000;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.detail-intro {
+  font-size: 22rpx; /* Reduced for compactness */
+  color: #333;
+  line-height: 1.4;
+  font-weight: 500;
+  /* Multi-line clamp */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* Reduced lines */
+  overflow: hidden;
+  text-align: left;
+}
+
+.detail-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: auto; 
+}
+
+.detail-tags {
+  display: flex;
+  gap: 8rpx;
+  flex-wrap: wrap;
+}
+
+.detail-tag {
+  font-size: 18rpx;
+  font-weight: 800;
+  color: var(--text-black);
+  background: #fff;
+  border: 2rpx solid #000;
+  padding: 4rpx 12rpx;
+  border-radius: 16rpx;
+  box-shadow: 1px 1px 0 0 #000;
+}
+
+/* Play Count Tag */
+.play-count-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  padding: 4rpx 12rpx;
+  background: #000;
+  border-radius: 16rpx;
+  border: 2rpx solid #000;
+}
+
+.tag-icon {
+  font-size: 18rpx;
+  color: #FFF;
+}
+
+.tag-num {
+  font-size: 20rpx;
+  color: #FFF;
+  font-weight: 700;
+  font-family: 'SF Mono', monospace;
+}
+
+.selector-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.selector-overlay.closing {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+}
+
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+}
+
+.selector-title {
+  font-size: 36rpx;
+  color: var(--text-black);
+  background: var(--accent-yellow);
+  padding: 10rpx 30rpx;
+  border: 3rpx solid var(--border-black);
+  box-shadow: 4px 4px 0 0 #000;
+  letter-spacing: 6rpx;
+  margin-bottom: 50rpx;
+  font-weight: 900;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+
+/* View Toggle Button */
+.view-toggle-btn {
+  margin-bottom: 30rpx;
+  padding: 14rpx 36rpx;
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  box-shadow: 4px 4px 0 0 #000;
+  transition: all 0.2s ease;
+}
+
+.view-toggle-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.toggle-text {
+  font-size: 24rpx;
+  font-weight: 800;
+  color: var(--text-black);
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+/* Fixed invisible arrow - enforced black color */
+.toggle-icon {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: var(--text-black); 
+}
+
+/* Game Scroll Area */
+.game-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* Detail Mode Scrolling Fix */
+.game-scroll.detail-mode {
+  flex: 1;
+  width: 100%;
+  height: 100%; /* Ensure height takes up space */
+  padding: 0 10rpx;
+  box-sizing: border-box;
+  overflow-y: scroll; /* Force vertical scroll */
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.game-list {
+  display: inline-flex;
+  gap: 30rpx;
+  padding: 30rpx 40rpx;
+  justify-content: center;
+  min-width: 100%;
+  transition: all 0.3s ease;
+}
+
+/* Detail View Layout - Vertical List */
+.game-list.vertical-layout {
+  flex-direction: column;
+  align-items: stretch; /* Stretch to fill width */
+  white-space: normal;
+  padding: 20rpx 40rpx 200rpx; /* Extra bottom padding for scroll clearing */
+  gap: 30rpx;
+}
+
+/* ==========================================
+   游戏卡片 - Neo Style
+   ========================================== */
+.game-card {
+  width: 240rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+  border-radius: var(--radius-std);
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  box-shadow: 6px 6px 0 0 #ccc; /* Default shadow */
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  opacity: 0.9;
+  flex-shrink: 0; /* Prevent shrinking in list */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Simple View Active State */
+.game-card.active {
+  transform: scale(1.05) rotate(-1deg);
+  opacity: 1;
+  border-color: var(--border-black);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-hard);
+}
+
+.game-card:active {
+  transform: scale(0.98);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* ==========================================
+   Detail View - Expanded Card (Restored Layout)
+   ========================================== */
+.game-card.expanded {
+  width: 100%; /* Full Width */
+  flex-direction: row; /* Horizontal Layout */
+  align-items: flex-start;
+  padding: 30rpx;
+  height: auto;
+  min-height: 240rpx;
+  gap: 30rpx;
+  
+  /* Reset Transform from Simple View */
+  transform: none;
+  opacity: 1;
+  box-shadow: var(--shadow-hard);
+}
+
+.game-card.expanded.active {
+  transform: translate(-2px, -2px); /* Slight lift */
+  background: #FFFFFF;
+  /* Highlight border for active card in detail view */
+  border-color: var(--border-black); 
+}
+
+/* Card Capsule inside Game Card */
+.card-capsule {
+  width: 100rpx;
+  height: 150rpx;
+  border-radius: 50rpx;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  border: 3rpx solid var(--border-black);
+  flex-shrink: 0;
+  box-shadow: 2px 2px 0 0 rgba(0,0,0,0.2);
+}
+
+/* Expanded Capsule - Slightly larger or adjusted if needed */
+.game-card.expanded .card-capsule {
+  width: 120rpx;
+  height: 180rpx;
+  border-radius: 60rpx;
+  box-shadow: 4px 4px 0 0 rgba(0,0,0,0.1);
+}
+
+.capsule-inner {
+  position: absolute;
+  inset: 0;
+  opacity: 1;
+}
+
+/* Plain colors for capsules */
+.capsule-inner.drinking { background: var(--accent-red); }
+.capsule-inner.kiss { background: var(--accent-pink); }
+.capsule-inner.chess { background: var(--accent-yellow); }
+.capsule-inner.dare { background: var(--accent-cyan); }
+.capsule-inner.coffee { background: var(--accent-coffee); }
+.capsule-inner.we { background: var(--accent-forest); }
+.capsule-inner.zhexuejia { background: var(--accent-purple); }
+.capsule-inner.taiqiu { background: var(--accent-teal); }
+.capsule-inner.couple_dare { background: var(--accent-heartbeat); }
+.capsule-inner.couple_talk { background: var(--accent-sweettalk); }
+.capsule-inner.more { background: var(--accent-blue); }
+
+/* Card Text */
+.card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  width: 100%;
+}
+
+/* Hide Simple Text in Expanded Mode */
+.game-card.expanded .card-text {
+  display: none;
+}
+
+.card-name {
+  font-size: 28rpx;
+  color: var(--text-black);
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.game-card.active .card-name {
+  background: var(--accent-green);
+  padding: 2rpx 10rpx;
+  transform: rotate(-2deg);
+  border: 2rpx solid #000;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.card-desc {
+  font-size: 20rpx;
+  color: #666;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   Detail Info Section (Visible only in Expanded)
+   ========================================== */
+.detail-info {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: flex-start; /* Left align text */
+}
+
+/* Show Detail Info */
+.game-card.expanded .detail-info {
+  display: flex;
+}
+
+.detail-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+
+.detail-name {
+  font-size: 36rpx; /* Restored size */
+  font-weight: 900;
+  color: var(--text-black);
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+}
+
+/* Highlight Name in Expanded View based on Theme */
+.game-card.expanded.active.drinking .detail-name { color: var(--accent-red); }
+.game-card.expanded.active.kiss .detail-name { color: var(--accent-pink); }
+.game-card.expanded.active.chess .detail-name { color: var(--accent-yellow); text-shadow: 1px 1px 0 #000; }
+.game-card.expanded.active.dare .detail-name { color: var(--accent-cyan); }
+.game-card.expanded.active.coffee .detail-name { color: var(--accent-coffee); }
+.game-card.expanded.active.we .detail-name { color: var(--accent-forest); }
+.game-card.expanded.active.zhexuejia .detail-name { color: var(--accent-purple); }
+.game-card.expanded.active.taiqiu .detail-name { color: var(--accent-teal); }
+.game-card.expanded.active.couple_dare .detail-name { color: var(--accent-heartbeat); }
+.game-card.expanded.active.couple_talk .detail-name { color: var(--accent-sweettalk); }
+.game-card.expanded.active.more .detail-name { color: var(--accent-blue); }
+
+.detail-desc {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #000;
+  background: #FFF;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  border: 2rpx solid #000;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.detail-intro {
+  font-size: 24rpx; /* Restored size */
+  color: #333;
+  line-height: 1.5;
+  font-weight: 500;
+  /* Multi-line clamp */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  text-align: left;
+}
+
+.detail-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: auto; /* Push to bottom */
+}
+
+.detail-tags {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.detail-tag {
+  font-size: 20rpx;
+  font-weight: 800;
+  color: var(--text-black);
+  background: #fff;
+  border: 2rpx solid #000;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+/* Play Count Tag */
+.play-count-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 6rpx 16rpx;
+  background: #000;
+  border-radius: 20rpx;
+  border: 2rpx solid #000;
+}
+
+.tag-icon {
+  font-size: 20rpx;
+  color: #FFF;
+}
+
+.tag-num {
+  font-size: 22rpx;
+  color: #FFF;
+  font-weight: 700;
+  font-family: 'SF Mono', monospace;
+}
+
+/* Scroll Hint */
+.scroll-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  margin-top: 30rpx;
+  opacity: 0.8;
+}
+
+.scroll-text {
+  font-size: 24rpx;
+  color: var(--text-black);
+  font-weight: 700;
+  background: #FFF;
+  padding: 6rpx 16rpx;
+  border: 2rpx solid #000;
+  border-radius: 20rpx;
+}
+
+.scroll-arrow {
+  color: var(--text-black);
+  font-weight: 900;
+  font-size: 32rpx;
+}
+
+/* Close Hint */
+.close-hint {
+  margin-top: 20rpx;
+  opacity: 0.6;
+}
+
+.close-hint-text {
+  font-size: 22rpx;
+  color: #555;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   游戏容器
+   ========================================== */
+.game-container {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  position: relative;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow: hidden;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.game-stage-host {
+  display: block;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.container.expanded-mode .game-container {
+  filter: blur(10px);
+  opacity: 0.3;
+  transform: scale(0.95);
+}
+
+/* Placeholder Game */
+.placeholder-game {
+  width: 90%;
+  height: 80%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 4rpx solid var(--border-black);
+  box-shadow: var(--shadow-hard);
+  border-radius: var(--radius-std);
+}
+
+.placeholder-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.placeholder-icon {
+  font-size: 100rpx;
+}
+
+.placeholder-title {
+  font-size: 48rpx;
+  color: var(--text-black);
+  font-weight: 900;
+}
+
+.placeholder-desc {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 700;
+}
+
+/* Entry Animation */
+.page-entry-animate .pill-header {
+  animation: slideDownFade 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-40rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+   「新」斜向胶带标记
+   ========================================== */
+.new-tape {
+  position: absolute;
+  top: 16rpx;
+  right: -36rpx;
+  width: 120rpx;
+  padding: 4rpx 0;
+  background: #FF5252;
+  color: #FFF;
+  font-size: 18rpx;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 2rpx;
+  line-height: 1.4;
+  transform: rotate(45deg);
+  transform-origin: center center;
+  z-index: 10;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.18);
+  pointer-events: none;
+}
+
+/* 详情视图下卡片更宽，胶带位置微调 */
+.game-card.expanded .new-tape {
+  top: 14rpx;
+  right: -30rpx;
+  width: 110rpx;
+  font-size: 18rpx;
+}

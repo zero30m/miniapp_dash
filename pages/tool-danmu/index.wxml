@@ -1,0 +1,59 @@
+<view class="danmu-page">
+  
+  <!-- 背景光效 -->
+  <view class="bg-glow top-left"></view>
+  <view class="bg-glow bottom-right"></view>
+  <view class="grid-bg"></view>
+  <view class="vignette"></view>
+
+  <!-- 返回按钮 -->
+  <view class="back-btn" style="top: {{navTop}}px;" catchtap="goBack">
+    <text class="back-icon">‹</text>
+    <text class="back-text">{{uiCopy.back}}</text>
+  </view>
+
+  <!-- 输入界面 -->
+  <view class="setup-container">
+    <!-- 大标题 -->
+    <view class="title-area">
+      <view class="setup-title">{{uiCopy.title}}</view>
+      <view class="setup-desc">{{uiCopy.desc}}</view>
+    </view>
+    
+    <!-- 输入区域 -->
+    <view class="input-card">
+      <textarea 
+        class="danmu-input" 
+        placeholder="{{uiCopy.placeholder}}"
+        placeholder-class="input-placeholder"
+        maxlength="100"
+        value="{{danmuText}}"
+        bindinput="onInputChange"
+        auto-height
+      />
+      <view class="input-footer">
+        <view class="char-count">{{danmuText.length || 0}}/100</view>
+      </view>
+    </view>
+
+    <!-- 颜色选择 -->
+    <view class="color-selector">
+      <view 
+        class="color-item {{selectedColor === item ? 'active' : ''}}" 
+        wx:for="{{colors}}" 
+        wx:key="*this"
+        style="background: {{item}};"
+        data-color="{{item}}"
+        catchtap="onSelectColor"
+      ></view>
+    </view>
+    
+    <!-- 播放按钮 -->
+    <view class="start-btn" catchtap="onStartPlay">
+      <text class="start-btn-text">{{uiCopy.start}}</text>
+    </view>
+    
+    <view class="hint-text">{{uiCopy.hint}}</view>
+  </view>
+
+</view>

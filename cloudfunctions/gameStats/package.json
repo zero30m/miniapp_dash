@@ -1,0 +1,10 @@
+{
+    "name": "game-stats",
+    "version": "1.0.0",
+    "description": "游戏统计：获取和上报游戏游玩数据",
+    "main": "index.js",
+    "dependencies": {
+        "wx-server-sdk": "latest",
+        "@cloudbase/node-sdk": "latest"
+    }
+}

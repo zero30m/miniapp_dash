@@ -1,0 +1,234 @@
+/* ==================== 更新通知弹窗 - Neo-Brutalism 风格 ==================== */
+
+/* 颜色变量 */
+.update-modal-container {
+  --bg-cream: #FFFDE7;
+  --text-black: #000000;
+  --border-black: #000000;
+  --accent-green: #39FF14;
+  --accent-yellow: #F0E634;
+  --accent-cyan: #3FA9F5;
+  --shadow-hard: 8px 8px 0px 0px #000000;
+  --shadow-hard-sm: 4px 4px 0px 0px #000000;
+  --radius-std: 16rpx;
+}
+
+.update-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.update-modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.update-modal-content {
+  position: relative;
+  width: 620rpx;
+  max-height: 80vh;
+  
+  /* Neo-Brutalism 风格 */
+  background: var(--bg-cream);
+  border: 4px solid var(--border-black);
+  border-radius: var(--radius-std);
+  box-shadow: var(--shadow-hard);
+  
+  padding: 80rpx 40rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalBounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(60rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ==================== 顶部图标 ==================== */
+.update-icon-wrapper {
+  position: absolute;
+  top: -50rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 100rpx;
+  background: var(--accent-yellow);
+  border: 4px solid var(--border-black);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.update-icon {
+  font-size: 48rpx;
+  animation: iconBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-6rpx) rotate(-5deg); }
+  75% { transform: translateY(-6rpx) rotate(5deg); }
+}
+
+/* ==================== 标题区域 ==================== */
+.update-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10rpx;
+  margin-bottom: 30rpx;
+}
+
+.update-version {
+  font-size: 24rpx;
+  font-weight: 900;
+  color: #FFFFFF;
+  background: var(--border-black);
+  padding: 8rpx 24rpx;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+.update-title {
+  font-size: 40rpx;
+  font-weight: 900;
+  color: var(--text-black);
+  text-align: center;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 1rpx;
+}
+
+/* ==================== 更新内容区域 ==================== */
+.update-content-scroll {
+  width: 100%;
+  max-height: 360rpx;
+  margin-bottom: 40rpx;
+}
+
+.update-content {
+  width: 100%;
+  background: #FFFFFF;
+  border: 3px solid var(--border-black);
+  border-radius: 12rpx;
+  padding: 24rpx;
+  box-shadow: var(--shadow-hard-sm);
+}
+
+.update-line {
+  display: flex;
+  align-items: flex-start;
+  padding: 10rpx 0;
+}
+
+.update-line.header {
+  margin-top: 16rpx;
+  padding-bottom: 8rpx;
+  border-bottom: 2px dashed rgba(0, 0, 0, 0.1);
+}
+
+.update-line.header:first-child {
+  margin-top: 0;
+}
+
+.update-line.header .update-text {
+  font-size: 28rpx;
+  font-weight: 900;
+  color: var(--text-black);
+  text-transform: uppercase;
+}
+
+.update-line.item {
+  padding-left: 8rpx;
+}
+
+.update-bullet {
+  color: var(--accent-cyan);
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+  font-weight: 900;
+}
+
+.update-text {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.6;
+  flex: 1;
+  font-weight: 500;
+}
+
+/* ==================== 确认按钮 - Neo-Brutalism 风格 ==================== */
+.confirm-btn {
+  width: 100% !important;
+  background: var(--accent-yellow) !important;
+  color: var(--text-black) !important;
+  font-weight: 900;
+  font-size: 34rpx;
+  padding: 28rpx 0;
+  border: 4px solid var(--border-black) !important;
+  border-radius: 999rpx;
+  box-shadow: var(--shadow-hard-sm);
+  text-transform: uppercase;
+  letter-spacing: 4rpx;
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.confirm-btn::after {
+  border: none !important;
+}
+
+.confirm-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+/* 按钮光泽动画 */
+.confirm-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: btnShine 4s ease-in-out infinite;
+}
+
+@keyframes btnShine {
+  0% { left: -100%; }
+  30%, 100% { left: 100%; }
+}

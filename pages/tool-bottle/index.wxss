@@ -1,0 +1,275 @@
+/**
+ * 转酒瓶 - Neo-Brutalism (Neon Orange)
+ * 背景、返回按钮与结果卡片沿用点老头的视觉语言。
+ */
+
+page {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #FFFDE7;
+  --accent-orange: #FF5F1F;
+}
+
+.game-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  color: #000;
+  background-color: #FFFDE7;
+  transition: filter 0.4s ease;
+  box-sizing: border-box;
+}
+
+.game-page.blurred {
+  filter: blur(10px);
+}
+
+.page-glow {
+  display: none;
+}
+
+.back-btn {
+  position: fixed;
+  left: 32rpx;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999rpx;
+  box-shadow: 4px 4px 0 0 #000000;
+}
+
+.back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.back-icon {
+  color: #000000;
+  font-size: 36rpx;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.back-text {
+  color: #000000;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.bottle-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 110rpx 32rpx 150rpx;
+  box-sizing: border-box;
+}
+
+.bottle-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72vw;
+  height: 72vw;
+  min-width: 230px;
+  min-height: 230px;
+  max-width: 320px;
+  max-height: 320px;
+  transform-origin: center center;
+  transition: none;
+  will-change: transform;
+}
+
+.bottle-spinner.spinning {
+  pointer-events: none;
+  transition: transform 3s cubic-bezier(0.12, 0.72, 0.18, 1);
+}
+
+.bottle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 0 #000);
+  transition: opacity 0.1s ease;
+}
+
+.bottle-spinner.ready:active .bottle-image {
+  opacity: 0.78;
+}
+
+.game-footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  min-height: 112rpx;
+  padding: 16rpx 40rpx calc(60rpx + env(safe-area-inset-bottom));
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.spin-hint {
+  color: #000;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  opacity: 1;
+  transition: opacity 0.18s ease;
+}
+
+.spin-hint.hidden {
+  opacity: 0;
+}
+
+.result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.result-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.result-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 80%;
+  max-width: 620rpx;
+  padding: 60rpx;
+  background: #FFFDE7;
+  border: 6px solid #000;
+  border-radius: 32rpx;
+  box-shadow: 12px 12px 0 0 #000;
+  opacity: 0;
+  transform: scale(0.3);
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.result-overlay.visible .result-container {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.result-bottle-wrapper {
+  width: 300rpx;
+  height: 300rpx;
+  margin-bottom: 40rpx;
+}
+
+.result-bottle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 0 #000);
+}
+
+.result-emoji {
+  font-size: 80rpx;
+}
+
+.result-title {
+  margin-bottom: 20rpx;
+  color: #000;
+  font-size: 60rpx;
+  font-weight: 900;
+  text-align: center;
+}
+
+.result-drink-hint {
+  margin: 30rpx 0;
+  padding: 10rpx 30rpx;
+  color: #fff;
+  font-size: 40rpx;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  background: #000;
+  border-radius: 999rpx;
+  box-shadow: 4px 4px 0 var(--accent-orange);
+  transform: rotate(-2deg);
+}
+
+.result-hint {
+  color: #000;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.particle {
+  position: absolute;
+  width: 16rpx;
+  height: 16rpx;
+  background: #000;
+  border: 2px solid var(--accent-orange);
+  border-radius: 50%;
+}
+
+.result-overlay.visible .particle {
+  animation: particleFly 2.5s ease-out infinite;
+}
+
+.particle.p1 { top: 28%; left: 18%; animation-delay: 0s; }
+.particle.p2 { top: 22%; right: 22%; animation-delay: 0.4s; }
+.particle.p3 { bottom: 32%; left: 12%; animation-delay: 0.8s; }
+.particle.p4 { bottom: 28%; right: 18%; animation-delay: 1.2s; }
+.particle.p5 { top: 42%; left: 8%; animation-delay: 1.6s; }
+.particle.p6 { top: 38%; right: 8%; animation-delay: 2s; }
+
+@keyframes particleFly {
+  0% { opacity: 0; transform: scale(0) translateY(0); }
+  15% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.3) translateY(-250rpx); }
+}
+
+@media (max-height: 680px) {
+  .bottle-spinner {
+    width: 230px;
+    height: 230px;
+  }
+
+  .result-container {
+    padding: 36rpx;
+  }
+
+  .result-bottle-wrapper {
+    width: 220rpx;
+    height: 220rpx;
+    margin-bottom: 20rpx;
+  }
+
+  .result-emoji {
+    font-size: 64rpx;
+  }
+
+  .result-title {
+    font-size: 48rpx;
+  }
+
+  .result-drink-hint {
+    margin: 20rpx 0;
+    font-size: 32rpx;
+  }
+}

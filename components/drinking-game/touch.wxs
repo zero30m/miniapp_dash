@@ -1,0 +1,199 @@
+/**
+ * 卡牌滑动交互 - 健壮版
+ * 
+ * 设计原则：
+ * 1. 简单可靠的状态管理
+ * 2. 每次触摸都重新获取当前卡牌
+ * 3. 使用 hasTriggeredSwipe 防止重复触发
+ * 4. 支持点击翻转（哲学家酒牌）
+ */
+
+var startX = 0;
+var startY = 0;
+var moveX = 0;
+var isDragging = false;
+var hasTriggeredSwipe = false;  // 本次触摸是否已触发滑动
+var touchStartTime = 0;  // 触摸开始时间（用于判断点击）
+
+var THRESHOLD = 50;  // 滑动阈值
+var TAP_THRESHOLD = 10;  // 点击判定阈值（滑动距离）
+var TAP_DURATION = 300;  // 点击判定时间阈值（毫秒）
+
+function touchStart(event, ownerInstance) {
+  var touch = event.touches[0] || event.changedTouches[0];
+  if (!touch) return;
+  
+  startX = touch.clientX;
+  startY = touch.clientY;
+  moveX = 0;
+  isDragging = true;
+  hasTriggeredSwipe = false;
+  touchStartTime = Date.now();
+  
+  // 获取当前激活的卡牌并准备拖动
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  if (currentCard) {
+    currentCard.setStyle({
+      'transition': 'none'
+    });
+  }
+}
+
+function touchMove(event, ownerInstance) {
+  if (!isDragging || hasTriggeredSwipe) return;
+  
+  var touch = event.touches[0] || event.changedTouches[0];
+  if (!touch) return;
+  
+  var deltaX = touch.clientX - startX;
+  var deltaY = touch.clientY - startY;
+  
+  // 检测下滑手势触发洗牌（向下滑动超过80px，且垂直方向为主）
+  if (deltaY > 80 && deltaY > Math.abs(deltaX) * 2) {
+    isDragging = false;
+    hasTriggeredSwipe = true;
+    // 触发洗牌
+    ownerInstance.callMethod('onShuffle', {});
+    return;
+  }
+  
+  // 首次移动时判断方向：仅上滑时取消拖动（下滑继续等待洗牌阈值）
+  if (moveX === 0 && deltaY < 0 && Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+    isDragging = false;
+    return;
+  }
+  
+  moveX = deltaX;
+  
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  if (!currentCard) return;
+  
+  // 计算旋转角度（限制范围）
+  var rotation = moveX * 0.04;
+  if (rotation > 12) rotation = 12;
+  if (rotation < -12) rotation = -12;
+  
+  // 计算透明度
+  var opacity = 1 - Math.abs(moveX) / 400;
+  if (opacity < 0.5) opacity = 0.5;
+  
+  currentCard.setStyle({
+    'transform': 'translate3d(' + moveX + 'px, 0, 0) rotate(' + rotation + 'deg)',
+    'opacity': '' + opacity,
+    'transition': 'none'
+  });
+}
+
+function touchEnd(event, ownerInstance) {
+  if (!isDragging) return;
+  isDragging = false;
+  
+  // 如果本次触摸已触发滑动，跳过
+  if (hasTriggeredSwipe) {
+    moveX = 0;
+    return;
+  }
+  
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  var absMove = Math.abs(moveX);
+  var touchDuration = Date.now() - touchStartTime;
+  
+  // 【新增】检测点击：滑动距离小于阈值且时间短
+  if (absMove < TAP_THRESHOLD && touchDuration < TAP_DURATION) {
+    // 重置卡牌样式
+    if (currentCard) {
+      currentCard.setStyle({
+        'transition': 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease',
+        'transform': '',
+        'opacity': ''
+      });
+    }
+    // 触发点击翻转
+    ownerInstance.callMethod('onCardTap', {});
+    moveX = 0;
+    return;
+  }
+  
+  // 检查是否满足滑动条件
+  if (absMove > THRESHOLD && currentCard) {
+    // 标记已触发，防止重复
+    hasTriggeredSwipe = true;
+    
+    var direction = moveX > 0 ? 'right' : 'left';
+    
+    // 动画参数：
+    // - 右滑(NEXT)：卡牌向右飞出
+    // - 左滑(LAST)：卡牌向右飞出（腾出位置给从左侧飞入的历史卡牌）
+    var endX = direction === 'left' ? 800 : 800;  // 两种情况都向右飞出
+    var rotation = direction === 'left' ? 25 : 25;
+    
+    // 1. 当前卡牌飞出动画
+    currentCard.setStyle({
+      'transition': 'transform 0.25s ease-out, opacity 0.25s ease-out',
+      'transform': 'translate3d(' + endX + 'px, 0, 0) rotate(' + rotation + 'deg)',
+      'opacity': '0'
+    });
+
+    // 2. 只有右滑(NEXT)时，下一张卡牌升上来
+    // 左滑(LAST)时，历史卡牌从左侧飞入，由 JS 层处理
+    if (direction === 'right') {
+      var next1 = ownerInstance.selectComponent('.card-container.next1');
+      var next2 = ownerInstance.selectComponent('.card-container.next2');
+      
+      if (next1) {
+        next1.setStyle({
+          'transition': 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          'transform': 'scale(1) translateY(0) translateZ(0) rotate(0deg)',
+          'opacity': '1',
+          'z-index': '10'
+        });
+      }
+      
+      if (next2) {
+        next2.setStyle({
+          'transition': 'all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1)',
+          'transform': 'scale(0.95) translateY(30rpx) translateZ(-50px) rotate(4deg)',
+          'opacity': '0.7',
+          'z-index': '9'
+        });
+      }
+    }
+    
+    // 3. 通知 JS 层
+    ownerInstance.callMethod('onSwipe', { direction: direction });
+    
+  } else if (currentCard && absMove > 0) {
+    // 回弹动画
+    currentCard.setStyle({
+      'transition': 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease',
+      'transform': 'translate3d(0, 0, 0) rotate(0deg)',
+      'opacity': '1'
+    });
+  }
+  
+  moveX = 0;
+}
+
+function onPropChange(newValue, oldValue, ownerInstance, instance) {
+  // JS 层数据更新后的回调
+  // 重置触发标记，允许下一次滑动
+  hasTriggeredSwipe = false;
+  
+  // 【修复】重置活跃卡牌的内联样式，确保被拒绝的滑动能够恢复
+  // 注意：只有当卡牌仍在 active 状态时才需要重置（未被标记为 exiting）
+  var currentCard = ownerInstance.selectComponent('.card-container.active');
+  if (currentCard) {
+    currentCard.setStyle({
+      'transition': 'transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease',
+      'transform': '',
+      'opacity': ''
+    });
+  }
+}
+
+module.exports = {
+  touchStart: touchStart,
+  touchMove: touchMove,
+  touchEnd: touchEnd,
+  onPropChange: onPropChange
+};

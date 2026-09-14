@@ -1,0 +1,7 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "喝醉了吗",
+    "backgroundColor": "#050505",
+    "enablePullDownRefresh": false,
+    "disableScroll": true
+}

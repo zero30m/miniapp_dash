@@ -1,0 +1,10 @@
+{
+    "navigationBarTitleText": "沉寂朋友",
+    "navigationBarBackgroundColor": "#FFFDE7",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFFDE7",
+    "disableScroll": true,
+    "usingComponents": {
+        "profile-modal": "/components/profile-modal/index"
+    }
+}

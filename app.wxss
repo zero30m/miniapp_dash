@@ -1,0 +1,46 @@
+/** app.wxss **/
+page {
+  background-color: #000000;
+  color: #eeeeee;
+  font-family: 'Courier New', Courier, monospace;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-entry-animate {
+  animation: slideUpFade 0.4s ease-out forwards;
+}
+
+view, text, button, image {
+  box-sizing: border-box;
+}
+
+.container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative;
+}
+
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  color: transparent;
+}

@@ -1,0 +1,113 @@
+<!-- 沉寂朋友落地页 - 访客视角 -->
+<view class="container" catchtouchmove="preventMove">
+    
+    <!-- 发起人信息（如果有） -->
+    <view class="initiator-card" wx:if="{{initiatorAvatarUrl && initiatorNickname}}">
+        <image class="initiator-avatar" src="{{initiatorAvatarUrl}}" mode="aspectFill"></image>
+        <text class="initiator-name">{{initiatorNickname}}</text>
+    </view>
+    
+    <!-- ==================== 单页模式（朋友圈打开）==================== -->
+    <block wx:if="{{isSinglePageMode}}">
+        <!-- 单页模式：展示内容 + 引导 -->
+        <view class="main-content">
+            <!-- 主要文案 -->
+            <view class="message-section">
+                <text class="message-text">{{uiCopy.singlePageMessage}}</text>
+            </view>
+
+            <view class="sub-message">
+                <text class="sub-text">{{uiCopy.singlePageSubLine1}}</text>
+                <text class="sub-text">{{uiCopy.singlePageSubLine2}}</text>
+            </view>
+
+            <!-- Hi 按钮（单页模式下点击会提示） -->
+            <view class="hi-button-wrapper">
+                <button class="hi-button hi-button-disabled" bindtap="onHiTap">
+                    <text class="hi-text">{{uiCopy.hiText}}</text>
+                </button>
+            </view>
+
+            <!-- 单页模式引导提示 -->
+            <view class="single-page-guide">
+                <text class="guide-text">{{uiCopy.singlePageGuide}}</text>
+            </view>
+        </view>
+    </block>
+
+    <!-- ==================== 正常模式（聊天窗口/群聊打开）==================== -->
+    <block wx:else>
+        <!-- 发送后显示的大字文案 -->
+        <view class="sent-message" wx:if="{{hasInteracted && initiatorNickname}}">
+            <text class="sent-message-text">{{uiCopy.landing.sentLine1}}</text>
+            <text class="sent-message-text">{{uiCopy.landing.sentLine2}}</text>
+        </view>
+
+        <!-- 未互动状态 -->
+        <view class="main-content" wx:if="{{!hasInteracted}}">
+            <!-- 主要文案 -->
+            <view class="message-section">
+                <text class="message-text">{{uiCopy.singlePageMessage}}</text>
+            </view>
+
+            <view class="sub-message">
+                <text class="sub-text">{{uiCopy.singlePageSubLine1}}</text>
+                <text class="sub-text">{{uiCopy.singlePageSubLine2}}</text>
+            </view>
+
+            <!-- Hi 按钮 -->
+            <view class="hi-button-wrapper">
+                <button class="hi-button" bindtap="onHiTap">
+                    <text class="hi-text">{{uiCopy.hiText}}</text>
+                </button>
+            </view>
+
+            <!-- 底部提示 -->
+            <view class="privacy-hint">
+                <text class="privacy-text">{{uiCopy.landing.privacyLine1}}</text>
+                <text class="privacy-text-sub">{{uiCopy.landing.privacyLine2}}</text>
+            </view>
+        </view>
+
+        <!-- 已互动状态 -->
+        <view class="complete-content" wx:if="{{hasInteracted}}">
+            <!-- 完成图标 -->
+            <view class="complete-icon-wrapper">
+                <view class="complete-icon">✓</view>
+            </view>
+
+            <text class="complete-title">{{uiCopy.landing.completeTitle}}</text>
+
+            <!-- 转化引导 -->
+            <view class="convert-section">
+                <view class="convert-questions">
+                    <text class="convert-text">{{uiCopy.landing.completeQuestions[0]}}</text>
+                    <text class="convert-text">{{uiCopy.landing.completeQuestions[1]}}</text>
+                    <text class="convert-text">{{uiCopy.landing.completeQuestions[2]}}</text>
+                    <text class="convert-text-highlight">{{uiCopy.landing.completeQuestions[3]}}</text>
+                    <text class="convert-text-highlight">{{uiCopy.landing.completeQuestions[4]}}</text>
+                </view>
+
+                <button class="convert-btn" bindtap="onCreateOwn">
+                    <text class="btn-text">{{uiCopy.landing.createOwnButton}}</text>
+                </button>
+            </view>
+        </view>
+    </block>
+
+</view>
+
+<!-- 头像昵称填写弹窗（仅正常模式下显示） -->
+<profile-modal 
+    wx:if="{{!isSinglePageMode}}"
+    id="profileModal"
+    visible="{{showProfileModal}}"
+    title="{{uiCopy.landing.profileModalTitle}}"
+    description="{{uiCopy.landing.profileModalDesc}}"
+    confirmText="{{uiCopy.landing.profileModalConfirm}}"
+    footerHint="{{uiCopy.landing.profileModalHint}}"
+    prefill-avatar-url="{{existingAvatarUrl}}"
+    prefill-nickname="{{existingNickname}}"
+    bind:confirm="onProfileConfirm"
+    bind:close="onProfileClose"
+/>

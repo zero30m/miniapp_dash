@@ -1,0 +1,25 @@
+<view class="queen-card size-{{size}}">
+    <view class="queen-corner top">
+        <text class="queen-rank">2</text>
+        <view class="corner-beam"></view>
+    </view>
+    <view class="laser-mark">
+        <view class="laser-ray ray-one"></view>
+        <view class="laser-ray ray-two"></view>
+        <view class="laser-ray ray-three"></view>
+        <view class="laser-barrel"></view>
+        <view class="laser-body">
+            <view class="laser-core"></view>
+        </view>
+        <view class="laser-handle"></view>
+        <view class="laser-trigger"></view>
+    </view>
+    <view class="queen-copy">
+        <text class="queen-eyebrow">QUEEN</text>
+        <text class="queen-title">{{title}}</text>
+    </view>
+    <view class="queen-corner bottom">
+        <text class="queen-rank">2</text>
+        <view class="corner-beam"></view>
+    </view>
+</view>

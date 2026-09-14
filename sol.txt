@@ -1,0 +1,236 @@
+一、先给你“整体模型图”（非常重要）
+
+你们真正要实现的不是「BPM 检测」，而是一个 多通道节奏事件系统：
+
+音频流（持续）
+  ↓
+特征提取（轻量）
+  ↓
+节奏事件生成
+  ├─ Beat（鼓点）
+  ├─ Energy（Drop / 爆点）
+  ├─ Vocal Activity（歌词段）
+  ↓
+时间建模（实时 + 预测）
+  ├─ nextBeatTime
+  ├─ stability
+  ├─ confidence
+  ↓
+反馈调度
+  ├─ 震动（预测）
+  ├─ UI 动画
+  └─ 实时打分
+
+
+⚠️ 注意：
+
+没有 BPM 是核心变量
+
+BPM 只是 estimatedIBI 的 UI 表达
+
+二、数据流与线程模型（避免你再踩坑）
+关键设计原则
+
+🎤 麦克风永远开
+
+⏱ 音频分析 ≠ 反馈触发
+
+📳 震动只由时间调度器触发
+
+❌ 绝不在音频回调里震动
+
+三、核心数据结构（你可以直接照抄）
+// 音频特征帧
+type AudioFrame = {
+  time: number            // 当前时间戳（ms）
+  rms: number             // 总能量
+  lowEnergy: number       // 低频能量（鼓 / bass）
+  midEnergy: number       // 中频能量（vocal）
+  onset: number           // 突变强度
+}
+
+// 节拍状态（核心）
+type BeatState = {
+  lastBeatTime: number | null
+  estimatedIBI: number | null     // 拍间隔
+  nextBeatTime: number | null
+  stability: number               // 0~1
+}
+
+// Vocal 状态
+type VocalState = {
+  active: boolean
+  confidence: number              // 0~1
+}
+
+// Energy 状态
+type EnergyState = {
+  level: number
+  spike: boolean
+}
+
+四、音频特征提取（轻量，能跑）
+
+不用 STFT / tempogram
+用「夜店够用」的特征
+
+function extractFeatures(samples): AudioFrame {
+  return {
+    time: now(),
+    rms: RMS(samples),
+    lowEnergy: bandEnergy(samples, 20, 150),
+    midEnergy: bandEnergy(samples, 1000, 4000),
+    onset: spectralFlux(samples)
+  }
+}
+
+
+帧率建议：
+
+20~30 FPS
+
+每帧 512~1024 samples
+
+五、实时节拍检测（不是 BPM）
+思路一句话：
+
+检测“可能是拍”的事件，而不是算速度
+
+1️⃣ 拍候选触发
+function detectBeat(frame: AudioFrame): boolean {
+  return (
+    frame.onset > ONSET_THRESHOLD &&
+    frame.lowEnergy > LOW_ENERGY_THRESHOLD
+  )
+}
+
+2️⃣ 更新 BeatState（重点）
+function updateBeatState(frame: AudioFrame) {
+  if (!detectBeat(frame)) return
+
+  const t = frame.time
+
+  if (beatState.lastBeatTime !== null) {
+    const interval = t - beatState.lastBeatTime
+
+    // 合理拍间隔（防乱拍）
+    if (interval < 250 || interval > 1200) {
+      beatState.stability *= 0.8
+      return
+    }
+
+    // 更新 IBI（滑动）
+    beatState.estimatedIBI = lerp(
+      beatState.estimatedIBI ?? interval,
+      interval,
+      0.25
+    )
+
+    beatState.stability = clamp(
+      beatState.stability + 0.1,
+      0,
+      1
+    )
+  }
+
+  beatState.lastBeatTime = t
+  beatState.nextBeatTime = t + (beatState.estimatedIBI ?? 0)
+}
+
+六、预测系统（这是震动不卡的核心）
+预测不是“锁死”，而是随时可撤销
+function scheduleBeatVibration() {
+  if (
+    beatState.stability < 0.6 ||
+    beatState.nextBeatTime === null
+  ) return
+
+  const delay = beatState.nextBeatTime - now()
+
+  if (delay < 0 || delay > 800) return
+
+  clearTimeout(vibrationTimer)
+
+  vibrationTimer = setTimeout(() => {
+    wx.vibrateShort()
+  }, delay)
+}
+
+
+⚠️ 注意：
+
+这里完全不碰麦克风 API
+
+如果新拍进来 → cancel → 重算
+
+七、Vocal（歌词节奏）检测模型（夜店关键）
+
+不做语音识别
+只做 “人在唱没唱”
+
+Vocal Activity 逻辑
+function updateVocalState(frame: AudioFrame) {
+  if (frame.midEnergy > VOCAL_THRESHOLD) {
+    vocalState.confidence = clamp(
+      vocalState.confidence + 0.1,
+      0,
+      1
+    )
+  } else {
+    vocalState.confidence *= 0.85
+  }
+
+  vocalState.active = vocalState.confidence > 0.6
+}
+
+
+🎯 效果：
+
+副歌 → vocal active
+
+Drop 前人声断 → confidence 下降
+
+非歌词段 → 不强求踩点
+
+八、Energy / Drop 检测（嗨点）
+function updateEnergyState(frame: AudioFrame) {
+  energyState.spike =
+    frame.rms > energyState.level * 1.5
+
+  energyState.level = lerp(
+    energyState.level,
+    frame.rms,
+    0.2
+  )
+}
+
+九、实时 + 预测评分模型（不是 BPM）
+function scoreUserMotion(userMotion) {
+  let score = 0
+
+  if (beatState.stability > 0.7) {
+    score += proximityToBeat(userMotion.time)
+  }
+
+  if (vocalState.active) {
+    score += userMotion.amplitude * 0.8
+  }
+
+  if (energyState.spike) {
+    score += userMotion.amplitude * 1.5
+  }
+
+  return score
+}
+
+
+👉 不是“你踩没踩准拍”
+👉 而是 “在该嗨的时候你有没有动”
+
+十、DJ 切歌 / Remix 时会发生什么？
+情况	系统反应
+拍断	stability ↓
+新歌	IBI 重建
+BPM 变	2–3 拍内跟
+Vocal 突然来	vocal active
+空拍	自动暂停预测

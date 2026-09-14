@@ -1,0 +1,216 @@
+<!-- Splash Screen -->
+<view class="splash-screen {{!showSplash ? 'fade-out' : ''}}" wx:if="{{showSplash}}">
+  <view class="splash-bg-grid"></view>
+  <view class="skip-btn" catchtap="onSkipSplash">{{uiCopy.skipSplash}}</view>
+  
+  <view class="splash-container">
+    <!-- Logo with Glitch Layers -->
+    <view class="logo-glitch-wrapper">
+      <image class="splash-logo logo-layer red" src="{{logoImage}}" mode="aspectFit"></image>
+      <image class="splash-logo logo-layer blue" src="{{logoImage}}" mode="aspectFit"></image>
+      <image class="splash-logo main" src="{{logoImage}}" mode="aspectFit"></image>
+    </view>
+    
+    <!-- 文字区域：等待字体加载完成后显示 -->
+    <view class="glitch-wrapper {{fontsLoaded ? 'fonts-ready' : 'fonts-loading'}}">
+      <view class="glitch-text main" data-text="{{uiCopy.brandTitle}}">{{uiCopy.brandTitle}}</view>
+      <view class="glitch-text layer-r" data-text="{{uiCopy.brandTitle}}">{{uiCopy.brandTitle}}</view>
+      <view class="glitch-text layer-b" data-text="{{uiCopy.brandTitle}}">{{uiCopy.brandTitle}}</view>
+      <view class="laser-scan"></view>
+    </view>
+    <view class="splash-subtitle {{fontsLoaded ? 'fonts-ready' : 'fonts-loading'}}">{{uiCopy.brandSubtitle}}</view>
+  </view>
+</view>
+
+<scroll-view 
+  class="container {{animationClass}}" 
+  scroll-y="{{true}}" 
+  show-scrollbar="{{false}}"
+  enhanced="{{true}}"
+  bounces="{{true}}"
+>
+  
+  <!-- ==================== Banner 轮播区域 ==================== -->
+  <!-- 特殊 Banner：活动入口（单个，无轮播） -->
+  <view class="banner-swiper" wx:if="{{bannerMode === 2 || bannerMode === 3}}">
+    <view class="banner-card" bindtap="onSpecialBannerTap" style="background-color: {{specialBanner.bgColor || '#F0E634'}} !important;">
+      <!-- 封面图片 -->
+      <image wx:if="{{specialBanner.coverImage}}" 
+             class="banner-cover-image {{specialBanner.coverClass || ''}}" 
+             src="{{specialBanner.coverImage}}" 
+             mode="{{specialBanner.imageMode || 'aspectFill'}}">
+      </image>
+      <!-- 遮罩层 -->
+      <view class="banner-overlay"></view>
+      
+      <view class="banner-content">
+        <view class="banner-title">
+          <block wx:if="{{specialBanner.titleLines && specialBanner.titleLines.length > 0}}">
+            <block wx:for="{{specialBanner.titleLines}}" wx:key="*this" wx:for-item="line">
+              <view>{{line}}</view>
+            </block>
+          </block>
+          <block wx:else>
+            {{specialBanner.title}}
+          </block>
+        </view>
+        <view class="banner-desc">{{specialBanner.desc}}</view>
+      </view>
+      
+      <view class="glass-btn">
+        <view class="btn-text">{{specialBanner.btnText}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 常规 Banner：文章轮播（3个） -->
+  <swiper class="banner-swiper" 
+          wx:else
+          indicator-dots="{{true}}" 
+          autoplay="{{true}}" 
+          interval="{{5000}}" 
+          duration="{{500}}" 
+          circular="{{true}}">
+    <block wx:for="{{banners}}" wx:key="id">
+      <swiper-item>
+        <view class="banner-card" 
+              bindtap="onBannerTap" 
+              data-index="{{index}}">
+          
+          <!-- Banner1 骨架屏（加载中） -->
+          <block wx:if="{{item.isLoading}}">
+            <view class="banner-skeleton-inner">
+              <view class="skeleton-content">
+                <view class="skeleton-title"></view>
+                <view class="skeleton-desc"></view>
+              </view>
+            </view>
+          </block>
+          
+          <!-- Banner 正常内容 -->
+          <block wx:else>
+            <!-- 封面图片（仅Banner1有） -->
+            <image wx:if="{{item.coverImage}}" 
+                   class="banner-cover-image" 
+                   src="{{item.coverImage}}" 
+                   mode="aspectFill"
+                   lazy-load="{{true}}">
+            </image>
+            <!-- 恢复 Banner 遮罩层，用于确保文字可读性 -->
+            <view class="banner-overlay"></view>
+            
+            <view class="banner-content">
+              <view class="banner-title">
+                <block wx:if="{{item.titleLines && item.titleLines.length > 0}}">
+                  <block wx:for="{{item.titleLines}}" wx:key="*this" wx:for-item="line" wx:for-index="lineIdx">
+                    <view>{{line}}</view>
+                  </block>
+                </block>
+                <block wx:else>
+                  {{item.title}}
+                </block>
+              </view>
+              <view class="banner-desc">{{item.desc}}</view>
+            </view>
+            
+            <view class="glass-btn" wx:if="{{item.btnText}}">
+              <view class="btn-text">{{item.btnText}}</view>
+            </view>
+          </block>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <!-- ==================== 抽奖红包入口 ==================== -->
+  <view class="lottery-entry-anchor">
+    <view class="lottery-entry" bindtap="onLotteryEntryTap">
+      <image class="lottery-entry-icon" src="/icon/redpacket.svg" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- ==================== 最近玩过（小胶囊） ==================== -->
+  <view class="section-header" wx:if="{{recentTools.length > 0}}">
+    <view class="section-bar"></view>
+    <view class="section-title-text">{{uiCopy.sectionRecent}}</view>
+  </view>
+  <view class="recent-capsules-container" wx:if="{{recentTools.length > 0}}">
+    <block wx:for="{{recentTools}}" wx:key="id">
+      <view class="recent-capsule {{!recentAnimated ? 'animate-in' : ''}}" 
+            bindtap="onToolCardTap" 
+            data-path="{{item.path}}" 
+            data-id="{{item.id}}"
+            style="animation-delay: {{index * 0.1}}s">
+        <!-- 胶囊背景 -->
+        <view class="capsule-bg"></view>
+        
+        <!-- 左侧文字 -->
+        <view class="capsule-content">
+          <text class="capsule-title">{{item.shortTitle || item.title}}</text>
+        </view>
+        
+        <!-- 右侧破框小图 -->
+        <view class="capsule-stage">
+           <image class="capsule-image" 
+                  wx:if="{{item.mediaUrl}}"
+                  src="{{item.mediaUrl}}" 
+                  mode="aspectFit"></image>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- ==================== 道具卡片列表（横向卡片） ==================== -->
+  <view class="section-header">
+    <view class="section-bar"></view>
+    <view class="section-title-text">{{uiCopy.sectionTools}}</view>
+  </view>
+  <view class="tool-cards-container" style="gap: {{layout.cardGap}}rpx; padding-bottom: {{layout.bottomPadding}}rpx;">
+    <block wx:for="{{toolsCards}}" wx:key="id">
+      <view class="tool-card-horizontal" 
+            bindtap="onToolCardTap" 
+            data-path="{{item.path}}"
+            data-id="{{item.id}}">
+        <view class="tool-card-bg"></view>
+        
+        <!-- 左侧文字内容 -->
+        <view class="tool-card-body-horizontal">
+          <view class="tool-card-chip" style="color: #000; border-color: #000;">{{item.meta}}</view>
+          <view class="tool-card-title-horizontal">{{item.title}}</view>
+          <!-- 副标题行：副标题 + 统计Tag -->
+          <view class="tool-card-subtitle-row">
+            <text class="tool-card-subtitle-horizontal">{{item.subtitle}}</text>
+            <text class="tool-play-count-tag" wx:if="{{gameStats[item.id].uniquePlayers}}">{{gameStats[item.id].uniquePlayers}}{{uiCopy.playerUnit}}</text>
+          </view>
+        </view>
+        
+        <!-- 右侧破框图片 -->
+        <view class="tool-card-stage-horizontal">
+          <block wx:if="{{item.mediaUrl && (!cardImageStates[item.id] || !cardImageStates[item.id].error)}}">
+            <image class="stage-hero-gif-horizontal" 
+                   src="{{item.mediaUrl}}" 
+                   mode="aspectFit"
+                   data-id="{{item.id}}"
+                   data-index="{{index}}"
+                   data-src="{{item.mediaUrl}}"
+                   binderror="onCardImageError"
+                   bindload="onCardImageLoad"></image>
+          </block>
+          <block wx:else>
+            <view class="stage-hero-horizontal">
+              <text class="stage-hero-placeholder-text">{{item.placeholder}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+</scroll-view>
+
+<!-- 登录弹窗已移至真心话大冒险页面 (pages/games/index) -->
+
+<!-- 更新通知弹窗 -->
+<update-modal 
+    show="{{showUpdateModal}}" 
+    version-info="{{updateInfo}}" 
+    bind:confirm="onUpdateModalConfirm" />

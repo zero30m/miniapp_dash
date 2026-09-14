@@ -1,0 +1,100 @@
+<view class="coward-root locale-{{locale}}" style="--coward-stage-bottom: {{stageBottomPx}}px;">
+    <view class="share-hint" wx:if="{{gamePhase === 'waiting' && (!isOnlineMode || roomMembers.length <= 1)}}"
+          style="top: {{navTop + 56}}px; right: {{menuRight}}px; --arrow-right: {{menuDotRight - menuRight}}px;">
+        <text class="share-text">{{copy.shareHint}}</text>
+    </view>
+
+    <view class="waiting-stage" wx:if="{{gamePhase === 'waiting'}}">
+        <text class="waiting-title">{{copy.waitingTitle}}</text>
+        <view class="online-info">
+            <text class="online-label">{{copy.onlinePrefix}}{{onlineCount}}{{copy.peopleUnit}}</text>
+        </view>
+        <button class="start-button" bindtap="startGame" loading="{{isStarting}}" disabled="{{isStarting}}">START</button>
+        <text class="waiting-note">{{isOnlineMode ? copy.anyoneCanStart : copy.shareFirst}}</text>
+    </view>
+
+    <block wx:else>
+        <scroll-view class="players-strip" scroll-x enhanced show-scrollbar="{{false}}">
+            <view class="players-row"
+                  style="width: {{playerRowWidthPx}}px; padding-left: {{playerSidePaddingPx}}px; padding-right: {{playerSidePaddingPx}}px;">
+                <view class="player-chip {{item.isMe ? 'me' : ''}}"
+                      style="width: {{playerChipWidthPx}}px; --player-avatar-size: {{playerAvatarSizePx}}px;"
+                      wx:for="{{playerViews}}" wx:key="openId">
+                    <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                    <view class="player-chip-main">
+                        <view class="player-chip-head">
+                            <text class="player-name">{{item.name}}{{item.isMe ? copy.meSuffix : ''}}</text>
+                        </view>
+                        <view class="player-secret-line">
+                            <view class="player-card-back"></view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="spectator-badge" wx:if="{{isSpectator}}">{{copy.spectator}}</view>
+
+        <view class="play-stage" wx:if="{{gamePhase === 'playing'}}"
+              style="top: {{playStageTopPx}}px; bottom: {{playStageBottomPx}}px;">
+            <text class="stage-status" wx:if="{{timelinePhase === 'reveal'}}">{{statusText}}</text>
+            <view class="coward-card-host {{isDealing ? 'dealing' : ''}} {{cardRevealed ? 'revealed' : ''}} {{isSwapFlipping ? 'swap-flipping' : ''}}"
+                  style="width: {{cardWidthPx}}px; height: {{cardHeightPx}}px;"
+                  bindtap="flipCard">
+                <view class="coward-card-flipper">
+                    <view class="coward-card-face coward-card-back"></view>
+                    <view class="coward-card-face coward-card-front">
+                        <poker-card wx:if="{{myCard}}" card="{{myCard}}" size="drawn"></poker-card>
+                    </view>
+                </view>
+            </view>
+            <block wx:if="{{timelinePhase === 'reveal'}}">
+                <text class="flip-tip" wx:if="{{myCard && !cardRevealed}}">{{copy.flipHint}}</text>
+                <text class="flip-tip" wx:elif="{{myCard}}">{{copy.rememberCard}}</text>
+                <text class="flip-tip" wx:else>{{copy.dealing}}</text>
+            </block>
+        </view>
+
+        <view class="stop-overlay {{timelinePhase}} {{isCardSwapping ? 'card-swapping' : ''}}"
+              wx:if="{{gamePhase === 'playing' && timelinePhase !== 'reveal'}}"
+              style="top: {{playStageTopPx}}px; bottom: {{stageBottomPx}}px;">
+            <view class="stop-overlay-content">
+                <text class="stop-prompt">{{copy.stopWindow}}</text>
+                <text class="alcohol-line">{{copy.currentAlcohol}}<text class="alcohol-number">{{alcoholValue}}</text></text>
+                <text class="countdown-number">{{countdownValue}}</text>
+                <view class="stop-button {{stopEnabled ? 'enabled' : 'disabled'}}"
+                      role="button"
+                      catchtap="stopRound">{{copy.stop}}</view>
+                <view class="skill-dock" wx:if="{{timelinePhase === 'stopping' && isPlayer && !skillUsed}}">
+                    <view class="skill-level skill-level-options" wx:if="{{skillMenuLevel !== 'targets'}}">
+                        <view class="skill-pill" role="button" data-skill="swap" catchtap="chooseSkill">{{copy.swapCard}}</view>
+                        <view class="skill-pill" role="button" data-skill="alcoholPlus" catchtap="chooseSkill">{{copy.alcoholPlus10}}</view>
+                        <view class="skill-pill" role="button" data-skill="alcoholMinus" catchtap="chooseSkill">{{copy.alcoholMinus10}}</view>
+                    </view>
+                    <view class="skill-level skill-level-targets" wx:else>
+                        <view class="skill-avatar-button {{skillSubmitting ? 'disabled' : ''}}"
+                              role="button"
+                              data-openid="{{item.openId}}"
+                              catchtap="chooseSwapTarget"
+                              wx:for="{{playerViews}}" wx:key="openId">
+                            <image class="skill-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </block>
+
+    <view class="coward-result-overlay" wx:if="{{gamePhase === 'result'}}" bindtap="acknowledgeResult">
+        <view class="coward-result-content" wx:if="{{!resultAcknowledged}}">
+            <text class="result-hand">🫵</text>
+            <text class="result-title">{{resultTitle}}</text>
+            <text class="result-main">{{resultMain}}</text>
+            <text class="result-hint">{{isPlayer ? copy.resultHint : copy.spectatorResultHint}}</text>
+        </view>
+        <view class="coward-result-content" wx:else>
+            <view class="waiting-dots"><view></view><view></view><view></view></view>
+            <text class="result-title">{{copy.waitNextRound}}</text>
+        </view>
+    </view>
+</view>

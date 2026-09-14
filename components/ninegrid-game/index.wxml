@@ -1,0 +1,114 @@
+<view class="ninegrid-root locale-{{locale}}" style="--ninegrid-stage-bottom: {{stageBottomPx}}px;">
+    <view class="share-hint" wx:if="{{gamePhase === 'waiting' && (!isOnlineMode || roomMembers.length <= 1)}}"
+          style="top: {{navTop + 56}}px; right: {{menuRight}}px; --arrow-right: {{menuDotRight - menuRight}}px;">
+        <text class="share-text">{{copy.shareHint}}</text>
+    </view>
+
+    <view class="waiting-stage" wx:if="{{gamePhase === 'waiting'}}">
+        <text class="waiting-title">{{copy.waitingTitle}}</text>
+        <view class="online-info">
+            <text class="online-label">{{copy.onlinePrefix}}{{onlineCount}}{{copy.peopleUnit}}</text>
+        </view>
+        <button class="start-button" bindtap="startGame" loading="{{isStarting}}" disabled="{{isStarting}}">START</button>
+        <text class="waiting-note">{{isOnlineMode ? copy.anyoneCanStart : copy.shareFirst}}</text>
+    </view>
+
+    <block wx:else>
+        <scroll-view class="players-strip" scroll-x enhanced show-scrollbar="{{false}}">
+            <view class="players-row"
+                  style="width: {{playerRowWidthPx}}px; padding-left: {{playerSidePaddingPx}}px; padding-right: {{playerSidePaddingPx}}px;">
+                <view class="player-chip {{item.isMe ? 'me' : ''}} {{item.isActive ? 'active' : ''}}"
+                      style="width: {{playerChipWidthPx}}px; --player-avatar-size: {{playerAvatarSizePx}}px;"
+                      wx:for="{{playerViews}}" wx:key="openId">
+                    <image class="player-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+                    <view class="player-chip-main">
+                        <view class="player-chip-head">
+                            <text class="player-name">{{item.name}}{{item.isMe ? copy.meSuffix : ''}}</text>
+                            <text class="player-count">{{copy.cardCount}} {{item.cardCount}}</text>
+                        </view>
+                        <scroll-view class="player-card-line" scroll-x enhanced show-scrollbar="{{false}}">
+                            <view class="player-card-line-inner">
+                                <view class="mini-collected-card" wx:for="{{item.collectedPiles}}" wx:for-item="pile" wx:key="id">
+                                    <poker-card card="{{pile.card}}" size="mini"></poker-card>
+                                    <text class="pile-count-badge player-pile-count">{{pile.cardCount}}</text>
+                                </view>
+                            </view>
+                        </scroll-view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+
+        <view class="spectator-badge" wx:if="{{isSpectator}}">{{copy.spectator}}</view>
+
+        <view class="play-stage {{comparisonVisible ? 'comparison-active' : ''}}" wx:if="{{gamePhase === 'playing'}}"
+              style="bottom: {{playStageBottomPx}}px;">
+            <view class="turn-status">
+                <text class="turn-text">{{statusText}}</text>
+                <text class="streak-text" wx:if="{{streak > 0}}">{{copy.streak}} {{streak}}</text>
+            </view>
+
+            <view class="nine-grid" style="width: {{boardWidthPx}}px; height: {{boardHeightPx}}px;">
+                <view class="grid-slot slot-index-{{item.index}} {{item.revealed ? 'revealed' : ''}} {{item.active ? '' : 'collected'}} {{item.pending ? 'pending' : ''}} {{item.index === selectedSlotIndex ? 'selected' : ''}} {{canSelectCard && item.active ? 'selectable' : ''}} {{comparisonVisible && item.index === selectedSlotIndex ? 'comparison-source' : ''}}"
+                      wx:for="{{grid}}" wx:key="index"
+                      data-index="{{item.index}}"
+                      bindtap="selectGridCard">
+                    <view class="grid-card-flipper" wx:if="{{item.active && item.card}}">
+                        <view class="grid-card-face grid-card-back">
+                        </view>
+                        <view class="grid-card-face grid-card-front">
+                            <poker-card wx:if="{{item.card}}" card="{{item.card}}" size="petal"></poker-card>
+                        </view>
+                    </view>
+                    <text class="pile-count-badge grid-pile-count" wx:if="{{item.active && item.cardCount}}">{{item.cardCount}}</text>
+                    <view class="collected-slot-mark" wx:else></view>
+                </view>
+            </view>
+
+            <view class="comparison-layer" wx:if="{{comparisonVisible}}">
+                <text class="comparison-title" style="top: {{comparisonTitleTopPx}}px;">{{comparisonPrompt}}</text>
+                <view class="comparison-card-host reference-card-host"
+                      style="{{comparisonReferenceStyle}}">
+                    <poker-card card="{{referenceCard}}" size="petal"></poker-card>
+                </view>
+                <view class="comparison-card-host candidate-card-host {{comparisonCandidateRevealed ? 'revealed' : ''}}"
+                      style="{{comparisonCandidateStyle}}">
+                    <view class="comparison-card-flipper">
+                        <view class="comparison-card-face comparison-card-back"></view>
+                        <view class="comparison-card-face comparison-card-front">
+                            <poker-card wx:if="{{comparisonCandidateCard}}" card="{{comparisonCandidateCard}}" size="petal"></poker-card>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="guess-controls" wx:if="{{gamePhase === 'playing'}}"
+              style="bottom: {{stageBottomPx}}px;">
+            <view class="guess-pair left-pair">
+                <button class="guess-button small" data-guess="small" bindtap="guessCard"
+                        disabled="{{!canGuess || isActing}}">{{copy.small}}</button>
+                <button class="guess-button black" data-guess="black" bindtap="guessCard"
+                        disabled="{{!canGuess || isActing}}">{{copy.black}}</button>
+            </view>
+            <view class="guess-pair right-pair">
+                <button class="guess-button red" data-guess="red" bindtap="guessCard"
+                        disabled="{{!canGuess || isActing}}">{{copy.red}}</button>
+                <button class="guess-button big" data-guess="big" bindtap="guessCard"
+                        disabled="{{!canGuess || isActing}}">{{copy.big}}</button>
+            </view>
+        </view>
+    </block>
+
+    <view class="ninegrid-result-overlay" wx:if="{{gamePhase === 'result'}}" bindtap="nextRound">
+        <view class="ninegrid-result-content">
+            <text class="result-hand" wx:if="{{hasDrinkResult}}">🫵</text>
+            <text class="result-title">{{copy.resultTitle}}</text>
+            <view class="result-lines" wx:if="{{resultLines.length}}">
+                <text class="result-line" wx:for="{{resultLines}}" wx:key="*this">{{item}}</text>
+            </view>
+            <text class="safe-result" wx:else>{{copy.safeResult}}</text>
+            <text class="result-hint">{{copy.resultHint}}</text>
+        </view>
+    </view>
+</view>

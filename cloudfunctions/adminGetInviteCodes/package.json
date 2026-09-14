@@ -1,0 +1,15 @@
+{
+    "name": "admin-get-invite-codes",
+    "version": "1.0.0",
+    "description": "Admin function to get paginated invite codes list",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "wx-server-sdk": "~2.6.3",
+        "@cloudbase/node-sdk": "latest"
+    }
+}

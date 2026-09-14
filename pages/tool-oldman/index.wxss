@@ -1,0 +1,429 @@
+/**
+ * 点老头游戏样式 - Neo-Brutalism (Neon Orange)
+ */
+
+.game-page {
+  min-height: 100vh;
+  height: 100vh;
+  background-color: #FFFDE7; /* Cream */
+  padding: 0;
+  color: #000;
+  position: relative;
+  overflow: hidden;
+  transition: filter 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  --accent-orange: #FF5F1F;
+  --text-black: #000000;
+}
+
+.game-page.blurred {
+  filter: blur(10px);
+}
+
+/* 移除旧光效 */
+.page-glow {
+  display: none;
+}
+
+/* 返回按钮 */
+.back-btn {
+  position: fixed;
+  left: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 24rpx;
+  background: #FFFFFF;
+  border: 4px solid #000000;
+  border-radius: 999rpx;
+  z-index: 50;
+  box-shadow: 4px 4px 0 0 #000000;
+}
+
+.back-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 #000;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  font-weight: 900;
+  color: #000000;
+  line-height: 1;
+}
+
+.back-text {
+  font-size: 26rpx;
+  color: #000000;
+  font-weight: 800;
+}
+
+/* 上方黑色信息条 - Speech Bubble Style */
+.share-arrow {
+  display: none; /* Removed in WXML but safe to hide */
+}
+
+.share-hint {
+  position: fixed;
+  z-index: 60;
+  background: #FFF;
+  border: 4px solid #000;
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+  /* Pivot for bounce */
+  transform-origin: right top;
+  animation: hintBounce 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+}
+
+/* Speech Bubble Tail (Rotated Square) */
+.share-hint::before {
+  content: '';
+  position: absolute;
+  top: -16rpx; /* Push up slightly */
+  right: var(--arrow-right); 
+  width: 24rpx;
+  height: 24rpx;
+  background: #FFF;
+  border-top: 4px solid #000;
+  border-left: 4px solid #000;
+  transform: rotate(45deg) translateX(50%);
+  box-sizing: border-box;
+  z-index: 1; /* Behind the patch */
+}
+
+/* White Patch to hide the arrow borders entering the bubble */
+.share-hint::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: calc(var(--arrow-right) - 10rpx); /* Center over arrow */
+  width: 40rpx; /* Wide enough to cover arrow width */
+  height: 12rpx; /* Tall enough to cover incoming borders */
+  background: #FFF;
+  z-index: 2; /* On top of arrow */
+}
+
+.share-text {
+  color: #000;
+  font-weight: 800;
+  font-size: 26rpx;
+  letter-spacing: 1rpx;
+}
+
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(6rpx) rotate(-1deg); }
+}
+
+/* 房间信息栏 */
+.room-info-bar {
+  position: fixed;
+  background: #FFFFFF;
+  border: 3px solid #000;
+  border-radius: 12rpx;
+  box-shadow: 4px 4px 0 0 #000;
+  padding: 8rpx 20rpx;
+  opacity: 0;
+  transform: translateY(-10rpx);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.room-info-bar.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.connection-dot {
+  background: #ccc;
+  border: 1px solid #000;
+}
+.connection-dot.connected {
+  background: var(--accent-orange);
+  box-shadow: none;
+}
+.room-id-text {
+  color: #000;
+  font-weight: 900;
+  font-size: 24rpx;
+}
+.member-count {
+  color: #000;
+  border-left: 2px solid #000;
+  font-size: 24rpx;
+}
+
+/* 顶部标题区 */
+.game-header {
+  position: relative;
+  z-index: 2;
+  padding: 0 40rpx 20rpx;
+  text-align: center;
+  flex-shrink: 0;
+  /* Reduced top margin to push content up */
+  margin-top: 20rpx; 
+  padding-top: 180rpx; /* Ensure space for nav bar but keep visual flow higher */
+}
+
+.game-title {
+  font-size: 72rpx;
+  font-weight: 900;
+  letter-spacing: 4rpx;
+  color: #000;
+  background: none;
+  -webkit-text-fill-color: #000;
+  margin-bottom: 8rpx;
+  text-transform: uppercase;
+}
+
+.game-hint {
+  font-size: 30rpx;
+  color: #000;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.round-badge {
+  display: inline-block;
+  margin-top: 16rpx;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+/* 老头网格 */
+.oldman-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2vw;
+  padding: 2vw;
+  margin: 0 auto;
+  width: calc(100vw - 4vw);
+  max-width: 100vw;
+  flex: 1;
+  align-content: center;
+}
+
+.oldman-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: visible;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.oldman-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(4px 4px 0 #000);
+  transition: transform 0.1s ease;
+}
+
+.oldman-cell:active .oldman-img {
+  transform: translate(2px, 2px);
+  filter: drop-shadow(2px 2px 0 #000);
+}
+
+/* 点击波纹 */
+.tap-ripple {
+  background: rgba(255, 95, 31, 0.4);
+}
+
+/* 飞出动画 */
+.oldman-cell.fly-top { animation: flyTop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-bottom { animation: flyBottom 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-left { animation: flyLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-right { animation: flyRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-top-left { animation: flyTopLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-top-right { animation: flyTopRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-bottom-left { animation: flyBottomLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.oldman-cell.fly-bottom-right { animation: flyBottomRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+.oldman-cell.hidden {
+  pointer-events: none;
+}
+
+/* 底部信息 */
+.game-footer {
+  padding: 16rpx 40rpx 60rpx;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.remaining-label {
+  font-size: 28rpx;
+  color: #000;
+  font-weight: 700;
+}
+
+.remaining-count {
+  font-size: 64rpx;
+  font-weight: 900;
+  color: var(--accent-orange);
+  text-shadow: 2px 2px 0 #000;
+  -webkit-text-stroke: 2px #000;
+}
+
+.online-label {
+  color: #000;
+  font-weight: 600;
+}
+
+/* 结果弹窗 */
+.result-overlay {
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.result-overlay.visible {
+  opacity: 1; visibility: visible;
+}
+
+.result-container {
+  background: #FFFDE7;
+  border: 6px solid #000;
+  padding: 60rpx;
+  border-radius: 32rpx;
+  box-shadow: 12px 12px 0 0 #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 80%;
+  transform: scale(0.3);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.result-overlay.visible .result-container {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.angry-oldman-wrapper {
+  width: 300rpx;
+  height: 300rpx;
+  margin-bottom: 40rpx;
+}
+
+.angry-oldman-img {
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(4px 4px 0 #000);
+}
+
+.angry-glow { display: none; }
+
+.result-emoji {
+  font-size: 80rpx;
+}
+
+.result-title {
+  font-size: 60rpx;
+  font-weight: 900;
+  color: #000;
+  background: none;
+  -webkit-text-fill-color: #000;
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.result-drink-hint {
+  font-size: 40rpx;
+  color: #fff;
+  background: #000;
+  padding: 10rpx 30rpx;
+  border-radius: 999rpx;
+  margin: 30rpx 0;
+  transform: rotate(-2deg);
+  box-shadow: 4px 4px 0 var(--accent-orange);
+}
+
+.result-hint {
+  color: #000;
+  font-weight: 700;
+  opacity: 0.6;
+  font-size: 28rpx;
+}
+
+.particle {
+  position: absolute;
+  width: 16rpx; height: 16rpx;
+  background: #000; 
+  border: 2px solid var(--accent-orange);
+  border-radius: 50%;
+}
+
+.result-overlay.visible .particle {
+  animation: particleFly 2.5s ease-out infinite;
+}
+
+.particle.p1 { top: 28%; left: 18%; animation-delay: 0s; }
+.particle.p2 { top: 22%; right: 22%; animation-delay: 0.4s; }
+.particle.p3 { bottom: 32%; left: 12%; animation-delay: 0.8s; }
+.particle.p4 { bottom: 28%; right: 18%; animation-delay: 1.2s; }
+.particle.p5 { top: 42%; left: 8%; animation-delay: 1.6s; }
+.particle.p6 { top: 38%; right: 8%; animation-delay: 2s; }
+
+/* 游戏结束条 */
+.game-over-bar {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #FFFFFF;
+  border: 4px solid #000;
+  border-radius: 999rpx;
+  padding: 24rpx 48rpx;
+  box-shadow: 6px 6px 0 0 #000;
+  z-index: 100;
+  opacity: 0;
+  transition: all 0.3s;
+}
+
+.game-over-bar.show {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+
+.game-over-text {
+  color: #000;
+  font-weight: 900;
+  text-shadow: none;
+  font-size: 32rpx;
+}
+
+/* Animations */
+@keyframes flyTop { 0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translateY(-100vh) rotate(-25deg) scale(0.2); opacity: 0; } }
+@keyframes flyBottom { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(100vh) scale(0.2); opacity: 0; } }
+@keyframes flyLeft { 0% { transform: translateX(0) scale(1); } 100% { transform: translateX(-100vw) scale(0.2); opacity: 0; } }
+@keyframes flyRight { 0% { transform: translateX(0) scale(1); } 100% { transform: translateX(100vw) scale(0.2); opacity: 0; } }
+@keyframes flyTopLeft { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-80vw, -80vh) scale(0.1); opacity: 0; } }
+@keyframes flyTopRight { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(80vw, -80vh) scale(0.1); opacity: 0; } }
+@keyframes flyBottomLeft { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(-80vw, 80vh) scale(0.1); opacity: 0; } }
+@keyframes flyBottomRight { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(80vw, 80vh) scale(0.1); opacity: 0; } }
+
+@keyframes angryShake {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.02); }
+}@keyframes particleFly {
+  0% { opacity: 0; transform: scale(0) translateY(0); }
+  15% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.3) translateY(-250rpx); }
+}

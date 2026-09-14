@@ -1,0 +1,89 @@
+<!-- DIY 选项面板 -->
+
+<!-- 折叠态：小圆形按钮 -->
+<view class="diy-fab {{expanded ? 'hidden' : ''}}" bindtap="onToggle">
+    <image class="fab-icon" src="/icon/个性化.svg" mode="aspectFit"></image>
+</view>
+
+<!-- 展开态：遮罩层 + 浮动卡片 -->
+<view class="diy-overlay {{expanded ? 'show' : ''}}" bindtap="onOverlayTap">
+    <view class="diy-panel" catchtap="onPanelTap">
+        <!-- 标题栏 -->
+        <view class="panel-header">
+            <text class="panel-title">{{copy.settings}}</text>
+        </view>
+
+        <!-- 滑块列表 -->
+        <scroll-view scroll-y class="panel-body">
+            <!-- 人数 -->
+            <diy-slider
+                label="{{copy.players}}"
+                min="{{0}}"
+                max="{{10}}"
+                step="{{1}}"
+                value="{{players}}"
+                icon-left="/icon/个人.svg"
+                icon-right="/icon/多人.svg"
+                display-value="{{players === 0 ? copy.unlimited : players + copy.peopleSuffix}}"
+                bindchange="onPlayersChange"
+            ></diy-slider>
+
+            <!-- 酒精浓度 -->
+            <diy-slider
+                label="{{copy.alcohol}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{alcohol}}"
+                icon-left="/icon/鸡尾酒.svg"
+                icon-right="/icon/伏特加.svg"
+                display-value="{{alcohol + '%'}}"
+                bindchange="onAlcoholChange"
+            ></diy-slider>
+
+            <!-- 刺激程度 -->
+            <diy-slider
+                label="{{copy.stimulation}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{stimulation}}"
+                icon-left="/icon/平静.svg"
+                icon-right="/icon/害羞.svg"
+                display-value="{{stimulation + '%'}}"
+                bindchange="onStimulationChange"
+            ></diy-slider>
+
+            <!-- 沟通深度 -->
+            <diy-slider
+                label="{{copy.depth}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{depth}}"
+                icon-left="/icon/锁.svg"
+                icon-right="/icon/开锁.svg"
+                display-value="{{depth + '%'}}"
+                bindchange="onDepthChange"
+            ></diy-slider>
+
+            <!-- 暧昧程度 -->
+            <diy-slider
+                label="{{copy.ambiguity}}"
+                min="{{0}}"
+                max="{{100}}"
+                step="{{5}}"
+                value="{{ambiguity}}"
+                icon-left="/icon/对话.svg"
+                icon-right="/icon/爱心.svg"
+                display-value="{{ambiguity + '%'}}"
+                bindchange="onAmbiguityChange"
+            ></diy-slider>
+        </scroll-view>
+
+        <!-- 底部提示 -->
+        <view class="panel-footer-hint">
+            <text class="hint-text">{{copy.closeHint}}</text>
+        </view>
+    </view>
+</view>

@@ -1,0 +1,10 @@
+{
+    "navigationBarTitleText": "首页",
+    "navigationBarBackgroundColor": "#FFFDE7",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFFDE7",
+    "usingComponents": {
+        "auth-modal": "/components/auth-modal/index",
+        "update-modal": "/components/update-modal/index"
+    }
+}

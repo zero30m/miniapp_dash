@@ -1,0 +1,201 @@
+<wxs module="touch" src="../games/touch.wxs"></wxs>
+
+<view class="container poker-page {{isExpanded ? 'expanded-mode' : ''}}"
+      bindtouchstart="{{touch.touchStart}}"
+      bindtouchmove="{{touch.touchMove}}"
+      bindtouchend="{{touch.touchEnd}}"
+      data-is-expanded="{{isExpanded}}"
+      isExpanded="{{isExpanded}}"
+      change:isExpanded="{{touch.onExpandChange}}"
+      isSwitching="{{isSwitching}}"
+      change:isSwitching="{{touch.onSwitchChange}}">
+
+    <view class="pill-header" style="padding-top: {{headerPaddingTop}}px;" wx:if="{{!isExpanded}}">
+        <view class="pull-hint-mini {{activeGame}}">
+            <text class="hint-text">{{uiCopy.pullToSwitch}}</text>
+            <text class="hint-arrow">↓</text>
+        </view>
+
+        <view class="current-pill">
+            <view class="pill-glow {{activeGame}}"></view>
+            <view class="pill-content">
+                <view class="pill-dot {{activeGame}}"></view>
+                <text class="pill-name">{{gameNames[activeGame]}}</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="selector-overlay {{isExpanded ? 'visible' : ''}} {{isClosing ? 'closing' : ''}} {{viewMode === 'detail' ? 'detail-layout' : 'simple-layout'}}"
+          bindtouchstart="onOverlayTouch"
+          bindtouchmove="onOverlaySwipe"
+          bindtouchend="onOverlayTouchEnd"
+          bindtap="onOverlayTap">
+        <view class="selector-container" catchtap="preventBubble">
+            <view class="selector-title">{{uiCopy.selectorTitle}}</view>
+
+            <view class="view-toggle-btn" bindtap="toggleViewMode">
+                <text class="toggle-text">{{viewMode === 'simple' ? uiCopy.detailView : uiCopy.simpleView}}</text>
+                <text class="toggle-icon">⇄</text>
+            </view>
+
+            <scroll-view
+                scroll-x="{{viewMode === 'simple'}}"
+                scroll-y="{{viewMode === 'detail'}}"
+                class="game-scroll {{viewMode === 'detail' ? 'detail-mode' : ''}}"
+                enhanced
+                show-scrollbar="{{false}}"
+                enable-flex="{{true}}">
+                <view class="game-list {{viewMode === 'detail' ? 'vertical-layout' : ''}}">
+                    <block wx:for="{{gameList}}" wx:key="*this">
+                        <view class="game-card {{activeGame === item ? 'active' : ''}} {{item}} {{viewMode === 'detail' ? 'expanded' : ''}}"
+                              catchtap="selectGame"
+                              data-game="{{item}}"
+                              style="{{viewMode === 'detail' ? 'transition-delay:' + index * 0.03 + 's' : ''}}">
+                            <view class="card-capsule {{viewMode === 'detail' ? 'horizontal' : ''}}">
+                                <view class="capsule-inner {{item}}"></view>
+                            </view>
+
+                            <view class="card-text {{viewMode === 'detail' ? 'hidden' : ''}}">
+                                <text class="card-name">{{gameInfo[item].name}}</text>
+                                <text class="card-desc">{{gameInfo[item].desc}}</text>
+                            </view>
+
+                            <view class="detail-info {{viewMode === 'detail' ? 'visible' : ''}}">
+                                <view class="detail-header">
+                                    <text class="detail-name">{{gameInfo[item].name}}</text>
+                                    <text class="detail-desc">{{gameInfo[item].desc}}</text>
+                                </view>
+                                <text class="detail-intro">{{gameInfo[item].intro}}</text>
+                                <view class="detail-footer">
+                                    <view class="detail-tags">
+                                        <block wx:for="{{gameInfo[item].tags}}" wx:key="*this" wx:for-item="tag">
+                                            <text class="detail-tag">{{tag}}</text>
+                                        </block>
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+            </scroll-view>
+
+            <view class="scroll-hint">
+                <text class="scroll-arrow left" wx:if="{{viewMode === 'simple'}}">‹</text>
+                <text class="scroll-text">{{viewMode === 'simple' ? uiCopy.simpleScrollHint : uiCopy.detailScrollHint}}</text>
+                <text class="scroll-arrow right" wx:if="{{viewMode === 'simple'}}">›</text>
+            </view>
+
+            <view class="close-hint" wx:if="{{viewMode === 'simple'}}">
+                <text class="close-hint-text">{{uiCopy.closeHint}}</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="game-container poker-game-container">
+        <view class="flower-game" wx:if="{{activeGame === 'flower'}}">
+            <view class="flower-deck-counter">
+                <text>{{uiCopy.deckRemaining}}</text>
+                <text class="deck-number">{{deckRemaining}}</text>
+            </view>
+
+            <view class="flower-board-shell">
+                <view class="flower-board petal-layout-{{petalCount}}"
+                      style="width: {{flowerStageWidthPx}}px; height: {{flowerStageHeightPx}}px; transform: translate(-50%, {{flowerStageOffsetY}}px) scale({{flowerStageScale}});">
+                    <block wx:for="{{petals}}" wx:key="index">
+                        <view class="petal-slot petal-{{index}} petal-target-{{index}} petal-stack-{{item.side}}"
+                              style="left: {{item.left}}rpx; top: {{item.topPosition}}rpx;"
+                              data-index="{{index}}"
+                              bindtap="onPetalTap">
+                            <view class="pile-shadow layer-two" wx:if="{{item.count > 3}}"></view>
+                            <view class="pile-shadow layer-one" wx:if="{{item.count > 2}}"></view>
+                            <view class="petal-card-layer under-card"
+                                  wx:if="{{item.under}}">
+                                <poker-card card="{{item.under}}" size="petal" hide-corners="{{true}}"></poker-card>
+                            </view>
+                            <view class="under-card-peek peek-{{item.peekSide}} peek-{{item.vertical}} {{item.under && item.under.isJoker ? 'joker-peek' : ''}} {{item.under ? item.under.color : ''}}"
+                                  wx:if="{{item.under}}">
+                                <poker-card wx:if="{{item.under.isJoker}}"
+                                            card="{{item.under}}"
+                                            size="peek"
+                                            joker-mark-only="{{true}}"></poker-card>
+                                <block wx:else>
+                                    <text class="under-peek-rank">{{item.peekRank}}</text>
+                                    <text class="under-peek-suit">{{item.peekSuit}}</text>
+                                </block>
+                            </view>
+                            <view class="petal-card-layer top-card petal-top-target-{{index}}"
+                                  style="transform: translate({{item.topOffsetX}}rpx, {{item.topOffsetY}}rpx) rotate({{item.rotation}}deg);">
+                                <poker-card card="{{item.top}}" size="petal"></poker-card>
+                            </view>
+                            <view class="pile-count {{item.side === 'left' ? 'left-count' : ''}}" wx:if="{{item.count > 1}}">{{item.count}}</view>
+                        </view>
+                    </block>
+
+                    <view class="core-slot core-target">
+                        <block wx:if="{{coreCard}}">
+                            <poker-card card="{{coreCard}}" size="petal"></poker-card>
+                            <view class="pile-count core-count" wx:if="{{coreCount > 1}}">{{coreCount}}</view>
+                        </block>
+                        <view class="core-empty" wx:else>
+                            <text>{{uiCopy.core}}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+
+            <view class="turn-status {{showTurnTotal ? 'visible' : ''}}">
+                <block wx:if="{{combo > 0}}">
+                    <text>{{uiCopy.combo}} {{combo}}</text>
+                    <text class="status-divider">·</text>
+                </block>
+                <text>{{uiCopy.total}}</text>
+                <text class="turn-sips-number">{{turnSips}}</text>
+            </view>
+
+            <view class="flower-footer">
+                <view class="flower-prompt-row {{!flowerStarted ? 'with-controls' : 'prompt-only'}}">
+                    <view class="petal-count-button {{petalCount <= 2 ? 'is-disabled' : ''}}"
+                          wx:if="{{!flowerStarted}}"
+                          data-delta="-1"
+                          bindtap="onPetalCountChange">
+                        <text>−</text>
+                    </view>
+                    <text class="flower-prompt">{{promptText}}</text>
+                    <view class="petal-count-button {{petalCount >= 6 ? 'is-disabled' : ''}}"
+                          wx:if="{{!flowerStarted}}"
+                          data-delta="1"
+                          bindtap="onPetalCountChange">
+                        <text>+</text>
+                    </view>
+                </view>
+                <button class="restart-button" wx:if="{{deckFinished}}" bindtap="restartFlower">
+                    {{uiCopy.restart}}
+                </button>
+            </view>
+        </view>
+
+    </view>
+</view>
+
+<view class="draw-overlay {{drawPhase}}" wx:if="{{showDrawOverlay}}" bindtap="onDrawOverlayTap">
+    <view class="draw-result" catchtap="preventBubble">
+        <view class="draw-card-host"
+              style="transform: translate({{moveX}}px, {{moveY}}px) scale({{moveScale}}) rotate({{moveRotate}}deg);">
+            <poker-card card="{{drawnCard}}" size="drawn"></poker-card>
+        </view>
+
+        <view class="draw-copy {{resultMode}}">
+            <text class="pointing-hand" wx:if="{{resultSips > 0}}">🫵</text>
+            <text class="draw-result-main">{{resultText}}</text>
+            <text class="draw-breakdown" wx:if="{{resultBreakdown}}">{{resultBreakdown}}</text>
+            <view class="bloom-final" wx:if="{{resultMode === 'bloom'}}">
+                <text class="bloom-final-text">{{uiCopy.finalPrefix}}</text>
+                <text class="bloom-final-number">{{resultFinalCount}}</text>
+                <text class="bloom-final-text">{{uiCopy.finalSuffix}}</text>
+            </view>
+            <text class="draw-footer" wx:else>{{resultFooter}}</text>
+        </view>
+    </view>
+
+    <text class="place-hint">{{uiCopy.tapBlankToPlace}}</text>
+</view>
